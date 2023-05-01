@@ -47,11 +47,5 @@
     "typescript": "^4.8.4",
     "vite": "^4.3.3",
     "vitest": "^0.30.1"
-  },
-  "turbo": {
-    "baseBranch": "origin/main",
-    "pipeline": {
-      "build": {}
-    }
   }
 }
