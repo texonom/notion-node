@@ -1,22 +1,12 @@
-import test from 'ava'
+import { test, expect } from 'vitest'
 
 import { NotionAPI } from './notion-api'
 
 const pageIdFixturesSuccess = [
-  '067dd719-a912-471e-a9a3-ac10710e7fdf',
-  '067dd719a912471ea9a3ac10710e7fdf',
-  'https://www.notion.so/saasifysh/Embeds-5d4e290ca4604d8fb809af806a6c1749',
-  'https://www.notion.so/saasifysh/File-Uploads-34d650c65da34f888335dbd3ddd141dc',
-  'Color-Rainbow-54bf56611797480c951e5c1f96cb06f2',
-  'e68c18a461904eb5a2ddc3748e76b893',
-  'https://www.notion.so/saasifysh/Saasify-Key-Takeaways-689a8abc1afa4699905aa2f2e585e208',
-  'https://www.notion.so/saasifysh/TransitiveBullsh-it-78fc5a4b88d74b0e824e29407e9f1ec1',
-  'https://www.notion.so/saasifysh/About-8d0062776d0c4afca96eb1ace93a7538',
-  'https://www.notion.so/potionsite/newest-board-a899b98b7cdc424585e5ddebbdae60cc'
-
-  // collections stress test
-  // NOTE: removing because of sporadic timeouts
-  // 'nba-3f92ae505636427c897634a15b9f2892'
+  'e0ae7b40-dd23-463e-a7bc-92195d6ec7fd',
+  'https://www.notion.so/seongland/LLaMA-f2b6721202d44d469add84d8a366809c?pvs=',
+  'LLM-b9157a9d105d450ba86f2570619551b4',
+  '577d47779c5f4da98e3fb0df753b9e81'
 ]
 
 const pageIdFixturesFailure = [
@@ -25,20 +15,24 @@ const pageIdFixturesFailure = [
 ]
 
 for (const pageId of pageIdFixturesSuccess) {
-  test(`NotionAPI.getPage success ${pageId}`, async (t) => {
-    t.timeout(60000) // one minute timeout
+  test(
+    `NotionAPI.getPage success ${pageId}`,
+    async () => {
+      const api = new NotionAPI()
+      const page = await api.getPage(pageId)
 
-    const api = new NotionAPI()
-    const page = await api.getPage(pageId)
-
-    t.truthy(page)
-    t.truthy(page.block)
-  })
+      expect(page).toBeTruthy()
+      expect(page.block).toBeTruthy()
+    },
+    { timeout: 60000 }
+  )
 }
 
 for (const pageId of pageIdFixturesFailure) {
-  test(`NotionAPI.getPage failure ${pageId}`, async (t) => {
+  test(`NotionAPI.getPage failure ${pageId}`, async () => {
     const api = new NotionAPI()
-    await t.throwsAsync(() => api.getPage(pageId))
+    await expect(() =>
+      api.getPage(pageId, { gotOptions: { timeout: 1000 } })
+    ).rejects.toThrow()
   })
 }

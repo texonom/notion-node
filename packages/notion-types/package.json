@@ -1,16 +1,19 @@
 {
-  "name": "notion-types",
-  "version": "6.16.0",
+  "name": "@3bases/notion-types",
+  "version": "1.0.0",
   "type": "module",
   "description": "TypeScript types for core Notion data structures.",
-  "repository": "NotionX/react-notion-x",
-  "author": "Travis Fischer <travis@transitivebullsh.it>",
+  "repository": "3bases/notion",
+  "author": "Alan Jo <sungle3737@gmail.com>",
   "license": "MIT",
   "types": "./build/index.d.ts",
   "sideEffects": false,
   "files": [
     "build"
   ],
+  "scripts": {
+    "build": "tsc"
+  },
   "engines": {
     "node": ">=12"
   }

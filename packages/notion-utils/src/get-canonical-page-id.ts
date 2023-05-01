@@ -1,4 +1,4 @@
-import { ExtendedRecordMap } from 'notion-types'
+import { ExtendedRecordMap } from '@3bases/notion-types'
 
 import { getBlockTitle } from './get-block-title'
 import { getPageProperty } from './get-page-property'

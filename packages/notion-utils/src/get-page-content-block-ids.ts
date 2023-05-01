@@ -1,4 +1,4 @@
-import * as types from 'notion-types'
+import * as types from '@3bases/notion-types'
 
 /**
  * Gets the IDs of all blocks contained on a page starting from a root block ID.
