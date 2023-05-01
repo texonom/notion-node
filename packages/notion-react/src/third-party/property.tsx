@@ -30,7 +30,7 @@ export interface IPropertyProps {
  * This corresponds to rendering the content of a single cell in a table.
  * Property rendering is re-used across all the different types of collection views.
  */
-export const Property: React.FC<IPropertyProps> = (props) => {
+export const Property: React.FC<IPropertyProps> = props => {
   const { components } = useNotionContext()
 
   if (components.Property) {
@@ -40,16 +40,9 @@ export const Property: React.FC<IPropertyProps> = (props) => {
   }
 }
 
-export const PropertyImpl: React.FC<IPropertyProps> = (props) => {
+export const PropertyImpl: React.FC<IPropertyProps> = props => {
   const { components, mapImageUrl, mapPageUrl } = useNotionContext()
-  const {
-    schema,
-    data,
-    block,
-    collection,
-    inline = false,
-    linkToTitlePage = true
-  } = props
+  const { schema, data, block, collection, inline = false, linkToTitlePage = true } = props
 
   const renderTextValue = React.useMemo(
     () =>
@@ -108,10 +101,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = (props) => {
       function FormulaTitle() {
         if (block && linkToTitlePage) {
           return (
-            <components.PageLink
-              className={cs('notion-page-link')}
-              href={mapPageUrl(block.id)}
-            >
+            <components.PageLink className={cs('notion-page-link')} href={mapPageUrl(block.id)}>
               <PageTitle block={block} />
             </components.PageLink>
           )
@@ -135,9 +125,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = (props) => {
     () =>
       function FileProperty() {
         // TODO: assets should be previewable via image-zoom
-        const files = data
-          .filter((v) => v.length === 2)
-          .map((f) => f.flat().flat())
+        const files = data.filter(v => v.length === 2).map(f => f.flat().flat())
 
         return files.map((file, i) => (
           <components.Link
@@ -145,13 +133,8 @@ export const PropertyImpl: React.FC<IPropertyProps> = (props) => {
             className='notion-property-file'
             href={mapImageUrl(file[2] as string, block)}
             target='_blank'
-            rel='noreferrer noopener'
-          >
-            <GracefulImage
-              alt={file[0] as string}
-              src={mapImageUrl(file[2] as string, block)}
-              loading='lazy'
-            />
+            rel='noreferrer noopener'>
+            <GracefulImage alt={file[0] as string} src={mapImageUrl(file[2] as string, block)} loading='lazy' />
           </components.Link>
         ))
       },
@@ -236,35 +219,25 @@ export const PropertyImpl: React.FC<IPropertyProps> = (props) => {
               output = formatNumber({ suffix: '%' })(value * 100)
               break
             case 'dollar':
-              output = formatNumber({ prefix: '$', round: 2, padRight: 2 })(
-                value
-              )
+              output = formatNumber({ prefix: '$', round: 2, padRight: 2 })(value)
               break
             case 'euro':
-              output = formatNumber({ prefix: '€', round: 2, padRight: 2 })(
-                value
-              )
+              output = formatNumber({ prefix: '€', round: 2, padRight: 2 })(value)
               break
             case 'pound':
-              output = formatNumber({ prefix: '£', round: 2, padRight: 2 })(
-                value
-              )
+              output = formatNumber({ prefix: '£', round: 2, padRight: 2 })(value)
               break
             case 'yen':
               output = formatNumber({ prefix: '¥', round: 0 })(value)
               break
             case 'rupee':
-              output = formatNumber({ prefix: '₹', round: 2, padRight: 2 })(
-                value
-              )
+              output = formatNumber({ prefix: '₹', round: 2, padRight: 2 })(value)
               break
             case 'won':
               output = formatNumber({ prefix: '₩', round: 0 })(value)
               break
             case 'yuan':
-              output = formatNumber({ prefix: 'CN¥', round: 2, padRight: 2 })(
-                value
-              )
+              output = formatNumber({ prefix: 'CN¥', round: 2, padRight: 2 })(value)
               break
             default:
               return <Text value={data} block={block} />
@@ -333,9 +306,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = (props) => {
         const values = (data[0][0] || '').split(',')
 
         content = values.map((value, index) => {
-          const option = schema.options?.find(
-            (option) => value === option.value
-          )
+          const option = schema.options?.find(option => value === option.value)
           const color = option?.color
 
           return components.propertySelectValue(
@@ -347,13 +318,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = (props) => {
               color
             },
             () => (
-              <div
-                key={index}
-                className={cs(
-                  `notion-property-${schema.type}-item`,
-                  color && `notion-item-${color}`
-                )}
-              >
+              <div key={index} className={cs(`notion-property-${schema.type}-item`, color && `notion-item-${color}`)}>
                 {value}
               </div>
             )
@@ -383,10 +348,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = (props) => {
         break
 
       case 'phone_number':
-        content = components.propertyPhoneNumberValue(
-          props,
-          renderPhoneNumberValue
-        )
+        content = components.propertyPhoneNumberValue(props, renderPhoneNumberValue)
         break
 
       case 'number':
@@ -394,17 +356,11 @@ export const PropertyImpl: React.FC<IPropertyProps> = (props) => {
         break
 
       case 'created_time':
-        content = components.propertyCreatedTimeValue(
-          props,
-          renderCreatedTimeValue
-        )
+        content = components.propertyCreatedTimeValue(props, renderCreatedTimeValue)
         break
 
       case 'last_edited_time':
-        content = components.propertyLastEditedTimeValue(
-          props,
-          renderLastEditedTimeValue
-        )
+        content = components.propertyLastEditedTimeValue(props, renderLastEditedTimeValue)
         break
 
       case 'created_by':
@@ -431,11 +387,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = (props) => {
     }
   }
 
-  return (
-    <span className={`notion-property notion-property-${schema.type}`}>
-      {content}
-    </span>
-  )
+  return <span className={`notion-property notion-property-${schema.type}`}>{content}</span>
 }
 
 export const PropertyImplMemo = React.memo(PropertyImpl)

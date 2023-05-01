@@ -21,10 +21,7 @@ const iconMap = {
   calendar: CollectionViewCalendarIcon
 }
 
-export const CollectionViewIcon: React.FC<CollectionViewIconProps> = ({
-  type,
-  ...rest
-}) => {
+export const CollectionViewIcon: React.FC<CollectionViewIconProps> = ({ type, ...rest }) => {
   const icon = iconMap[type] as any
   if (!icon) {
     return null

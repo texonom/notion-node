@@ -17,10 +17,7 @@ export const PageTitleImpl: React.FC<{
 
   if (!block) return null
 
-  if (
-    block.type === 'collection_view_page' ||
-    block.type === 'collection_view'
-  ) {
+  if (block.type === 'collection_view_page' || block.type === 'collection_view') {
     const title = getBlockTitle(block, recordMap)
     if (!title) {
       return null
@@ -30,11 +27,7 @@ export const PageTitleImpl: React.FC<{
 
     return (
       <span className={cs('notion-page-title', className)} {...rest}>
-        <PageIcon
-          block={block}
-          defaultIcon={defaultIcon}
-          className='notion-page-title-icon'
-        />
+        <PageIcon block={block} defaultIcon={defaultIcon} className='notion-page-title-icon' />
 
         <span className='notion-page-title-text'>
           <Text value={titleDecoration} block={block} />
@@ -49,11 +42,7 @@ export const PageTitleImpl: React.FC<{
 
   return (
     <span className={cs('notion-page-title', className)} {...rest}>
-      <PageIcon
-        block={block}
-        defaultIcon={defaultIcon}
-        className='notion-page-title-icon'
-      />
+      <PageIcon block={block} defaultIcon={defaultIcon} className='notion-page-title-icon' />
 
       <span className='notion-page-title-text'>
         <Text value={block.properties?.title} block={block} />

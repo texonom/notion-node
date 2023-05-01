@@ -1,11 +1,7 @@
 {
   "id": "e777a528-9404-4e96-9f26-0014be705592",
   "version": 34,
-  "name": [
-    [
-      "NBA Teams"
-    ]
-  ],
+  "name": [["NBA Teams"]],
   "schema": {
     "$N1}": {
       "name": "Conference",

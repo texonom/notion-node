@@ -21,8 +21,7 @@ export class NotionCompatAPI {
       this.client.blocks.retrieve({ block_id: pageId }),
       this.getAllBlockChildren(pageId)
     ])
-    const { blockMap, blockChildrenMap, pageMap, parentMap } =
-      await this.resolvePage(pageId)
+    const { blockMap, blockChildrenMap, pageMap, parentMap } = await this.resolvePage(pageId)
 
     const recordMap = convertPage({
       pageId,
@@ -56,10 +55,7 @@ export class NotionCompatAPI {
     const pendingBlockIds = new Set<string>()
     const queue = new PQueue({ concurrency })
 
-    const processBlock = async (
-      blockId: string,
-      { shallow = false }: { shallow?: boolean } = {}
-    ) => {
+    const processBlock = async (blockId: string, { shallow = false }: { shallow?: boolean } = {}) => {
       if (!blockId || pendingBlockIds.has(blockId)) {
         return
       }
@@ -117,23 +113,18 @@ export class NotionCompatAPI {
           }
 
           const children = await this.getAllBlockChildren(blockId)
-          blockChildrenMap[blockId] = children.map((child) => child.id)
+          blockChildrenMap[blockId] = children.map(child => child.id)
 
           for (const child of children) {
             const childBlock = child as types.Block
             const mappedChildBlock = blockMap[child.id] as types.Block
-            if (
-              !mappedChildBlock ||
-              (!mappedChildBlock.type && childBlock.type)
-            ) {
+            if (!mappedChildBlock || (!mappedChildBlock.type && childBlock.type)) {
               blockMap[child.id] = childBlock
               parentMap[child.id] = blockId
 
               const details = childBlock[childBlock.type]
               if (details?.rich_text) {
-                const richTextMentions = details.rich_text.filter(
-                  (richTextItem) => richTextItem.type === 'mention'
-                )
+                const richTextMentions = details.rich_text.filter(richTextItem => richTextItem.type === 'mention')
 
                 for (const richTextMention of richTextMentions) {
                   switch (richTextMention.mention?.type) {
@@ -168,10 +159,7 @@ export class NotionCompatAPI {
                 }
               }
 
-              if (
-                childBlock.has_children &&
-                childBlock.type !== 'child_database'
-              ) {
+              if (childBlock.has_children && childBlock.type !== 'child_database') {
                 processBlock(childBlock.id)
               }
             }

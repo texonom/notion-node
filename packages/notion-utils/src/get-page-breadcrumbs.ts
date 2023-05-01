@@ -4,10 +4,7 @@ import { getBlockIcon } from './get-block-icon'
 import { getBlockParentPage } from './get-block-parent-page'
 import { getBlockTitle } from './get-block-title'
 
-export const getPageBreadcrumbs = (
-  recordMap: types.ExtendedRecordMap,
-  activePageId: string
-): Array<any> | null => {
+export const getPageBreadcrumbs = (recordMap: types.ExtendedRecordMap, activePageId: string): Array<any> | null => {
   const blockMap = recordMap.block
   const breadcrumbs = []
 

@@ -18,10 +18,9 @@ export const EOI: React.FC<{
     return null
   }
 
-  const title = attributes.find((attr) => attr.id === 'title')?.values[0]
-  let owner = attributes.find((attr) => attr.id === 'owner')?.values[0]
-  const lastUpdatedAt = attributes.find((attr) => attr.id === 'updated_at')
-    ?.values[0]
+  const title = attributes.find(attr => attr.id === 'title')?.values[0]
+  let owner = attributes.find(attr => attr.id === 'owner')?.values[0]
+  const lastUpdatedAt = attributes.find(attr => attr.id === 'updated_at')?.values[0]
   const lastUpdated = lastUpdatedAt ? formatNotionDateTime(lastUpdatedAt) : null
   let externalImage: React.ReactNode
 
@@ -36,10 +35,7 @@ export const EOI: React.FC<{
 
     default:
       if (process.env.NODE_ENV !== 'production') {
-        console.log(
-          `Unsupported external_object_instance domain "${domain}"`,
-          JSON.stringify(block, null, 2)
-        )
+        console.log(`Unsupported external_object_instance domain "${domain}"`, JSON.stringify(block, null, 2))
       }
 
       return null
@@ -50,15 +46,8 @@ export const EOI: React.FC<{
       target='_blank'
       rel='noopener noreferrer'
       href={original_url}
-      className={cs(
-        'notion-external',
-        inline ? 'notion-external-mention' : 'notion-external-block notion-row',
-        className
-      )}
-    >
-      {externalImage && (
-        <div className='notion-external-image'>{externalImage}</div>
-      )}
+      className={cs('notion-external', inline ? 'notion-external-mention' : 'notion-external-block notion-row', className)}>
+      {externalImage && <div className='notion-external-image'>{externalImage}</div>}
 
       <div className='notion-external-description'>
         <div className='notion-external-title'>{title}</div>

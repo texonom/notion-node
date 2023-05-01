@@ -6,12 +6,7 @@ import { AssetWrapper } from './components/asset-wrapper'
 import { Checkbox as DefaultCheckbox } from './components/checkbox'
 import { Header } from './components/header'
 import { wrapNextImage, wrapNextLink } from './next'
-import {
-  MapImageUrlFn,
-  MapPageUrlFn,
-  NotionComponents,
-  SearchNotionFn
-} from './types'
+import { MapImageUrlFn, MapPageUrlFn, NotionComponents, SearchNotionFn } from './types'
 import { defaultMapImageUrl, defaultMapPageUrl } from './utils'
 
 export interface NotionContext {
@@ -75,33 +70,26 @@ export interface PartialNotionContext {
   zoom?: any
 }
 
-const DefaultLink: React.FC = (props) => (
-  <a target='_blank' rel='noopener noreferrer' {...props} />
-)
+const DefaultLink: React.FC = props => <a target='_blank' rel='noopener noreferrer' {...props} />
 const DefaultLinkMemo = React.memo(DefaultLink)
-const DefaultPageLink: React.FC = (props) => <a {...props} />
+const DefaultPageLink: React.FC = props => <a {...props} />
 const DefaultPageLinkMemo = React.memo(DefaultPageLink)
 
-const DefaultEmbed = (props) => <AssetWrapper {...props} />
+const DefaultEmbed = props => <AssetWrapper {...props} />
 const DefaultHeader = Header
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const dummyLink = ({ href, rel, target, title, ...rest }) => (
-  <span {...rest} />
-)
+export const dummyLink = ({ href, rel, target, title, ...rest }) => <span {...rest} />
 
 const dummyComponent = (name: string) => () => {
-  console.warn(
-    `Warning: using empty component "${name}" (you should override this in NotionRenderer.components)`
-  )
+  console.warn(`Warning: using empty component "${name}" (you should override this in NotionRenderer.components)`)
 
   return null
 }
 
 // TODO: should we use React.memo here?
 // https://reactjs.org/docs/react-api.html#reactmemo
-const dummyOverrideFn = (_: any, defaultValueFn: () => React.ReactNode) =>
-  defaultValueFn()
+const dummyOverrideFn = (_: any, defaultValueFn: () => React.ReactNode) => defaultValueFn()
 
 const defaultComponents: NotionComponents = {
   Image: null, // disable custom images by default

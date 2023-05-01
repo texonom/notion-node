@@ -16,7 +16,7 @@ export function convertPage({
   pageMap: types.PageMap
   parentMap: types.ParentMap
 }): notion.ExtendedRecordMap {
-  const compatBlocks = Object.values(blockMap).map((block) =>
+  const compatBlocks = Object.values(blockMap).map(block =>
     convertBlock({
       block,
       children: blockChildrenMap[block.id],
@@ -35,8 +35,8 @@ export function convertPage({
   })
 
   const compatPageBlocks = Object.keys(pageMap)
-    .filter((id) => id !== pageId)
-    .map((id) =>
+    .filter(id => id !== pageId)
+    .map(id =>
       convertPageBlock({
         pageId: id,
         blockMap,
@@ -46,11 +46,7 @@ export function convertPage({
       })
     )
 
-  const compatBlockMap = [
-    compatPageBlock,
-    ...compatBlocks,
-    ...compatPageBlocks
-  ].reduce(
+  const compatBlockMap = [compatPageBlock, ...compatBlocks, ...compatPageBlocks].reduce(
     (blockMap, block) => ({
       ...blockMap,
       [block.id]: {

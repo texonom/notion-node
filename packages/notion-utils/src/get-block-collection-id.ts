@@ -1,12 +1,7 @@
 import { Block, ExtendedRecordMap } from '@3bases/notion-types'
 
-export function getBlockCollectionId(
-  block: Block,
-  recordMap: ExtendedRecordMap
-): string | null {
-  const collectionId =
-    (block as any).collection_id ||
-    (block as any).format?.collection_pointer?.id
+export function getBlockCollectionId(block: Block, recordMap: ExtendedRecordMap): string | null {
+  const collectionId = (block as any).collection_id || (block as any).format?.collection_pointer?.id
 
   if (collectionId) {
     return collectionId

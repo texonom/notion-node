@@ -3,10 +3,7 @@ import * as types from '@3bases/notion-types'
 /**
  * Gets the IDs of all blocks contained on a page starting from a root block ID.
  */
-export const getPageContentBlockIds = (
-  recordMap: types.ExtendedRecordMap,
-  blockId?: string
-): string[] => {
+export const getPageContentBlockIds = (recordMap: types.ExtendedRecordMap, blockId?: string): string[] => {
   const rootBlockId = blockId || Object.keys(recordMap.block)[0]
   const contentBlockIds = new Set<string>()
 

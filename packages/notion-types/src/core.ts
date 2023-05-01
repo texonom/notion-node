@@ -59,16 +59,7 @@ export type PropertyType =
   | 'last_edited_by'
 
 /** Types of number formatting supported by Notion */
-export type NumberFormat =
-  | 'number_with_commas'
-  | 'percent'
-  | 'dollar'
-  | 'euro'
-  | 'pound'
-  | 'yen'
-  | 'rupee'
-  | 'won'
-  | 'yuan'
+export type NumberFormat = 'number_with_commas' | 'percent' | 'dollar' | 'euro' | 'pound' | 'yen' | 'rupee' | 'won' | 'yuan'
 
 export type Role = 'editor' | 'reader' | 'none' | 'read_and_write'
 

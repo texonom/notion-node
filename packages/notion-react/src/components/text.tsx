@@ -24,8 +24,7 @@ export const Text: React.FC<{
   linkProtocol?: string
   inline?: boolean // TODO: currently unused
 }> = ({ value, block, linkProps, linkProtocol }) => {
-  const { components, recordMap, mapPageUrl, mapImageUrl, rootDomain } =
-    useNotionContext()
+  const { components, recordMap, mapPageUrl, mapImageUrl, rootDomain } = useNotionContext()
 
   return (
     <React.Fragment>
@@ -43,205 +42,166 @@ export const Text: React.FC<{
           }
         }
 
-        const formatted = decorations.reduce(
-          (element: React.ReactNode, decorator) => {
-            switch (decorator[0]) {
-              case 'p': {
-                // link to an internal block (within the current workspace)
-                const blockId = decorator[1]
-                const linkedBlock = recordMap.block[blockId]?.value
-                if (!linkedBlock) {
-                  console.log('"p" missing block', blockId)
-                  return null
-                }
-
-                // console.log('p', blockId)
-
-                return (
-                  <components.PageLink
-                    className='notion-link'
-                    href={mapPageUrl(blockId)}
-                  >
-                    <PageTitle block={linkedBlock} />
-                  </components.PageLink>
-                )
+        const formatted = decorations.reduce((element: React.ReactNode, decorator) => {
+          switch (decorator[0]) {
+            case 'p': {
+              // link to an internal block (within the current workspace)
+              const blockId = decorator[1]
+              const linkedBlock = recordMap.block[blockId]?.value
+              if (!linkedBlock) {
+                console.log('"p" missing block', blockId)
+                return null
               }
 
-              case '‣': {
-                // link to an external block (outside of the current workspace)
-                const linkType = decorator[1][0]
-                const id = decorator[1][1]
+              // console.log('p', blockId)
 
-                switch (linkType) {
-                  case 'u': {
-                    const user = recordMap.notion_user[id]?.value
+              return (
+                <components.PageLink className='notion-link' href={mapPageUrl(blockId)}>
+                  <PageTitle block={linkedBlock} />
+                </components.PageLink>
+              )
+            }
 
-                    if (!user) {
-                      console.log('"‣" missing user', id)
-                      return null
-                    }
+            case '‣': {
+              // link to an external block (outside of the current workspace)
+              const linkType = decorator[1][0]
+              const id = decorator[1][1]
 
-                    const name = [user.given_name, user.family_name]
-                      .filter(Boolean)
-                      .join(' ')
+              switch (linkType) {
+                case 'u': {
+                  const user = recordMap.notion_user[id]?.value
 
-                    return (
-                      <GracefulImage
-                        className='notion-user'
-                        src={mapImageUrl(user.profile_photo, block)}
-                        alt={name}
-                      />
-                    )
+                  if (!user) {
+                    console.log('"‣" missing user', id)
+                    return null
                   }
 
-                  default: {
-                    const linkedBlock = recordMap.block[id]?.value
+                  const name = [user.given_name, user.family_name].filter(Boolean).join(' ')
 
-                    if (!linkedBlock) {
-                      console.log('"‣" missing block', linkType, id)
-                      return null
-                    }
-
-                    return (
-                      <components.PageLink
-                        className='notion-link'
-                        href={mapPageUrl(id)}
-                        {...linkProps}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                      >
-                        <PageTitle block={linkedBlock} />
-                      </components.PageLink>
-                    )
-                  }
+                  return <GracefulImage className='notion-user' src={mapImageUrl(user.profile_photo, block)} alt={name} />
                 }
-              }
 
-              case 'h':
-                return (
-                  <span className={`notion-${decorator[1]}`}>{element}</span>
-                )
+                default: {
+                  const linkedBlock = recordMap.block[id]?.value
 
-              case 'c':
-                return <code className='notion-inline-code'>{element}</code>
-
-              case 'b':
-                return <b>{element}</b>
-
-              case 'i':
-                return <em>{element}</em>
-
-              case 's':
-                return <s>{element}</s>
-
-              case '_':
-                return (
-                  <span className='notion-inline-underscore'>{element}</span>
-                )
-
-              case 'e':
-                return <components.Equation math={decorator[1]} inline />
-
-              case 'm':
-                // comment / discussion
-                return element //still need to return the base element
-
-              case 'a': {
-                const v = decorator[1]
-                const pathname = v.substr(1)
-                const id = parsePageId(pathname, { uuid: true })
-
-                if ((v[0] === '/' || v.includes(rootDomain)) && id) {
-                  const href = v.includes(rootDomain)
-                    ? v
-                    : `${mapPageUrl(id)}${getHashFragmentValue(v)}`
+                  if (!linkedBlock) {
+                    console.log('"‣" missing block', linkType, id)
+                    return null
+                  }
 
                   return (
                     <components.PageLink
                       className='notion-link'
-                      href={href}
+                      href={mapPageUrl(id)}
                       {...linkProps}
-                    >
-                      {element}
+                      target='_blank'
+                      rel='noopener noreferrer'>
+                      <PageTitle block={linkedBlock} />
                     </components.PageLink>
                   )
-                } else {
-                  return (
-                    <components.Link
-                      className='notion-link'
-                      href={
-                        linkProtocol
-                          ? `${linkProtocol}:${decorator[1]}`
-                          : decorator[1]
-                      }
-                      {...linkProps}
-                    >
-                      {element}
-                    </components.Link>
-                  )
                 }
               }
+            }
 
-              case 'd': {
-                const v = decorator[1]
-                const type = v?.type
+            case 'h':
+              return <span className={`notion-${decorator[1]}`}>{element}</span>
 
-                if (type === 'date') {
-                  // Example: Jul 31, 2010
-                  const startDate = v.start_date
+            case 'c':
+              return <code className='notion-inline-code'>{element}</code>
 
-                  return formatDate(startDate)
-                } else if (type === 'daterange') {
-                  // Example: Jul 31, 2010 → Jul 31, 2020
-                  const startDate = v.start_date
-                  const endDate = v.end_date
+            case 'b':
+              return <b>{element}</b>
 
-                  return `${formatDate(startDate)} → ${formatDate(endDate)}`
-                } else {
-                  return element
-                }
-              }
+            case 'i':
+              return <em>{element}</em>
 
-              case 'u': {
-                const userId = decorator[1]
-                const user = recordMap.notion_user[userId]?.value
+            case 's':
+              return <s>{element}</s>
 
-                if (!user) {
-                  console.log('missing user', userId)
-                  return null
-                }
+            case '_':
+              return <span className='notion-inline-underscore'>{element}</span>
 
-                const name = [user.given_name, user.family_name]
-                  .filter(Boolean)
-                  .join(' ')
+            case 'e':
+              return <components.Equation math={decorator[1]} inline />
+
+            case 'm':
+              // comment / discussion
+              return element //still need to return the base element
+
+            case 'a': {
+              const v = decorator[1]
+              const pathname = v.substr(1)
+              const id = parsePageId(pathname, { uuid: true })
+
+              if ((v[0] === '/' || v.includes(rootDomain)) && id) {
+                const href = v.includes(rootDomain) ? v : `${mapPageUrl(id)}${getHashFragmentValue(v)}`
 
                 return (
-                  <GracefulImage
-                    className='notion-user'
-                    src={mapImageUrl(user.profile_photo, block)}
-                    alt={name}
-                  />
+                  <components.PageLink className='notion-link' href={href} {...linkProps}>
+                    {element}
+                  </components.PageLink>
+                )
+              } else {
+                return (
+                  <components.Link
+                    className='notion-link'
+                    href={linkProtocol ? `${linkProtocol}:${decorator[1]}` : decorator[1]}
+                    {...linkProps}>
+                    {element}
+                  </components.Link>
                 )
               }
+            }
 
-              case 'eoi': {
-                const blockId = decorator[1]
-                const externalObjectInstance = recordMap.block[blockId]
-                  ?.value as ExternalObjectInstance
+            case 'd': {
+              const v = decorator[1]
+              const type = v?.type
 
-                return <EOI block={externalObjectInstance} inline={true} />
+              if (type === 'date') {
+                // Example: Jul 31, 2010
+                const startDate = v.start_date
+
+                return formatDate(startDate)
+              } else if (type === 'daterange') {
+                // Example: Jul 31, 2010 → Jul 31, 2020
+                const startDate = v.start_date
+                const endDate = v.end_date
+
+                return `${formatDate(startDate)} → ${formatDate(endDate)}`
+              } else {
+                return element
+              }
+            }
+
+            case 'u': {
+              const userId = decorator[1]
+              const user = recordMap.notion_user[userId]?.value
+
+              if (!user) {
+                console.log('missing user', userId)
+                return null
               }
 
-              default:
-                if (process.env.NODE_ENV !== 'production') {
-                  console.log('unsupported text format', decorator)
-                }
+              const name = [user.given_name, user.family_name].filter(Boolean).join(' ')
 
-                return element
+              return <GracefulImage className='notion-user' src={mapImageUrl(user.profile_photo, block)} alt={name} />
             }
-          },
-          <>{text}</>
-        )
+
+            case 'eoi': {
+              const blockId = decorator[1]
+              const externalObjectInstance = recordMap.block[blockId]?.value as ExternalObjectInstance
+
+              return <EOI block={externalObjectInstance} inline={true} />
+            }
+
+            default:
+              if (process.env.NODE_ENV !== 'production') {
+                console.log('unsupported text format', decorator)
+              }
+
+              return element
+          }
+        }, <>{text}</>)
 
         return <React.Fragment key={index}>{formatted}</React.Fragment>
       })}

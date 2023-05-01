@@ -38,17 +38,7 @@ export const wrapNextImage = (NextImage: any): React.FC<any> => {
 }
 
 export const wrapNextLink = (NextLink: any): React.FC<any> =>
-  function ReactNotionXNextLink({
-    href,
-    as,
-    passHref,
-    prefetch,
-    replace,
-    scroll,
-    shallow,
-    locale,
-    ...linkProps
-  }) {
+  function ReactNotionXNextLink({ href, as, passHref, prefetch, replace, scroll, shallow, locale, ...linkProps }) {
     return (
       <NextLink
         href={href}
@@ -58,8 +48,7 @@ export const wrapNextLink = (NextLink: any): React.FC<any> =>
         replace={replace}
         scroll={scroll}
         shallow={shallow}
-        locale={locale}
-      >
+        locale={locale}>
         <a {...linkProps} />
       </NextLink>
     )

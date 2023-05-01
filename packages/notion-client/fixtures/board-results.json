@@ -27,10 +27,7 @@
       "type": "select",
       "value": "bar"
     },
-    "blockIds": [
-      "3b506960-ea91-4b59-8e7c-f3c51e40529a",
-      "3fce55d4-2528-4d05-8af5-6f2bbc4af418"
-    ],
+    "blockIds": ["3b506960-ea91-4b59-8e7c-f3c51e40529a", "3fce55d4-2528-4d05-8af5-6f2bbc4af418"],
     "total": 2,
     "aggregationResult": {
       "type": "number",

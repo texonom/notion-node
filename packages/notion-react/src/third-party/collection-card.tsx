@@ -20,20 +20,14 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
   ...rest
 }) => {
   const ctx = useNotionContext()
-  const {
-    components,
-    recordMap,
-    mapPageUrl,
-    mapImageUrl,
-    isLinkCollectionToUrlProperty
-  } = ctx
+  const { components, recordMap, mapPageUrl, mapImageUrl, isLinkCollectionToUrlProperty } = ctx
   let coverContent = null
 
   const { page_cover_position = 0.5 } = block.format || {}
   const coverPosition = (1 - page_cover_position) * 100
 
   if (cover?.type === 'page_content') {
-    const contentBlockId = block.content?.find((blockId) => {
+    const contentBlockId = block.content?.find(blockId => {
       const block = recordMap.block[blockId]?.value
 
       if (block?.type === 'image') {
@@ -44,9 +38,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
     if (contentBlockId) {
       const contentBlock = recordMap.block[contentBlockId]?.value as ImageBlock
 
-      const source =
-        contentBlock.properties?.source?.[0]?.[0] ??
-        contentBlock.format?.display_source
+      const source = contentBlock.properties?.source?.[0]?.[0] ?? contentBlock.format?.display_source
 
       if (source) {
         const src = mapImageUrl(source, contentBlock)
@@ -91,9 +83,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
 
     if (schema && data) {
       if (schema.type === 'file') {
-        const files = data
-          .filter((v) => v.length === 2)
-          .map((f) => f.flat().flat())
+        const files = data.filter(v => v.length === 2).map(f => f.flat().flat())
         const file = files[0]
 
         if (file) {
@@ -111,9 +101,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
           )
         }
       } else {
-        coverContent = (
-          <Property propertyId={property} schema={schema} data={data} />
-        )
+        coverContent = <Property propertyId={property} schema={schema} data={data} />
       }
     }
   }
@@ -121,68 +109,42 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
   //check if a visible property has a url and we settings are for linking to it for the card
   if (isLinkCollectionToUrlProperty) {
     linkProperties = properties
-      ?.filter(
-        (p) =>
-          p.visible && p.property !== 'title' && collection.schema[p.property]
-      )
-      .filter((p) => {
+      ?.filter(p => p.visible && p.property !== 'title' && collection.schema[p.property])
+      .filter(p => {
         if (!block.properties) return false
         const schema = collection.schema[p.property]
 
         return schema.type == 'url'
       })
-      .map((p) => {
+      .map(p => {
         return block.properties[p.property]
       })
-      ?.filter((p) => p && p.length > 0 && p[0] != undefined) //case where the url is empty
+      ?.filter(p => p && p.length > 0 && p[0] != undefined) //case where the url is empty
   }
   let url = null
-  if (
-    linkProperties &&
-    linkProperties.length > 0 &&
-    linkProperties[0].length > 0 &&
-    linkProperties[0][0].length > 0
-  ) {
+  if (linkProperties && linkProperties.length > 0 && linkProperties[0].length > 0 && linkProperties[0][0].length > 0) {
     url = linkProperties[0][0][0]
   }
 
   const innerCard = (
     <>
-      {(coverContent || cover?.type !== 'none') && (
-        <div className='notion-collection-card-cover'>{coverContent}</div>
-      )}
+      {(coverContent || cover?.type !== 'none') && <div className='notion-collection-card-cover'>{coverContent}</div>}
 
       <div className='notion-collection-card-body'>
         <div className='notion-collection-card-property'>
-          <Property
-            schema={collection.schema.title}
-            data={block?.properties?.title}
-            block={block}
-            collection={collection}
-          />
+          <Property schema={collection.schema.title} data={block?.properties?.title} block={block} collection={collection} />
         </div>
 
         {properties
-          ?.filter(
-            (p) =>
-              p.visible &&
-              p.property !== 'title' &&
-              collection.schema[p.property]
-          )
-          .map((p) => {
+          ?.filter(p => p.visible && p.property !== 'title' && collection.schema[p.property])
+          .map(p => {
             if (!block.properties) return null
             const schema = collection.schema[p.property]
             const data = block.properties[p.property]
 
             return (
               <div className='notion-collection-card-property' key={p.property}>
-                <Property
-                  schema={schema}
-                  data={data}
-                  block={block}
-                  collection={collection}
-                  inline
-                />
+                <Property schema={schema} data={data} block={block} collection={collection} inline />
               </div>
             )
           })}
@@ -197,7 +159,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
         ...ctx.components,
         // Disable <a> tabs in all child components so we don't create invalid DOM
         // trees with stacked <a> tags.
-        Link: (props) => {
+        Link: props => {
           return (
             <form action={props.href} target='_blank'>
               <input
@@ -209,30 +171,19 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
           )
         },
         PageLink: dummyLink
-      }}
-    >
+      }}>
       {isLinkCollectionToUrlProperty && url ? (
         <components.Link
-          className={cs(
-            'notion-collection-card',
-            `notion-collection-card-size-${coverSize}`,
-            className
-          )}
+          className={cs('notion-collection-card', `notion-collection-card-size-${coverSize}`, className)}
           href={url}
-          {...rest}
-        >
+          {...rest}>
           {innerCard}
         </components.Link>
       ) : (
         <components.PageLink
-          className={cs(
-            'notion-collection-card',
-            `notion-collection-card-size-${coverSize}`,
-            className
-          )}
+          className={cs('notion-collection-card', `notion-collection-card-size-${coverSize}`, className)}
           href={mapPageUrl(block.id)}
-          {...rest}
-        >
+          {...rest}>
           {innerCard}
         </components.PageLink>
       )}

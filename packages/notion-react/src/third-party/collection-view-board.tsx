@@ -20,12 +20,7 @@ export const CollectionViewBoard: React.FC<CollectionViewProps> = ({
   const isGroupedCollection = collectionView?.format?.collection_group_by
 
   if (isGroupedCollection) {
-    const collectionGroups = getCollectionGroups(
-      collection,
-      collectionView,
-      collectionData,
-      padding
-    )
+    const collectionGroups = getCollectionGroups(collection, collectionView, collectionData, padding)
 
     return collectionGroups.map((group, index) => (
       <CollectionGroup
@@ -36,21 +31,12 @@ export const CollectionViewBoard: React.FC<CollectionViewProps> = ({
             paddingLeft: padding
           }
         }}
-        collectionViewComponent={(props) => (
-          <Board padding={padding} {...props} />
-        )}
+        collectionViewComponent={props => <Board padding={padding} {...props} />}
       />
     ))
   }
 
-  return (
-    <Board
-      padding={padding}
-      collectionView={collectionView}
-      collection={collection}
-      collectionData={collectionData}
-    />
-  )
+  return <Board padding={padding} collectionView={collectionView} collection={collection} collectionData={collectionData} />
 }
 
 function Board({ collectionView, collectionData, collection, padding }) {
@@ -61,10 +47,7 @@ function Board({ collectionView, collectionData, collection, padding }) {
     board_cover_aspect = 'cover'
   } = collectionView?.format || {}
 
-  const boardGroups =
-    collectionView?.format?.board_columns ||
-    collectionView?.format?.board_groups2 ||
-    []
+  const boardGroups = collectionView?.format?.board_columns || collectionView?.format?.board_groups2 || []
 
   const boardStyle = React.useMemo(
     () => ({
@@ -75,13 +58,7 @@ function Board({ collectionView, collectionData, collection, padding }) {
 
   return (
     <div className='notion-board'>
-      <div
-        className={cs(
-          'notion-board-view',
-          `notion-board-view-size-${board_cover_size}`
-        )}
-        style={boardStyle}
-      >
+      <div className={cs('notion-board-view', `notion-board-view-size-${board_cover_size}`)} style={boardStyle}>
         <div className='notion-board-header'>
           <div className='notion-board-header-inner'>
             {boardGroups.map((p, index) => {
@@ -89,9 +66,7 @@ function Board({ collectionView, collectionData, collection, padding }) {
                 // no groupResults in the data when collection is in a toggle
                 return null
               }
-              const group = (collectionData as any).board_columns.results![
-                index
-              ]
+              const group = (collectionData as any).board_columns.results![index]
               const schema = collection.schema[p.property]
 
               if (!group || !schema || p.hidden) {
@@ -102,15 +77,10 @@ function Board({ collectionView, collectionData, collection, padding }) {
                 <div className='notion-board-th' key={index}>
                   <div className='notion-board-th-body'>
                     {group.value?.value ? (
-                      <Property
-                        schema={schema}
-                        data={[[group.value?.value]]}
-                        collection={collection}
-                      />
+                      <Property schema={schema} data={[[group.value?.value]]} collection={collection} />
                     ) : (
                       <span>
-                        <EmptyIcon className='notion-board-th-empty' /> No
-                        Select
+                        <EmptyIcon className='notion-board-th-empty' /> No Select
                       </span>
                     )}
 
@@ -131,9 +101,7 @@ function Board({ collectionView, collectionData, collection, padding }) {
             if (!p?.value?.type) return null
 
             const schema = collection.schema[p.property]
-            const group = (collectionData as any)[
-              `results:${p?.value?.type}:${p?.value?.value || 'uncategorized'}`
-            ]
+            const group = (collectionData as any)[`results:${p?.value?.type}:${p?.value?.value || 'uncategorized'}`]
 
             if (!group || !schema || p.hidden) {
               return null

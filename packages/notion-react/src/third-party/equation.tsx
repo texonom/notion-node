@@ -26,12 +26,7 @@ export const Equation: React.FC<{
     <span
       role='button'
       tabIndex={0}
-      className={cs(
-        'notion-equation',
-        inline ? 'notion-equation-inline' : 'notion-equation-block',
-        className
-      )}
-    >
+      className={cs('notion-equation', inline ? 'notion-equation-inline' : 'notion-equation-block', className)}>
       <Katex math={math} settings={katexSettings} {...rest} />
     </span>
   )

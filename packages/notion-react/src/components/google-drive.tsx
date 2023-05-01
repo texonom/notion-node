@@ -24,12 +24,7 @@ export const GoogleDrive: React.FC<{
 
   return (
     <div className={cs('notion-google-drive', className)}>
-      <components.Link
-        className='notion-google-drive-link'
-        href={properties.url}
-        target='_blank'
-        rel='noopener noreferrer'
-      >
+      <components.Link className='notion-google-drive-link' href={properties.url} target='_blank' rel='noopener noreferrer'>
         <div className='notion-google-drive-preview'>
           <GracefulImage
             src={mapImageUrl(properties.thumbnail, block)}
@@ -39,11 +34,7 @@ export const GoogleDrive: React.FC<{
         </div>
 
         <div className='notion-google-drive-body'>
-          {properties.title && (
-            <div className='notion-google-drive-body-title'>
-              {properties.title}
-            </div>
-          )}
+          {properties.title && <div className='notion-google-drive-body-title'>{properties.title}</div>}
 
           {/* TODO: re-add last modified time with alternative to timeago.js */}
           {/* {properties.modified_time && (
@@ -65,11 +56,7 @@ export const GoogleDrive: React.FC<{
                 />
               )}
 
-              {domain && (
-                <div className='notion-google-drive-body-source-domain'>
-                  {domain}
-                </div>
-              )}
+              {domain && <div className='notion-google-drive-body-source-domain'>{domain}</div>}
             </div>
           )}
         </div>

@@ -33,23 +33,17 @@ type PageReadTimeEstimate = ContentStats & {
 export function estimatePageReadTime(
   block: Block,
   recordMap: ExtendedRecordMap,
-  {
-    wordsPerMinute = 275,
-    imageReadTimeInSeconds = 12
-  }: EstimatePageReadTimeOptions = {}
+  { wordsPerMinute = 275, imageReadTimeInSeconds = 12 }: EstimatePageReadTimeOptions = {}
 ): PageReadTimeEstimate {
   const stats = getBlockContentStats(block, recordMap)
   const totalWordsReadTimeInMinutes = stats.numWords / wordsPerMinute
   const totalImageReadTimeInSeconds =
     stats.numImages > 10
-      ? (stats.numImages / 2) * (imageReadTimeInSeconds + 3) +
-        (stats.numImages - 10) * 3 // n/2(a+b) + 3 sec/image
-      : (stats.numImages / 2) *
-        (2 * imageReadTimeInSeconds + (1 - stats.numImages)) // n/2[2a+(n-1)d]
+      ? (stats.numImages / 2) * (imageReadTimeInSeconds + 3) + (stats.numImages - 10) * 3 // n/2(a+b) + 3 sec/image
+      : (stats.numImages / 2) * (2 * imageReadTimeInSeconds + (1 - stats.numImages)) // n/2[2a+(n-1)d]
   const totalImageReadTimeInMinutes = totalImageReadTimeInSeconds / 60
 
-  const totalReadTimeInMinutes =
-    totalWordsReadTimeInMinutes + totalImageReadTimeInMinutes
+  const totalReadTimeInMinutes = totalWordsReadTimeInMinutes + totalImageReadTimeInMinutes
 
   return {
     ...stats,
@@ -74,10 +68,7 @@ export function estimatePageReadTimeAsHumanizedString(
   return humanizeReadTime(estimate.totalReadTimeInMinutes)
 }
 
-function getBlockContentStats(
-  block: Block,
-  recordMap: ExtendedRecordMap
-): ContentStats {
+function getBlockContentStats(block: Block, recordMap: ExtendedRecordMap): ContentStats {
   const stats: ContentStats = {
     numWords: 0,
     numImages: 0
@@ -193,18 +184,14 @@ function getBlockContentStats(
       }
 
       case 'transclusion_reference': {
-        const referencePointerId =
-          child?.format?.transclusion_reference_pointer?.id
+        const referencePointerId = child?.format?.transclusion_reference_pointer?.id
 
         if (!referencePointerId) {
           continue
         }
         const referenceBlock = recordMap.block[referencePointerId]?.value
         if (referenceBlock) {
-          mergeContentStats(
-            stats,
-            getBlockContentStats(referenceBlock, recordMap)
-          )
+          mergeContentStats(stats, getBlockContentStats(referenceBlock, recordMap))
         }
         break
       }

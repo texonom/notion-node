@@ -1,9 +1,6 @@
 import { ExtendedRecordMap } from '@3bases/notion-types'
 
-export function mergeRecordMaps(
-  recordMapA: ExtendedRecordMap,
-  recordMapB: ExtendedRecordMap
-): ExtendedRecordMap {
+export function mergeRecordMaps(recordMapA: ExtendedRecordMap, recordMapB: ExtendedRecordMap): ExtendedRecordMap {
   const mergedRecordMap: ExtendedRecordMap = {
     block: {
       ...recordMapA.block,

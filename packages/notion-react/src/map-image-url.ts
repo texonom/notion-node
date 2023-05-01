@@ -1,9 +1,6 @@
 import { Block } from '@3bases/notion-types'
 
-export const defaultMapImageUrl = (
-  url: string,
-  block: Block
-): string | null => {
+export const defaultMapImageUrl = (url: string, block: Block): string | null => {
   if (!url) {
     return null
   }
@@ -20,10 +17,7 @@ export const defaultMapImageUrl = (
   try {
     const u = new URL(url)
 
-    if (
-      u.pathname.startsWith('/secure.notion-static.com') &&
-      u.hostname.endsWith('.amazonaws.com')
-    ) {
+    if (u.pathname.startsWith('/secure.notion-static.com') && u.hostname.endsWith('.amazonaws.com')) {
       if (
         u.searchParams.has('X-Amz-Credential') &&
         u.searchParams.has('X-Amz-Signature') &&
@@ -41,9 +35,7 @@ export const defaultMapImageUrl = (
     url = `https://www.notion.so${url}`
   }
 
-  url = `https://www.notion.so${
-    url.startsWith('/image') ? url : `/image/${encodeURIComponent(url)}`
-  }`
+  url = `https://www.notion.so${url.startsWith('/image') ? url : `/image/${encodeURIComponent(url)}`}`
 
   const notionImageUrlV2 = new URL(url)
   let table = block.parent_table === 'space' ? 'block' : block.parent_table
