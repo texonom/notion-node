@@ -1,0 +1,7 @@
+{
+  "baseBranch": "origin/main",
+  "pipeline": {
+    "build": {},
+    "test": {}
+  }
+}

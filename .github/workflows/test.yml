@@ -11,10 +11,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: yarn
+          cache: pnpm
 
-      - run: yarn install --frozen-lockfile
-      - run: yarn test
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
 
   build-minimal:
     runs-on: ubuntu-latest
@@ -24,15 +24,15 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: yarn
+          cache: pnpm
 
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
 
       - name: Build minimal example
         run: |
           cd examples/minimal
-          yarn build
+          pnpm build
 
   build-full:
     runs-on: ubuntu-latest
@@ -42,15 +42,15 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: yarn
+          cache: pnpm
 
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
 
       - name: Build full example
         run: |
           cd examples/full
-          yarn build
+          pnpm build
 
   # TODO: using the official API with GitHub Actions results in too much rate
   # limiting and false negative build failures, so we're disabling it for now.
@@ -62,10 +62,10 @@ jobs:
   #     - uses: actions/setup-node@v3
   #       with:
   #         node-version: 16
-  #         cache: yarn
+  #         cache: pnpm
 
-  #     - run: yarn install --frozen-lockfile
-  #     - run: yarn build
+  #     - run: pnpm install --frozen-lockfile
+  #     - run: pnpm build
 
   #     - name: Build full example using the official Notion API
 
@@ -75,4 +75,4 @@ jobs:
 
   #       run: |
   #         cd examples/full
-  #         yarn build
+  #         pnpm build

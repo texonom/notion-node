@@ -2,10 +2,10 @@
   "name": "notion",
   "private": true,
   "description": "Fast and accurate React renderer for Notion. TS batteries included.",
-  "repository": "NotionX/react-notion-x",
-  "author": "Travis Fischer <travis@transitivebullsh.it>",
+  "repository": "3bases/notion",
+  "author": "Alan Jo <sungle3737@gmail.com>",
   "license": "MIT",
-  "version": "6.15.8",
+  "version": "1.0.0",
   "engines": {
     "node": ">=12"
   },
@@ -14,54 +14,36 @@
     "examples/*"
   ],
   "scripts": {
-    "build": "run-s build:*",
-    "build:tsc": "tsc --build",
-    "build:tsup": "lerna run build --no-private",
-    "watch": "run-p watch:* --continue-on-error",
-    "watch:tsc": "tsc --build --watch  --preserveWatchOutput",
-    "watch:tsup": "lerna run watch --no-private --parallel",
-    "link": "lerna exec \"yarn link\" --no-private",
-    "dev": "run-s watch",
-    "prebuild": "run-s clean",
-    "prewatch": "run-s clean",
-    "clean": "del packages/*/build",
-    "pretest": "run-s build",
-    "test": "run-p test:*",
-    "test:unit": "lerna run test",
-    "test:eslint": "eslint '**/*.{ts,tsx}'",
-    "test:prettier": "prettier '**/*.{js,jsx,ts,tsx}' --check",
-    "bootstrap": "lerna bootstrap",
-    "predeploy": "run-s build",
-    "deploy": "lerna publish",
-    "preinstall": "node -e \"if (process.env.npm_execpath.indexOf('yarn') < 0) throw new Error('this package requires yarn for development')\"",
-    "postinstall": "run-s bootstrap",
-    "prepare": "husky install",
-    "pre-commit": "lint-staged"
+    "build": "turbo run build",
+    "link": "pnpm exec \"pnpm link\" --no-private",
+    "dev": "turbo watch",
+    "prebuild": "turbo clean",
+    "prewatch": "turbo clean",
+    "clean": "rm -rf packages/*/build packages/*/.turbo node_modules/.cache",
+    "pretest": "turbo build",
+    "test": "turbo test",
+    "lint": "eslint '**/*.{ts,tsx}' --fix",
+    "format": "prettier '**/*.{js,jsx,ts,tsx}' --write",
+    "predeploy": "turbo build",
+    "deploy": "pnpm publish",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.3.1",
     "@types/node": "^18.11.0",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
-    "ava": "^4.1.0",
-    "del-cli": "^4.0.1",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.1",
-    "lerna": "^4.0.0",
-    "lint-staged": "^12.3.6",
-    "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
-    "ts-node": "^10.9.1",
     "tsup": "^6.2.3",
-    "typescript": "^4.8.4"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "prettier --write",
-      "eslint --fix"
-    ]
+    "tsx": "^3.12.7",
+    "turbo": "^1.9.3",
+    "typescript": "^4.8.4",
+    "vite": "^4.3.3",
+    "vitest": "^0.30.1"
   }
 }

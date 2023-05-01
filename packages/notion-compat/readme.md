@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="React Notion X" src="https://raw.githubusercontent.com/NotionX/react-notion-x/master/media/notion-ts.png" width="689">
+  <img alt="React Notion X" src="https://raw.githubusercontent.com/3bases/notion/master/media/notion-ts.png" width="689">
 </p>
 
 # notion-compat
@@ -8,7 +8,7 @@
 
 ## Features
 
-- fully compatible with `react-notion-x`
+- fully compatible with `notion-react`
 - backwards compatible with `notion-client` and the unofficial notion API
 
 ## Usage
@@ -24,19 +24,19 @@ const notion = new NotionCompatAPI(
 const recordMap = await notion.getPage(pageId)
 ```
 
-The resulting `recordMap` is compatible with notion's unofficial API and react-notion-x.
+The resulting `recordMap` is compatible with notion's unofficial API and notion-react.
 
 ## Demo
 
-You can preview `react-notion-x` using the official client and compatibility layer here: https://react-notion-x-official-api-demo.transitivebullsh.it/
+You can preview `notion-react` using the official client and compatibility layer here: https://notion-react-official-api-demo.transitivebullsh.it/
 
 ## Status
 
 Currently, ~20 blocks have full compatibility and 8 have partial compatibility (sometimes in subtle ways) due Notion's official API not returning enough info for us to faithfully render them in all cases. See the block-by-block compatibility notes below for more info.
 
-I recommend checking out [the notion-compat demo](https://react-notion-x-official-api-demo.transitivebullsh.it/) side-by-side with the [normal react-notion-x demo](https://react-notion-x-demo.transitivebullsh.it/) (which uses the unofficial Notion API via `notion-client`) and the [equivalent public notion page](https://transitive-bs.notion.site/Notion-Kit-Test-Suite-067dd719a912471ea9a3ac10710e7fdf).
+I recommend checking out [the notion-compat demo](https://notion-react-official-api-demo.transitivebullsh.it/) side-by-side with the [normal notion-react demo](https://notion-react-demo.transitivebullsh.it/) (which uses the unofficial Notion API via `notion-client`) and the [equivalent public notion page](https://transitive-bs.notion.site/Notion-Kit-Test-Suite-067dd719a912471ea9a3ac10710e7fdf).
 
-Note that using the official API with `notion-compat` is **significantly slower** than using the unofficial API via `notion-client` because of [reasons](https://github.com/NotionX/react-notion-x/issues/269#issuecomment-1100648873).
+Note that using the official API with `notion-compat` is **significantly slower** than using the unofficial API via `notion-client` because of [reasons](https://github.com/3bases/notion/issues/269#issuecomment-1100648873).
 
 The main feature missing from `notion-compat` right now is collection (database) support. PRs welcome 😃
 
