@@ -1,11 +1,6 @@
 import format from 'date-fns/format/index.js'
 
-export function getCollectionGroups(
-  collection: any,
-  collectionView: any,
-  collectionData: any,
-  ...rest
-) {
+export function getCollectionGroups(collection: any, collectionView: any, collectionData: any, ...rest) {
   const elems = collectionView?.format?.collection_groups || []
   return elems?.map(({ property, hidden, value: { value, type } }) => {
     const isUncategorizedValue = typeof value === 'undefined'
@@ -18,8 +13,7 @@ export function getCollectionGroups(
       : value?.value || value
 
     const collectionGroup = collectionData[`results:${type}:${queryLabel}`]
-    let queryValue =
-      !isUncategorizedValue && (isDateValue || value?.value || value)
+    let queryValue = !isUncategorizedValue && (isDateValue || value?.value || value)
     let schema = collection.schema[property]
 
     // Checkbox boolen value must be Yes||No

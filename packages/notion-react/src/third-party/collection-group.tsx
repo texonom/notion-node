@@ -22,17 +22,11 @@ export const CollectionGroup: React.FC<CollectionGroupProps> = ({
         <div>
           <Property schema={schema} data={[[value]]} collection={collection} />
 
-          <span className='notion-board-th-count'>
-            {collectionGroup?.total}
-          </span>
+          <span className='notion-board-th-count'>{collectionGroup?.total}</span>
         </div>
       </summary>
 
-      <CollectionViewComponent
-        collection={collection}
-        collectionGroup={collectionGroup}
-        {...rest}
-      />
+      <CollectionViewComponent collection={collection} collectionGroup={collectionGroup} {...rest} />
     </details>
   )
 }

@@ -15,14 +15,12 @@ import { getTextContent } from './get-text-content'
  *  4. checkbox property return `boolean`
  * @todo complete all no-text property type
  */
-export function getPageProperty<
-  T = string | number | boolean | string[] | number[]
->(propertyName: string, block: Block, recordMap: ExtendedRecordMap): T
-export function getPageProperty(
+export function getPageProperty<T = string | number | boolean | string[] | number[]>(
   propertyName: string,
   block: Block,
   recordMap: ExtendedRecordMap
-) {
+): T
+export function getPageProperty(propertyName: string, block: Block, recordMap: ExtendedRecordMap) {
   try {
     if (!block.properties || !Object.keys(recordMap.collection)) {
       // console.warn(
@@ -36,7 +34,7 @@ export function getPageProperty(
     if (collection) {
       const propertyNameL = propertyName.toLowerCase()
       const propertyId = Object.keys(collection.schema).find(
-        (key) => collection.schema[key]?.name?.toLowerCase() === propertyNameL
+        key => collection.schema[key]?.name?.toLowerCase() === propertyNameL
       )
 
       if (!propertyId) {
@@ -58,9 +56,7 @@ export function getPageProperty(
           const formatDate = property[0][1][0][1]
 
           if (formatDate.type == 'datetime') {
-            return new Date(
-              `${formatDate.start_date} ${formatDate.start_time}`
-            ).getTime()
+            return new Date(`${formatDate.start_date} ${formatDate.start_time}`).getTime()
           } else if (formatDate.type == 'date') {
             return new Date(formatDate.start_date).getTime()
           } else if (formatDate.type == 'datetimerange') {

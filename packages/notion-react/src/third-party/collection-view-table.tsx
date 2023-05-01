@@ -20,21 +20,13 @@ export const CollectionViewTable: React.FC<CollectionViewProps> = ({
   const isGroupedCollection = collectionView?.format?.collection_group_by
 
   if (isGroupedCollection) {
-    const collectionGroups = getCollectionGroups(
-      collection,
-      collectionView,
-      collectionData,
-      padding,
-      width
-    )
+    const collectionGroups = getCollectionGroups(collection, collectionView, collectionData, padding, width)
 
     return collectionGroups.map((group, index) => (
       <CollectionGroup
         key={index}
         {...group}
-        collectionViewComponent={(props) => (
-          <Table {...props} padding={padding} width={width} />
-        )}
+        collectionViewComponent={props => <Table {...props} padding={padding} width={width} />}
         summaryProps={{
           style: {
             paddingLeft: padding,
@@ -45,19 +37,10 @@ export const CollectionViewTable: React.FC<CollectionViewProps> = ({
     ))
   }
 
-  const blockIds =
-    (collectionData['collection_group_results']?.blockIds ??
-      collectionData.blockIds) ||
-    defaultBlockIds
+  const blockIds = (collectionData['collection_group_results']?.blockIds ?? collectionData.blockIds) || defaultBlockIds
 
   return (
-    <Table
-      blockIds={blockIds}
-      collection={collection}
-      collectionView={collectionView}
-      padding={padding}
-      width={width}
-    />
+    <Table blockIds={blockIds} collection={collection} collectionView={collectionView} padding={padding} width={width} />
   )
 }
 
@@ -83,14 +66,12 @@ function Table({ blockIds = [], collection, collectionView, width, padding }) {
   let properties = []
 
   if (collectionView.format?.table_properties) {
-    properties = collectionView.format.table_properties.filter(
-      (p) => p.visible && collection.schema[p.property]
-    )
+    properties = collectionView.format.table_properties.filter(p => p.visible && collection.schema[p.property])
   } else {
     properties = [{ property: 'title' }].concat(
       Object.keys(collection.schema)
-        .filter((p) => p !== 'title')
-        .map((property) => ({ property }))
+        .filter(p => p !== 'title')
+        .map(property => ({ property }))
     )
   }
 
@@ -101,7 +82,7 @@ function Table({ blockIds = [], collection, collectionView, width, padding }) {
           <>
             <div className='notion-table-header'>
               <div className='notion-table-header-inner'>
-                {properties.map((p) => {
+                {properties.map(p => {
                   const schema = collection.schema?.[p.property]
                   const isTitle = p.property === 'title'
                   const style: React.CSSProperties = {}
@@ -117,10 +98,7 @@ function Table({ blockIds = [], collection, collectionView, width, padding }) {
 
                   return (
                     <div className='notion-table-th' key={p.property}>
-                      <div
-                        className='notion-table-view-header-cell'
-                        style={style}
-                      >
+                      <div className='notion-table-view-header-cell' style={style}>
                         <div className='notion-table-view-header-cell-inner'>
                           <CollectionColumnTitle schema={schema} />
                         </div>
@@ -134,9 +112,9 @@ function Table({ blockIds = [], collection, collectionView, width, padding }) {
             <div className='notion-table-header-placeholder'></div>
 
             <div className='notion-table-body'>
-              {blockIds?.map((blockId) => (
+              {blockIds?.map(blockId => (
                 <div className='notion-table-row' key={blockId}>
-                  {properties.map((p) => {
+                  {properties.map(p => {
                     const schema = collection.schema?.[p.property]
                     const block = recordMap.block[blockId]?.value
                     const data = block?.properties?.[p.property]
@@ -155,12 +133,8 @@ function Table({ blockIds = [], collection, collectionView, width, padding }) {
                     return (
                       <div
                         key={p.property}
-                        className={cs(
-                          'notion-table-cell',
-                          `notion-table-cell-${schema.type}`
-                        )}
-                        style={style}
-                      >
+                        className={cs('notion-table-cell', `notion-table-cell-${schema.type}`)}
+                        style={style}>
                         <Property
                           schema={schema}
                           data={data}

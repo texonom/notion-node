@@ -7,9 +7,7 @@ export function convertRichText(richText: types.RichText): notion.Decoration[] {
   return richText.map(convertRichTextItem).filter(Boolean)
 }
 
-export function convertRichTextItem(
-  richTextItem: types.RichTextItem
-): notion.Decoration {
+export function convertRichTextItem(richTextItem: types.RichTextItem): notion.Decoration {
   const subdecorations: notion.SubDecoration[] = []
 
   if (richTextItem.annotations.bold) {

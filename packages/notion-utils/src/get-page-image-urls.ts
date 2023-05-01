@@ -16,7 +16,7 @@ export const getPageImageUrls = (
 ): string[] => {
   const blockIds = Object.keys(recordMap.block)
   const imageUrls: string[] = blockIds
-    .flatMap((blockId) => {
+    .flatMap(blockId => {
       const block = recordMap.block[blockId]?.value
       const images: Array<{ block: types.Block; url: string }> = []
 

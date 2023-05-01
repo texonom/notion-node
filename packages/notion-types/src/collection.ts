@@ -1,11 +1,4 @@
-import {
-  Color,
-  Decoration,
-  ID,
-  NumberFormat,
-  PropertyID,
-  PropertyType
-} from './core'
+import { Color, Decoration, ID, NumberFormat, PropertyID, PropertyType } from './core'
 import { Formula } from './formula'
 
 export interface SelectOption {

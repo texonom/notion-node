@@ -2,19 +2,11 @@ import * as React from 'react'
 
 import * as types from '@3bases/notion-types'
 
-export type MapPageUrlFn = (
-  pageId: string,
-  recordMap?: types.ExtendedRecordMap | undefined
-) => string
+export type MapPageUrlFn = (pageId: string, recordMap?: types.ExtendedRecordMap | undefined) => string
 export type MapImageUrlFn = (url: string, block: types.Block) => string
-export type SearchNotionFn = (
-  params: types.SearchParams
-) => Promise<types.SearchResults>
+export type SearchNotionFn = (params: types.SearchParams) => Promise<types.SearchResults>
 
-export type ComponentOverrideFn = (
-  props: any,
-  defaultValueFn: () => React.ReactNode
-) => any
+export type ComponentOverrideFn = (props: any, defaultValueFn: () => React.ReactNode) => any
 
 export interface NotionComponents {
   // TODO: better typing for arbitrary react components

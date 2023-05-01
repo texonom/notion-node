@@ -50,14 +50,8 @@ export const Asset: React.FC<{
   // console.log('asset', block)
 
   if (block.format) {
-    const {
-      block_aspect_ratio,
-      block_height,
-      block_width,
-      block_full_width,
-      block_page_width,
-      block_preserve_scale
-    } = block.format
+    const { block_aspect_ratio, block_height, block_width, block_full_width, block_page_width, block_preserve_scale } =
+      block.format
 
     if (block_full_width || block_page_width) {
       if (block_full_width) {
@@ -124,8 +118,7 @@ export const Asset: React.FC<{
     }
   }
 
-  let source =
-    recordMap.signed_urls?.[block.id] || block.properties?.source?.[0]?.[0]
+  let source = recordMap.signed_urls?.[block.id] || block.properties?.source?.[0]?.[0]
   let content = null
 
   if (!source) {
@@ -147,8 +140,7 @@ export const Asset: React.FC<{
           width: '100%',
           marginLeft: 'auto',
           marginRight: 'auto'
-        }}
-      >
+        }}>
         <components.Tweet id={id} />
       </div>
     )
@@ -189,32 +181,16 @@ export const Asset: React.FC<{
     ) {
       style.paddingBottom = undefined
 
-      content = (
-        <video
-          playsInline
-          controls
-          preload='metadata'
-          style={assetStyle}
-          src={source}
-          title={block.type}
-        />
-      )
+      content = <video playsInline controls preload='metadata' style={assetStyle} src={source} title={block.type} />
     } else {
       let src = block.format?.display_source || source
 
       if (src) {
-        const youtubeVideoId: string | null =
-          block.type === 'video' ? getYoutubeId(src) : null
+        const youtubeVideoId: string | null = block.type === 'video' ? getYoutubeId(src) : null
         // console.log({ youtubeVideoId, src, format: block.format, style })
 
         if (youtubeVideoId) {
-          content = (
-            <LiteYouTubeEmbed
-              id={youtubeVideoId}
-              style={assetStyle}
-              className='notion-asset-object-fit'
-            />
-          )
+          content = <LiteYouTubeEmbed id={youtubeVideoId} style={assetStyle} className='notion-asset-object-fit' />
         } else if (block.type === 'gist') {
           if (!src.endsWith('.pibb')) {
             src = `${src}.pibb`
@@ -267,15 +243,7 @@ export const Asset: React.FC<{
     const caption = getTextContent(block.properties?.caption)
     const alt = caption || 'notion image'
 
-    content = (
-      <LazyImage
-        src={src}
-        alt={alt}
-        zoomable={zoomable}
-        height={style.height as number}
-        style={assetStyle}
-      />
-    )
+    content = <LazyImage src={src} alt={alt} zoomable={zoomable} height={style.height as number} style={assetStyle} />
   }
 
   return (

@@ -4,9 +4,7 @@ import { cs } from '../utils'
 
 const qs = (params: Record<string, string>) => {
   return Object.keys(params)
-    .map(
-      (key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
-    )
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
     .join('&')
 }
 
@@ -34,10 +32,7 @@ export const LiteYouTubeEmbed: React.FC<{
   className
 }) => {
   const muteParam = mute || defaultPlay ? '1' : '0' // Default play must be muted
-  const queryString = React.useMemo(
-    () => qs({ autoplay: '1', mute: muteParam, ...params }),
-    [muteParam, params]
-  )
+  const queryString = React.useMemo(() => qs({ autoplay: '1', mute: muteParam, ...params }), [muteParam, params])
   // const mobileResolution = 'hqdefault'
   // const desktopResolution = 'maxresdefault'
   const resolution = 'hqdefault'
@@ -94,14 +89,8 @@ export const LiteYouTubeEmbed: React.FC<{
           iframeInitialized && 'notion-yt-initialized',
           className
         )}
-        style={style}
-      >
-        <img
-          src={posterUrl}
-          className='notion-yt-thumbnail'
-          loading={lazyImage ? 'lazy' : undefined}
-          alt={alt}
-        />
+        style={style}>
+        <img src={posterUrl} className='notion-yt-thumbnail' loading={lazyImage ? 'lazy' : undefined} alt={alt} />
 
         <div className='notion-yt-playbtn' />
 

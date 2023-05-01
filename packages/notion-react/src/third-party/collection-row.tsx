@@ -21,15 +21,12 @@ export const CollectionRow: React.FC<{
     return null
   }
 
-  let propertyIds = Object.keys(schemas).filter((id) => id !== 'title')
+  let propertyIds = Object.keys(schemas).filter(id => id !== 'title')
 
   // filter properties based on visibility
   if (collection.format?.property_visibility) {
     propertyIds = propertyIds.filter(
-      (id) =>
-        collection.format.property_visibility.find(
-          ({ property }) => property === id
-        )?.visibility !== 'hide'
+      id => collection.format.property_visibility.find(({ property }) => property === id)?.visibility !== 'hide'
     )
   }
 
@@ -53,7 +50,7 @@ export const CollectionRow: React.FC<{
   return (
     <div className={cs('notion-collection-row', className)}>
       <div className='notion-collection-row-body'>
-        {propertyIds.map((propertyId) => {
+        {propertyIds.map(propertyId => {
           const schema = schemas[propertyId]
 
           return (

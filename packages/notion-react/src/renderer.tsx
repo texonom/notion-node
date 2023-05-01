@@ -5,12 +5,7 @@ import { ExtendedRecordMap } from '@3bases/notion-types'
 
 import { Block } from './block'
 import { NotionContextProvider, useNotionContext } from './context'
-import {
-  MapImageUrlFn,
-  MapPageUrlFn,
-  NotionComponents,
-  SearchNotionFn
-} from './types'
+import { MapImageUrlFn, MapPageUrlFn, NotionComponents, SearchNotionFn } from './types'
 
 export const NotionRenderer: React.FC<{
   recordMap: ExtendedRecordMap
@@ -117,8 +112,7 @@ export const NotionRenderer: React.FC<{
       defaultPageIcon={defaultPageIcon}
       defaultPageCover={defaultPageCover}
       defaultPageCoverPosition={defaultPageCoverPosition}
-      zoom={isImageZoomable ? zoom : null}
-    >
+      zoom={isImageZoomable ? zoom : null}>
       <NotionBlockRenderer {...rest} />
     </NotionContextProvider>
   )
@@ -149,13 +143,8 @@ export const NotionBlockRenderer: React.FC<{
 
   return (
     <Block key={id} level={level} block={block} {...props}>
-      {block?.content?.map((contentBlockId) => (
-        <NotionBlockRenderer
-          key={contentBlockId}
-          blockId={contentBlockId}
-          level={level + 1}
-          {...props}
-        />
+      {block?.content?.map(contentBlockId => (
+        <NotionBlockRenderer key={contentBlockId} blockId={contentBlockId} level={level + 1} {...props} />
       ))}
     </Block>
   )

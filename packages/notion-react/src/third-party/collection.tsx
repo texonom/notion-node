@@ -1,19 +1,11 @@
 import * as React from 'react'
 
 import * as types from '@3bases/notion-types'
-import {
-  getBlockCollectionId,
-  getBlockParentPage,
-  getTextContent
-} from '@3bases/notion-utils'
+import { getBlockCollectionId, getBlockParentPage, getTextContent } from '@3bases/notion-utils'
 import { useLocalStorage, useWindowSize } from 'react-use'
 
 import { PageIcon } from '../components/page-icon'
-import {
-  NotionContext,
-  NotionContextProvider,
-  useNotionContext
-} from '../context'
+import { NotionContext, NotionContextProvider, useNotionContext } from '../context'
 import { CollectionViewIcon } from '../icons/collection-view-icon'
 import { cs } from '../utils'
 import { CollectionRow } from './collection-row'
@@ -23,10 +15,7 @@ import { PropertyImplMemo } from './property'
 const isServer = typeof window === 'undefined'
 
 export const Collection: React.FC<{
-  block:
-    | types.CollectionViewBlock
-    | types.CollectionViewPageBlock
-    | types.PageBlock
+  block: types.CollectionViewBlock | types.CollectionViewPageBlock | types.PageBlock
   className?: string
   ctx: NotionContext
 }> = ({ block, className, ctx }) => {
@@ -58,11 +47,7 @@ export const Collection: React.FC<{
     return (
       <NotionContextProvider {...context}>
         <div className='notion-collection-page-properties'>
-          <CollectionRow
-            block={block as types.PageBlock}
-            pageHeader={true}
-            className={className}
-          />
+          <CollectionRow block={block as types.PageBlock} pageHeader={true} className={className} />
         </div>
       </NotionContextProvider>
     )
@@ -94,9 +79,7 @@ const CollectionViewBlock: React.FC<{
   })
 
   const collectionViewId =
-    (isMounted &&
-      viewIds.find((id) => id === collectionState.collectionViewId)) ||
-    defaultCollectionViewId
+    (isMounted && viewIds.find(id => id === collectionState.collectionViewId)) || defaultCollectionViewId
 
   const onChangeView = React.useCallback(
     (collectionViewId: string) => {
@@ -117,8 +100,7 @@ const CollectionViewBlock: React.FC<{
 
   const collection = recordMap.collection[collectionId]?.value
   const collectionView = recordMap.collection_view[collectionViewId]?.value
-  const collectionData =
-    recordMap.collection_query[collectionId]?.[collectionViewId]
+  const collectionData = recordMap.collection_query[collectionId]?.[collectionViewId]
   const parentPage = getBlockParentPage(block, recordMap)
 
   const { width, padding } = React.useMemo(() => {
@@ -146,8 +128,7 @@ const CollectionViewBlock: React.FC<{
           : maxNotionBodyWidth
     }
 
-    const padding =
-      isServer && !isMounted ? 96 : ((width - notionBodyWidth) / 2) | 0
+    const padding = isServer && !isMounted ? 96 : ((width - notionBodyWidth) / 2) | 0
     style.paddingLeft = padding
     style.paddingRight = padding
 
@@ -175,8 +156,7 @@ const CollectionViewBlock: React.FC<{
   }
 
   const title = getTextContent(collection.name).trim()
-  const showTitle =
-    collectionView.format?.hide_linked_collection_name !== true && title
+  const showTitle = collectionView.format?.hide_linked_collection_name !== true && title
   if (collection.icon) {
     block.format = {
       ...block.format,
@@ -189,21 +169,13 @@ const CollectionViewBlock: React.FC<{
       <div>
         <div>
           {viewIds.length > 1 && showCollectionViewDropdown && (
-            <CollectionViewTabs
-              collectionViewId={collectionViewId}
-              viewIds={viewIds}
-              onChangeView={onChangeView}
-            />
+            <CollectionViewTabs collectionViewId={collectionViewId} viewIds={viewIds} onChangeView={onChangeView} />
           )}
         </div>
         {showTitle && (
           <div className='notion-collection-header'>
             <div className='notion-collection-header-title'>
-              <PageIcon
-                block={block}
-                className='notion-page-title-icon'
-                hideDefaultIcon
-              />
+              <PageIcon block={block} className='notion-page-title-icon' hideDefaultIcon />
               {title}
             </div>
           </div>
@@ -231,19 +203,15 @@ const CollectionViewTabs: React.FC<{
 
   return (
     <div className='notion-collection-view-tabs-row'>
-      {viewIds.map((viewId) => (
+      {viewIds.map(viewId => (
         <button
           onClick={() => onChangeView(viewId)}
           key={viewId}
           className={cs(
             'notion-collection-view-tabs-content-item',
-            collectionViewId === viewId &&
-              'notion-collection-view-tabs-content-item-active'
-          )}
-        >
-          <CollectionViewColumnDesc
-            collectionView={recordMap.collection_view[viewId]?.value}
-          />
+            collectionViewId === viewId && 'notion-collection-view-tabs-content-item-active'
+          )}>
+          <CollectionViewColumnDesc collectionView={recordMap.collection_view[viewId]?.value} />
         </button>
       ))}
     </div>
@@ -256,15 +224,11 @@ const CollectionViewColumnDesc: React.FC<{
   children?: React.ReactNode
 }> = ({ collectionView, className, children, ...rest }) => {
   const { type } = collectionView
-  const name =
-    collectionView.name || `${type[0].toUpperCase()}${type.slice(1)} view`
+  const name = collectionView.name || `${type[0].toUpperCase()}${type.slice(1)} view`
 
   return (
     <div className={cs('notion-collection-view-type', className)} {...rest}>
-      <CollectionViewIcon
-        className='notion-collection-view-type-icon'
-        type={type}
-      />
+      <CollectionViewIcon className='notion-collection-view-type-icon' type={type} />
 
       <span className='notion-collection-view-type-title'>{name}</span>
 

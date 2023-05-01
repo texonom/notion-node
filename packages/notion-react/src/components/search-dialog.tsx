@@ -47,7 +47,7 @@ export class SearchDialog extends React.Component<{
 
     return (
       <NotionContextConsumer>
-        {(ctx) => {
+        {ctx => {
           const { components, defaultPageIcon, mapPageUrl } = ctx
 
           return (
@@ -57,17 +57,10 @@ export class SearchDialog extends React.Component<{
               className='notion-search'
               overlayClassName='notion-search-overlay'
               onRequestClose={onClose}
-              onAfterOpen={this._onAfterOpen}
-            >
+              onAfterOpen={this._onAfterOpen}>
               <div className='quickFindMenu'>
                 <div className='searchBar'>
-                  <div className='inlineIcon'>
-                    {isLoading ? (
-                      <LoadingIcon className='loadingIcon' />
-                    ) : (
-                      <SearchIcon />
-                    )}
-                  </div>
+                  <div className='inlineIcon'>{isLoading ? <LoadingIcon className='loadingIcon' /> : <SearchIcon />}</div>
 
                   <input
                     className='searchInput'
@@ -78,11 +71,7 @@ export class SearchDialog extends React.Component<{
                   />
 
                   {query && (
-                    <div
-                      role='button'
-                      className='clearButton'
-                      onClick={this._onClearQuery}
-                    >
+                    <div role='button' className='clearButton' onClick={this._onClearQuery}>
                       <ClearIcon className='clearIcon' />
                     </div>
                   )}
@@ -91,24 +80,14 @@ export class SearchDialog extends React.Component<{
                 {hasQuery && searchResult && (
                   <>
                     {searchResult.results.length ? (
-                      <NotionContextProvider
-                        {...ctx}
-                        recordMap={searchResult.recordMap}
-                      >
+                      <NotionContextProvider {...ctx} recordMap={searchResult.recordMap}>
                         <div className='resultsPane'>
-                          {searchResult.results.map((result) => (
+                          {searchResult.results.map(result => (
                             <components.PageLink
                               key={result.id}
                               className={cs('result', 'notion-page-link')}
-                              href={mapPageUrl(
-                                result.page.id,
-                                searchResult.recordMap
-                              )}
-                            >
-                              <PageTitle
-                                block={result.page}
-                                defaultIcon={defaultPageIcon}
-                              />
+                              href={mapPageUrl(result.page.id, searchResult.recordMap)}>
+                              <PageTitle block={result.page} defaultIcon={defaultPageIcon} />
 
                               {result.highlight?.html && (
                                 <div
@@ -124,9 +103,7 @@ export class SearchDialog extends React.Component<{
 
                         <footer className='resultsFooter'>
                           <div>
-                            <span className='resultsCount'>
-                              {searchResult.total}
-                            </span>
+                            <span className='resultsCount'>{searchResult.total}</span>
 
                             {searchResult.total === 1 ? ' result' : ' results'}
                           </div>
@@ -135,9 +112,7 @@ export class SearchDialog extends React.Component<{
                     ) : (
                       <div className='noResultsPane'>
                         <div className='noResults'>No results</div>
-                        <div className='noResultsDetail'>
-                          Try different search terms
-                        </div>
+                        <div className='noResultsDetail'>Try different search terms</div>
                       </div>
                     )}
                   </>
@@ -162,7 +137,7 @@ export class SearchDialog extends React.Component<{
     }
   }
 
-  _onChangeQuery = (e) => {
+  _onChangeQuery = e => {
     const query = e.target.value
     this.setState({ query })
 
@@ -238,9 +213,7 @@ export class SearchDialog extends React.Component<{
           }
 
           if (result.highlight?.text) {
-            result.highlight.html = result.highlight.text
-              .replace(/<gzkNfoUU>/gi, '<b>')
-              .replace(/<\/gzkNfoUU>/gi, '</b>')
+            result.highlight.html = result.highlight.text.replace(/<gzkNfoUU>/gi, '<b>').replace(/<\/gzkNfoUU>/gi, '</b>')
           }
 
           return result

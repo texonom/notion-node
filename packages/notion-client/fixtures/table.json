@@ -432,9 +432,7 @@
             "3*Oe": [["5555555555", [["a", "5555555555"]]]],
             "IYxF": [["foo,bar,nala"]],
             "UA6Q": [["foo"]],
-            "Y)hG": [
-              ["https://notion2site.com", [["a", "https://notion2site.com"]]]
-            ],
+            "Y)hG": [["https://notion2site.com", [["a", "https://notion2site.com"]]]],
             "i>sK": [["t@t.com", [["a", "t@t.com"]]]],
             "uy^(": [["‣", [["u", "db401f86-4012-4d18-9445-236978ef32df"]]]],
             "~UNY": [["test"]],
@@ -506,12 +504,7 @@
             "3*Oe": [["+665555555555", [["a", "+665555555555"]]]],
             "IYxF": [["nala,git"]],
             "UA6Q": [["bar"]],
-            "Y)hG": [
-              [
-                "https://twitter.com/transitive_bs",
-                [["a", "https://twitter.com/transitive_bs"]]
-              ]
-            ],
+            "Y)hG": [["https://twitter.com/transitive_bs", [["a", "https://twitter.com/transitive_bs"]]]],
             "i>sK": [["fuzzywuzzy@gmail.com", [["a", "fuzzywuzzy@gmail.com"]]]],
             "uy^(": [["‣", [["u", "3a828f9b-5a82-4ecc-9fa9-a2c27700797c"]]]],
             "x\"Lr": [["Yes"]],
@@ -524,10 +517,7 @@
           "parent_table": "collection",
           "alive": true,
           "copied_from": "c3ffa048-85bd-4719-81f2-60caa59a18cf",
-          "file_ids": [
-            "be2a13f6-5aab-45ac-9b9b-c371995b2094",
-            "bcd41339-6c9c-4ff4-9877-f4aab44afe81"
-          ],
+          "file_ids": ["be2a13f6-5aab-45ac-9b9b-c371995b2094", "bcd41339-6c9c-4ff4-9877-f4aab44afe81"],
           "created_by_table": "notion_user",
           "created_by_id": "db401f86-4012-4d18-9445-236978ef32df",
           "last_edited_by_table": "notion_user",
@@ -571,12 +561,7 @@
             ],
             "IYxF": [["foo,git,baz,abc,ghi,jkl,mno,stu"]],
             "UA6Q": [["bar"]],
-            "Y)hG": [
-              [
-                "https://transitivebullsh.it",
-                [["a", "https://transitivebullsh.it"]]
-              ]
-            ],
+            "Y)hG": [["https://transitivebullsh.it", [["a", "https://transitivebullsh.it"]]]],
             "i>sK": [["foo", [["a", "foo"]]]],
             "x\"Lr": [["Yes"]],
             "~UNY": [

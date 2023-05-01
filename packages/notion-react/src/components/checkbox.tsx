@@ -18,7 +18,5 @@ export const Checkbox: React.FC<{
     content = <div className='notion-property-checkbox-unchecked' />
   }
 
-  return (
-    <span className='notion-property notion-property-checkbox'>{content}</span>
-  )
+  return <span className='notion-property notion-property-checkbox'>{content}</span>
 }

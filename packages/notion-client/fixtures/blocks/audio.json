@@ -4,9 +4,7 @@
   "type": "audio",
   "properties": {
     "source": [
-      [
-        "https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9c998f9f-4808-4e9f-ab35-55b25db0fd3f/example.mp3"
-      ]
+      ["https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9c998f9f-4808-4e9f-ab35-55b25db0fd3f/example.mp3"]
     ]
   },
   "created_time": 1597765156711,

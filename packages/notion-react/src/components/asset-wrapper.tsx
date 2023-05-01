@@ -37,8 +37,7 @@ export const AssetWrapper: React.FC<{
         `notion-asset-wrapper-${block.type}`,
         value.format?.block_full_width && 'notion-asset-wrapper-full',
         blockId
-      )}
-    >
+      )}>
       <Asset block={value} zoomable={zoom && !isURL}>
         {value?.properties?.caption && !isURL && (
           <figcaption className='notion-asset-caption'>
@@ -60,14 +59,7 @@ export const AssetWrapper: React.FC<{
       <components.PageLink
         style={urlStyle}
         href={isPage ? mapPageUrl(id) : caption}
-        target={
-          captionHostname &&
-          captionHostname !== rootDomain &&
-          !caption.startsWith('/')
-            ? 'blank_'
-            : null
-        }
-      >
+        target={captionHostname && captionHostname !== rootDomain && !caption.startsWith('/') ? 'blank_' : null}>
         {figure}
       </components.PageLink>
     )
