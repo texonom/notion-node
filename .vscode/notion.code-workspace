@@ -1,0 +1,28 @@
+{
+  "folders": [
+    {
+      "name": "workspace",
+      "path": "../"
+    },
+    {
+      "name": "notion-types",
+      "path": "../packages/notion-types"
+    },
+    {
+      "name": "notion-client",
+      "path": "../packages/notion-client"
+    },
+    {
+      "name": "notion-compat",
+      "path": "../packages/notion-compat"
+    },
+    {
+      "name": "notion-utils",
+      "path": "../packages/notion-utils"
+    },
+    {
+      "name": "notion-react",
+      "path": "../packages/notion-react"
+    }
+  ]
+}

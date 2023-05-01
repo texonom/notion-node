@@ -18,9 +18,11 @@ dist
 tsconfig.tsbuildinfo
 
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 .vscode/settings.json
 
 .next/
 .vercel/
+
+# turbo
+turbo-build.log
+.turbo
