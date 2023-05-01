@@ -32,9 +32,7 @@ export const Asset: React.FC<{
 }> = ({ block, zoomable = true, children }) => {
   const { recordMap, mapImageUrl, components } = useNotionContext()
 
-  if (!block || !supportedAssetTypes.includes(block.type)) {
-    return null
-  }
+  if (!block || !supportedAssetTypes.includes(block.type)) return null
 
   const style: React.CSSProperties = {
     position: 'relative',
@@ -47,27 +45,20 @@ export const Asset: React.FC<{
   }
 
   const assetStyle: React.CSSProperties = {}
-  // console.log('asset', block)
+  // console.info('asset', block)
 
   if (block.format) {
     const { block_aspect_ratio, block_height, block_width, block_full_width, block_page_width, block_preserve_scale } =
       block.format
 
     if (block_full_width || block_page_width) {
-      if (block_full_width) {
-        style.width = '100vw'
-      } else {
-        style.width = '100%'
-      }
+      if (block_full_width) style.width = '100vw'
+      else style.width = '100%'
 
       if (block.type === 'video') {
-        if (block_height) {
-          style.height = block_height
-        } else if (block_aspect_ratio) {
-          style.paddingBottom = `${block_aspect_ratio * 100}%`
-        } else if (block_preserve_scale) {
-          style.objectFit = 'contain'
-        }
+        if (block_height) style.height = block_height
+        else if (block_aspect_ratio) style.paddingBottom = `${block_aspect_ratio * 100}%`
+        else if (block_preserve_scale) style.objectFit = 'contain'
       } else if (block_aspect_ratio && block.type !== 'image') {
         style.paddingBottom = `${block_aspect_ratio * 100}%`
       } else if (block_height) {
@@ -97,33 +88,24 @@ export const Asset: React.FC<{
         }
       }
 
-      if (block_width) {
-        style.width = block_width
-      }
+      if (block_width) style.width = block_width
 
       if (block_preserve_scale && block.type !== 'image') {
         style.paddingBottom = '50%'
         style.minHeight = 100
       } else {
-        if (block_height && block.type !== 'image') {
-          style.height = block_height
-        }
+        if (block_height && block.type !== 'image') style.height = block_height
       }
     }
 
-    if (block.type === 'image') {
-      assetStyle.objectFit = 'cover'
-    } else if (block_preserve_scale) {
-      assetStyle.objectFit = 'contain'
-    }
+    if (block.type === 'image') assetStyle.objectFit = 'cover'
+    else if (block_preserve_scale) assetStyle.objectFit = 'contain'
   }
 
   let source = recordMap.signed_urls?.[block.id] || block.properties?.source?.[0]?.[0]
   let content = null
 
-  if (!source) {
-    return null
-  }
+  if (!source) return null
 
   if (block.type === 'tweet') {
     const src = source
@@ -149,14 +131,11 @@ export const Asset: React.FC<{
     style.background = 'rgb(226, 226, 226)'
     style.display = 'block'
 
-    if (!style.padding) {
-      style.padding = '8px 16px'
-    }
+    if (!style.padding) style.padding = '8px 16px'
 
-    if (!isServer) {
-      // console.log('pdf', block, signedUrl)
+    if (!isServer)
+      // console.info('pdf', block, signedUrl)
       content = <components.Pdf file={source} />
-    }
   } else if (
     block.type === 'embed' ||
     block.type === 'video' ||
@@ -187,14 +166,12 @@ export const Asset: React.FC<{
 
       if (src) {
         const youtubeVideoId: string | null = block.type === 'video' ? getYoutubeId(src) : null
-        // console.log({ youtubeVideoId, src, format: block.format, style })
+        // console.info({ youtubeVideoId, src, format: block.format, style })
 
         if (youtubeVideoId) {
           content = <LiteYouTubeEmbed id={youtubeVideoId} style={assetStyle} className='notion-asset-object-fit' />
         } else if (block.type === 'gist') {
-          if (!src.endsWith('.pibb')) {
-            src = `${src}.pibb`
-          }
+          if (!src.endsWith('.pibb')) src = `${src}.pibb`
 
           assetStyle.width = '100%'
           style.paddingBottom = '50%'
@@ -234,11 +211,10 @@ export const Asset: React.FC<{
       }
     }
   } else if (block.type === 'image') {
-    // console.log('image', block)
+    // console.info('image', block)
     //kind of a hack for now. New file.notion.so images aren't signed correctly
-    if (source.includes('file.notion.so')) {
-      source = block.properties?.source?.[0]?.[0]
-    }
+    if (source.includes('file.notion.so')) source = block.properties?.source?.[0]?.[0]
+
     const src = mapImageUrl(source, block as Block)
     const caption = getTextContent(block.properties?.caption)
     const alt = caption || 'notion image'

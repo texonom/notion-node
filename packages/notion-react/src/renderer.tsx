@@ -134,9 +134,7 @@ export const NotionBlockRenderer: React.FC<{
   const block = recordMap.block[id]?.value
 
   if (!block) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn('missing block', blockId)
-    }
+    if (process.env.NODE_ENV !== 'production') console.warn('missing block', blockId)
 
     return null
   }
@@ -153,17 +151,10 @@ export const NotionBlockRenderer: React.FC<{
 function getMediumZoomMargin() {
   const width = window.innerWidth
 
-  if (width < 500) {
-    return 8
-  } else if (width < 800) {
-    return 20
-  } else if (width < 1280) {
-    return 30
-  } else if (width < 1600) {
-    return 40
-  } else if (width < 1920) {
-    return 48
-  } else {
-    return 72
-  }
+  if (width < 500) return 8
+  else if (width < 800) return 20
+  else if (width < 1280) return 30
+  else if (width < 1600) return 40
+  else if (width < 1920) return 48
+  else return 72
 }

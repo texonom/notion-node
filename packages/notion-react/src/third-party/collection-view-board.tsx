@@ -62,16 +62,14 @@ function Board({ collectionView, collectionData, collection, padding }) {
         <div className='notion-board-header'>
           <div className='notion-board-header-inner'>
             {boardGroups.map((p, index) => {
-              if (!(collectionData as any).board_columns?.results) {
+              if (!(collectionData as any).board_columns?.results)
                 // no groupResults in the data when collection is in a toggle
                 return null
-              }
+
               const group = (collectionData as any).board_columns.results![index]
               const schema = collection.schema[p.property]
 
-              if (!group || !schema || p.hidden) {
-                return null
-              }
+              if (!group || !schema || p.hidden) return null
 
               return (
                 <div className='notion-board-th' key={index}>
@@ -103,9 +101,7 @@ function Board({ collectionView, collectionData, collection, padding }) {
             const schema = collection.schema[p.property]
             const group = (collectionData as any)[`results:${p?.value?.type}:${p?.value?.value || 'uncategorized'}`]
 
-            if (!group || !schema || p.hidden) {
-              return null
-            }
+            if (!group || !schema || p.hidden) return null
 
             return (
               <div className='notion-board-group' key={index}>

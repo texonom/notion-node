@@ -33,11 +33,8 @@ export interface IPropertyProps {
 export const Property: React.FC<IPropertyProps> = props => {
   const { components } = useNotionContext()
 
-  if (components.Property) {
-    return <components.Property {...props} />
-  } else {
-    return <PropertyImplMemo {...props} />
-  }
+  if (components.Property) return <components.Property {...props} />
+  else return <PropertyImplMemo {...props} />
 }
 
 export const PropertyImpl: React.FC<IPropertyProps> = props => {
@@ -80,14 +77,12 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
           })
 
           if (isNaN(content as number)) {
-            // console.log('NaN', schema.formula)
+            // console.info('NaN', schema.formula)
           }
 
-          if (content instanceof Date) {
-            content = format(content, 'MMM d, YYY hh:mm aa')
-          }
+          if (content instanceof Date) content = format(content, 'MMM d, YYY hh:mm aa')
         } catch (err) {
-          // console.log('error evaluating formula', schema.formula, err)
+          // console.info('error evaluating formula', schema.formula, err)
           content = null
         }
 
@@ -99,15 +94,13 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
   const renderTitleValue = React.useMemo(
     () =>
       function FormulaTitle() {
-        if (block && linkToTitlePage) {
+        if (block && linkToTitlePage)
           return (
             <components.PageLink className={cs('notion-page-link')} href={mapPageUrl(block.id)}>
               <PageTitle block={block} />
             </components.PageLink>
           )
-        } else {
-          return <Text value={data} block={block} />
-        }
+        else return <Text value={data} block={block} />
       },
     [block, components, data, linkToTitlePage, mapPageUrl]
   )
@@ -115,7 +108,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
   const renderPersonValue = React.useMemo(
     () =>
       function PersonProperty() {
-        // console.log('person', schema, data)
+        // console.info('person', schema, data)
         return <Text value={data} block={block} />
       },
     [block, data]
@@ -162,14 +155,13 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
         // TODO: refactor to less hacky solution
         const d = JSON.parse(JSON.stringify(data))
 
-        if (inline) {
+        if (inline)
           try {
             const url = new URL(d[0][0])
             d[0][0] = url.hostname.replace(/^www\./, '')
           } catch (err) {
             // ignore invalid urls
           }
-        }
 
         return (
           <Text
@@ -265,9 +257,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
     [block?.last_edited_time]
   )
 
-  if (!schema) {
-    return null
-  }
+  if (!schema) return null
 
   let content = null
 
@@ -280,7 +270,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
     schema.type === 'last_edited_by' ||
     schema.type === 'created_time' ||
     schema.type === 'last_edited_time'
-  ) {
+  )
     switch (schema.type) {
       case 'relation':
         content = components.propertyRelationValue(props, renderRelationValue)
@@ -288,7 +278,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
 
       case 'formula':
         // TODO
-        // console.log('formula', schema.formula, {
+        // console.info('formula', schema.formula, {
         //   schema: collection?.schema,
         //   properties: block?.properties
         // })
@@ -365,12 +355,12 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
 
       case 'created_by':
         // TODO
-        // console.log('created_by', schema, data)
+        // console.info('created_by', schema, data)
         break
 
       case 'last_edited_by':
         // TODO
-        // console.log('last_edited_by', schema, data)
+        // console.info('last_edited_by', schema, data)
         break
 
       case 'text':
@@ -385,7 +375,6 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
         content = <Text value={data} block={block} />
         break
     }
-  }
 
   return <span className={`notion-property notion-property-${schema.type}`}>{content}</span>
 }

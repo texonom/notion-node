@@ -17,18 +17,15 @@ export const CollectionRow: React.FC<{
   const collection = recordMap.collection[collectionId]?.value
   const schemas = collection?.schema
 
-  if (!collection || !schemas) {
-    return null
-  }
+  if (!collection || !schemas) return null
 
   let propertyIds = Object.keys(schemas).filter(id => id !== 'title')
 
   // filter properties based on visibility
-  if (collection.format?.property_visibility) {
+  if (collection.format?.property_visibility)
     propertyIds = propertyIds.filter(
       id => collection.format.property_visibility.find(({ property }) => property === id)?.visibility !== 'hide'
     )
-  }
 
   // sort properties
   if (collection.format?.collection_page_properties) {

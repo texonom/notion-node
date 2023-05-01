@@ -37,9 +37,7 @@ export async function getAllPagesInSpace(
   const queue = new PQueue({ concurrency })
 
   async function processPage(pageId: string) {
-    if (targetPageId && pendingPageIds.has(targetPageId)) {
-      return
-    }
+    if (targetPageId && pendingPageIds.has(targetPageId)) return
 
     pageId = parsePageId(pageId) as string
 
@@ -48,58 +46,40 @@ export async function getAllPagesInSpace(
 
       queue.add(async () => {
         try {
-          if (targetPageId && pendingPageIds.has(targetPageId) && pageId !== targetPageId) {
-            return
-          }
+          if (targetPageId && pendingPageIds.has(targetPageId) && pageId !== targetPageId) return
 
           const page = await getPage(pageId)
-          if (!page) {
-            return
-          }
+          if (!page) return
 
           const spaceId = page.block[pageId]?.value?.space_id
 
-          if (spaceId) {
-            if (!rootSpaceId) {
-              rootSpaceId = spaceId
-            } else if (rootSpaceId !== spaceId) {
-              return
-            }
-          }
+          if (spaceId)
+            if (!rootSpaceId) rootSpaceId = spaceId
+            else if (rootSpaceId !== spaceId) return
 
           Object.keys(page.block)
             .filter(key => {
               const block = page.block[key]?.value
               if (!block) return false
 
-              if (block.type !== 'page' && block.type !== 'collection_view_page') {
-                return false
-              }
+              if (block.type !== 'page' && block.type !== 'collection_view_page') return false
 
               // the space id check is important to limit traversal because pages
               // can reference pages in other spaces
-              if (rootSpaceId && block.space_id && block.space_id !== rootSpaceId) {
-                return false
-              }
+              if (rootSpaceId && block.space_id && block.space_id !== rootSpaceId) return false
 
               return true
             })
             .forEach(subPageId => processPage(subPageId))
 
           // traverse collection item pages as they may contain subpages as well
-          if (traverseCollections) {
-            for (const collectionViews of Object.values(page.collection_query)) {
+          if (traverseCollections)
+            for (const collectionViews of Object.values(page.collection_query))
               for (const collectionData of Object.values(collectionViews)) {
                 const { blockIds } = collectionData
 
-                if (blockIds) {
-                  for (const collectionItemId of blockIds) {
-                    processPage(collectionItemId)
-                  }
-                }
+                if (blockIds) for (const collectionItemId of blockIds) processPage(collectionItemId)
               }
-            }
-          }
 
           pages[pageId] = page
         } catch (err) {

@@ -88,9 +88,7 @@ export const Block: React.FC<BlockProps> = props => {
     disableHeader
   } = props
 
-  if (!block) {
-    return null
-  }
+  if (!block) return null
 
   // ugly hack to make viewing raw collection views work properly
   // e.g., 6d886ca87ab94c21a16e3b82b43a57fb
@@ -124,11 +122,10 @@ export const Block: React.FC<BlockProps> = props => {
           const coverPosition = (1 - (page_cover_position || 0.5)) * 100
           const pageCoverObjectPosition = `center ${coverPosition}%`
           let pageCoverStyle = pageCoverStyleCache[pageCoverObjectPosition]
-          if (!pageCoverStyle) {
+          if (!pageCoverStyle)
             pageCoverStyle = pageCoverStyleCache[pageCoverObjectPosition] = {
               objectPosition: pageCoverObjectPosition
             }
-          }
 
           const pageIcon = getBlockIcon(block, recordMap) ?? defaultPageIcon
           const isPageIconUrl = pageIcon && isUrl(pageIcon)
@@ -283,9 +280,7 @@ export const Block: React.FC<BlockProps> = props => {
         }
       }
 
-      if (indentLevel !== undefined) {
-        indentLevelClass = `notion-h-indent-${indentLevel}`
-      }
+      if (indentLevel !== undefined) indentLevelClass = `notion-h-indent-${indentLevel}`
 
       const isH1 = block.type === 'header'
       const isH2 = block.type === 'sub_header'
@@ -317,45 +312,40 @@ export const Block: React.FC<BlockProps> = props => {
       let headerBlock = null
 
       //page title takes the h1 so all header blocks are greater
-      if (isH1) {
+      if (isH1)
         headerBlock = (
           <h2 className={classNameStr} data-id={id}>
             {innerHeader}
           </h2>
         )
-      } else if (isH2) {
+      else if (isH2)
         headerBlock = (
           <h3 className={classNameStr} data-id={id}>
             {innerHeader}
           </h3>
         )
-      } else {
+      else
         headerBlock = (
           <h4 className={classNameStr} data-id={id}>
             {innerHeader}
           </h4>
         )
-      }
 
-      if (block.format?.toggleable) {
+      if (block.format?.toggleable)
         return (
           <details className={cs('notion-toggle', blockId)}>
             <summary>{headerBlock}</summary>
             <div>{children}</div>
           </details>
         )
-      } else {
-        return headerBlock
-      }
+      else return headerBlock
     }
 
     case 'divider':
       return <hr className={cs('notion-hr', blockId)} />
 
     case 'text': {
-      if (!block.properties && !block.content?.length) {
-        return <div className={cs('notion-blank', blockId)}>&nbsp;</div>
-      }
+      if (!block.properties && !block.content?.length) return <div className={cs('notion-blank', blockId)}>&nbsp;</div>
 
       const blockColor = block.format?.block_color
 
@@ -382,7 +372,7 @@ export const Block: React.FC<BlockProps> = props => {
 
       let output: JSX.Element | null = null
 
-      if (block.content) {
+      if (block.content)
         output = (
           <>
             {block.properties && (
@@ -393,13 +383,12 @@ export const Block: React.FC<BlockProps> = props => {
             {wrapList(children)}
           </>
         )
-      } else {
+      else
         output = block.properties ? (
           <li>
             <Text value={block.properties.title} block={block} />
           </li>
         ) : null
-      }
 
       const isTopLevel = block.type !== recordMap.block[block.parent_id]?.value?.type
       const start = getListNumber(block.id, recordMap.block)
@@ -432,12 +421,10 @@ export const Block: React.FC<BlockProps> = props => {
 
     case 'drive': {
       const properties = block.format?.drive_properties
-      if (!properties) {
-        //check if this drive actually needs to be embeded ex. google sheets.
-        if (block.format?.display_source) {
+      if (!properties)
+        if (block.format?.display_source)
+          //check if this drive actually needs to be embeded ex. google sheets.
           return <AssetWrapper blockId={blockId} block={block} />
-        }
-      }
 
       return <GoogleDrive block={block as types.GoogleDriveBlock} className={blockId} />
     }
@@ -497,9 +484,8 @@ export const Block: React.FC<BlockProps> = props => {
       return <components.Collection block={block} className={blockId} ctx={ctx} />
 
     case 'callout':
-      if (components.Callout) {
-        return <components.Callout block={block} className={blockId} />
-      } else {
+      if (components.Callout) return <components.Callout block={block} className={blockId} />
+      else
         return (
           <div
             className={cs('notion-callout', block.format?.block_color && `notion-${block.format?.block_color}_co`, blockId)}>
@@ -511,7 +497,6 @@ export const Block: React.FC<BlockProps> = props => {
             </div>
           </div>
         )
-      }
 
     case 'bookmark': {
       if (!block.properties) return null
@@ -520,20 +505,16 @@ export const Block: React.FC<BlockProps> = props => {
       if (!link || !link[0]?.[0]) return null
 
       let title = getTextContent(block.properties.title)
-      if (!title) {
-        title = getTextContent(link)
-      }
+      if (!title) title = getTextContent(link)
 
-      if (title) {
-        if (title.startsWith('http')) {
+      if (title)
+        if (title.startsWith('http'))
           try {
             const url = new URL(title)
             title = url.hostname
           } catch (err) {
             // ignore invalid links
           }
-        }
-      }
 
       return (
         <div className='notion-row'>
@@ -648,7 +629,7 @@ export const Block: React.FC<BlockProps> = props => {
       const blockPointerId = block?.format?.alias_pointer?.id
       const linkedBlock = recordMap.block[blockPointerId]?.value
       if (!linkedBlock) {
-        console.log('"alias" missing block', blockPointerId)
+        console.info('"alias" missing block', blockPointerId)
         return null
       }
 
@@ -672,9 +653,7 @@ export const Block: React.FC<BlockProps> = props => {
       const formatMap = tableBlock.format?.table_block_column_format
       const backgroundColor = block.format?.block_color
 
-      if (!tableBlock || !order) {
-        return null
-      }
+      if (!tableBlock || !order) return null
 
       return (
         <tr className={cs('notion-simple-table-row', backgroundColor && `notion-${backgroundColor}`, blockId)}>
@@ -702,9 +681,8 @@ export const Block: React.FC<BlockProps> = props => {
       return <EOI block={block} className={blockId} />
 
     default:
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('Unsupported type ' + (block as any).type, JSON.stringify(block, null, 2))
-      }
+      if (process.env.NODE_ENV !== 'production')
+        console.info('Unsupported type ' + (block as any).type, JSON.stringify(block, null, 2))
 
       return <div />
   }

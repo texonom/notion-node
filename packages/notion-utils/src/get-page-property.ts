@@ -22,12 +22,11 @@ export function getPageProperty<T = string | number | boolean | string[] | numbe
 ): T
 export function getPageProperty(propertyName: string, block: Block, recordMap: ExtendedRecordMap) {
   try {
-    if (!block.properties || !Object.keys(recordMap.collection)) {
+    if (!block.properties || !Object.keys(recordMap.collection))
       // console.warn(
       //   `block ${block.id} has no properties or this recordMap has no collection record`
       // )
       return null
-    }
 
     const collection = recordMap.collection[block.parent_id]?.value
 
@@ -37,9 +36,7 @@ export function getPageProperty(propertyName: string, block: Block, recordMap: E
         key => collection.schema[key]?.name?.toLowerCase() === propertyNameL
       )
 
-      if (!propertyId) {
-        return null
-      }
+      if (!propertyId) return null
 
       const { type } = collection.schema[propertyId]
       const content = getTextContent(block.properties[propertyId])

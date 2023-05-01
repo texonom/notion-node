@@ -7,11 +7,8 @@ import * as types from '@3bases/notion-types'
  * rich text formatting.
  */
 export const getTextContent = (text?: types.Decoration[]): string => {
-  if (!text) {
-    return ''
-  } else if (Array.isArray(text)) {
+  if (!text) return ''
+  else if (Array.isArray(text))
     return text?.reduce((prev, current) => prev + (current[0] !== '⁍' && current[0] !== '‣' ? current[0] : ''), '') ?? ''
-  } else {
-    return text
-  }
+  else return text
 }

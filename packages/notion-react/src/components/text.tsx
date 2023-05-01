@@ -34,13 +34,9 @@ export const Text: React.FC<{
         //   return null
         // }
 
-        if (!decorations) {
-          if (text === ',') {
-            return <span key={index} style={{ padding: '0.5em' }} />
-          } else {
-            return <React.Fragment key={index}>{text}</React.Fragment>
-          }
-        }
+        if (!decorations)
+          if (text === ',') return <span key={index} style={{ padding: '0.5em' }} />
+          else return <React.Fragment key={index}>{text}</React.Fragment>
 
         const formatted = decorations.reduce((element: React.ReactNode, decorator) => {
           switch (decorator[0]) {
@@ -49,11 +45,11 @@ export const Text: React.FC<{
               const blockId = decorator[1]
               const linkedBlock = recordMap.block[blockId]?.value
               if (!linkedBlock) {
-                console.log('"p" missing block', blockId)
+                console.info('"p" missing block', blockId)
                 return null
               }
 
-              // console.log('p', blockId)
+              // console.info('p', blockId)
 
               return (
                 <components.PageLink className='notion-link' href={mapPageUrl(blockId)}>
@@ -72,7 +68,7 @@ export const Text: React.FC<{
                   const user = recordMap.notion_user[id]?.value
 
                   if (!user) {
-                    console.log('"‣" missing user', id)
+                    console.info('"‣" missing user', id)
                     return null
                   }
 
@@ -85,7 +81,7 @@ export const Text: React.FC<{
                   const linkedBlock = recordMap.block[id]?.value
 
                   if (!linkedBlock) {
-                    console.log('"‣" missing block', linkType, id)
+                    console.info('"‣" missing block', linkType, id)
                     return null
                   }
 
@@ -178,7 +174,7 @@ export const Text: React.FC<{
               const user = recordMap.notion_user[userId]?.value
 
               if (!user) {
-                console.log('missing user', userId)
+                console.info('missing user', userId)
                 return null
               }
 
@@ -195,9 +191,7 @@ export const Text: React.FC<{
             }
 
             default:
-              if (process.env.NODE_ENV !== 'production') {
-                console.log('unsupported text format', decorator)
-              }
+              if (process.env.NODE_ENV !== 'production') console.info('unsupported text format', decorator)
 
               return element
           }

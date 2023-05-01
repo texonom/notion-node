@@ -23,9 +23,7 @@ const iconMap = {
 
 export const CollectionViewIcon: React.FC<CollectionViewIconProps> = ({ type, ...rest }) => {
   const icon = iconMap[type] as any
-  if (!icon) {
-    return null
-  }
+  if (!icon) return null
 
   return icon(rest)
 }

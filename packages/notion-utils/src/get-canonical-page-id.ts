@@ -24,13 +24,9 @@ export const getCanonicalPageId = (
       (getPageProperty('Slug', block, recordMap) as string | null) ||
       normalizeTitle(getBlockTitle(block, recordMap))
 
-    if (slug) {
-      if (uuid) {
-        return `${slug}-${id}`
-      } else {
-        return slug
-      }
-    }
+    if (slug)
+      if (uuid) return `${slug}-${id}`
+      else return slug
   }
 
   return id

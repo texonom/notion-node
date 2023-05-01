@@ -74,9 +74,7 @@ function getBlockContentStats(block: Block, recordMap: ExtendedRecordMap): Conte
     numImages: 0
   }
 
-  if (!block) {
-    return stats
-  }
+  if (!block) return stats
 
   for (const childId of block.content || []) {
     const child = recordMap.block[childId]?.value
@@ -176,9 +174,7 @@ function getBlockContentStats(block: Block, recordMap: ExtendedRecordMap): Conte
         if (!page) continue
 
         const toc = getPageTableOfContents(page, recordMap)
-        for (const tocItem of toc) {
-          stats.numWords += countWordsInText(tocItem.text)
-        }
+        for (const tocItem of toc) stats.numWords += countWordsInText(tocItem.text)
 
         break
       }
@@ -186,13 +182,11 @@ function getBlockContentStats(block: Block, recordMap: ExtendedRecordMap): Conte
       case 'transclusion_reference': {
         const referencePointerId = child?.format?.transclusion_reference_pointer?.id
 
-        if (!referencePointerId) {
-          continue
-        }
+        if (!referencePointerId) continue
+
         const referenceBlock = recordMap.block[referencePointerId]?.value
-        if (referenceBlock) {
-          mergeContentStats(stats, getBlockContentStats(referenceBlock, recordMap))
-        }
+        if (referenceBlock) mergeContentStats(stats, getBlockContentStats(referenceBlock, recordMap))
+
         break
       }
 
@@ -201,9 +195,7 @@ function getBlockContentStats(block: Block, recordMap: ExtendedRecordMap): Conte
         break
     }
 
-    if (recurse) {
-      mergeContentStats(stats, getBlockContentStats(child, recordMap))
-    }
+    if (recurse) mergeContentStats(stats, getBlockContentStats(child, recordMap))
   }
 
   return stats
@@ -215,21 +207,15 @@ function mergeContentStats(statsA: ContentStats, statsB: ContentStats) {
 }
 
 function countWordsInText(text: string): number {
-  if (!text) {
-    return 0
-  }
+  if (!text) return 0
 
   return (text.match(/\w+/g) || []).length
 }
 
 function humanizeReadTime(time: number): string {
-  if (time < 0.5) {
-    return 'less than a minute'
-  }
+  if (time < 0.5) return 'less than a minute'
 
-  if (time < 1.5) {
-    return '1 minute'
-  }
+  if (time < 1.5) return '1 minute'
 
   return `${Math.ceil(time)} minutes`
 }

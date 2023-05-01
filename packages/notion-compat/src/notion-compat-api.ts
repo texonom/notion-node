@@ -56,9 +56,7 @@ export class NotionCompatAPI {
     const queue = new PQueue({ concurrency })
 
     const processBlock = async (blockId: string, { shallow = false }: { shallow?: boolean } = {}) => {
-      if (!blockId || pendingBlockIds.has(blockId)) {
-        return
-      }
+      if (!blockId || pendingBlockIds.has(blockId)) return
 
       pendingBlockIds.add(blockId)
       queue.add(async () => {
@@ -86,31 +84,26 @@ export class NotionCompatAPI {
                   processBlock(page.parent.page_id, {
                     shallow: true
                   })
-                  if (!parentMap[blockId]) {
-                    parentMap[blockId] = page.parent.page_id
-                  }
+                  if (!parentMap[blockId]) parentMap[blockId] = page.parent.page_id
+
                   break
 
                 case 'database_id':
                   processBlock(page.parent.database_id, {
                     shallow: true
                   })
-                  if (!parentMap[blockId]) {
-                    parentMap[blockId] = page.parent.database_id
-                  }
+                  if (!parentMap[blockId]) parentMap[blockId] = page.parent.database_id
+
                   break
               }
             }
 
-            if (blockId !== rootBlockId) {
+            if (blockId !== rootBlockId)
               // don't fetch children or recurse on subpages
               return
-            }
           }
 
-          if (shallow) {
-            return
-          }
+          if (shallow) return
 
           const children = await this.getAllBlockChildren(blockId)
           blockChildrenMap[blockId] = children.map(child => child.id)
@@ -126,7 +119,7 @@ export class NotionCompatAPI {
               if (details?.rich_text) {
                 const richTextMentions = details.rich_text.filter(richTextItem => richTextItem.type === 'mention')
 
-                for (const richTextMention of richTextMentions) {
+                for (const richTextMention of richTextMentions)
                   switch (richTextMention.mention?.type) {
                     case 'page': {
                       const pageId = richTextMention.mention.page.id
@@ -140,10 +133,9 @@ export class NotionCompatAPI {
                       break
                     }
                   }
-                }
               }
 
-              if (childBlock.type === 'link_to_page') {
+              if (childBlock.type === 'link_to_page')
                 switch (childBlock.link_to_page?.type) {
                   case 'page_id':
                     processBlock(childBlock.link_to_page.page_id, {
@@ -157,11 +149,8 @@ export class NotionCompatAPI {
                     })
                     break
                 }
-              }
 
-              if (childBlock.has_children && childBlock.type !== 'child_database') {
-                processBlock(childBlock.id)
-              }
+              if (childBlock.has_children && childBlock.type !== 'child_database') processBlock(childBlock.id)
             }
           }
         } catch (err) {
@@ -188,7 +177,7 @@ export class NotionCompatAPI {
     let cursor: string
 
     do {
-      console.log('blocks.children.list', { blockId, cursor })
+      console.info('blocks.children.list', { blockId, cursor })
       const res = await this.client.blocks.children.list({
         block_id: blockId,
         start_cursor: cursor

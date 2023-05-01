@@ -24,9 +24,7 @@ export const AssetWrapper: React.FC<{
       const id = parsePageId(caption, { uuid: true })
 
       const isPage = caption.charAt(0) === '/' && id
-      if (isPage || isValidURL(caption)) {
-        isURL = true
-      }
+      if (isPage || isValidURL(caption)) isURL = true
     }
   }
 

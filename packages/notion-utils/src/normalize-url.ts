@@ -2,9 +2,7 @@ import mem from 'mem'
 import normalizeUrlImpl from 'normalize-url'
 
 export const normalizeUrl = mem((url?: string) => {
-  if (!url) {
-    return ''
-  }
+  if (!url) return ''
 
   try {
     if (url.startsWith('https://www.notion.so/image/')) {

@@ -27,9 +27,7 @@ export const PageAside: React.FC<{
           const section = sections[i]
           if (!section || !(section instanceof Element)) continue
 
-          if (!currentSectionId) {
-            currentSectionId = section.getAttribute('data-id')
-          }
+          if (!currentSectionId) currentSectionId = section.getAttribute('data-id')
 
           const bbox = section.getBoundingClientRect()
           const prevHeight = prevBBox ? bbox.top - prevBBox.bottom : 0
@@ -57,9 +55,7 @@ export const PageAside: React.FC<{
   )
 
   React.useEffect(() => {
-    if (!hasToc) {
-      return
-    }
+    if (!hasToc) return
 
     window.addEventListener('scroll', actionSectionScrollSpy)
 
@@ -70,9 +66,7 @@ export const PageAside: React.FC<{
     }
   }, [hasToc, actionSectionScrollSpy])
 
-  if (!hasAside) {
-    return null
-  }
+  if (!hasAside) return null
 
   return (
     <aside className={cs('notion-aside', className)}>
