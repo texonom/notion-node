@@ -8,10 +8,7 @@ export function getBlockTitle(block: Block, recordMap: ExtendedRecordMap) {
     return getTextContent(block.properties.title)
   }
 
-  if (
-    block.type === 'collection_view_page' ||
-    block.type === 'collection_view'
-  ) {
+  if (block.type === 'collection_view_page' || block.type === 'collection_view') {
     const collectionId = getBlockCollectionId(block, recordMap)
 
     if (collectionId) {

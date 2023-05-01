@@ -8,9 +8,5 @@
     "emitDeclarationOnly": true
   },
   "include": ["src"],
-  "references": [
-    { "path": "../notion-types" },
-    { "path": "../notion-utils" },
-    { "path": "../notion-client" }
-  ]
+  "references": [{ "path": "../notion-types" }, { "path": "../notion-utils" }, { "path": "../notion-client" }]
 }

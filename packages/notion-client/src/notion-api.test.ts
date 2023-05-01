@@ -31,8 +31,6 @@ for (const pageId of pageIdFixturesSuccess) {
 for (const pageId of pageIdFixturesFailure) {
   test(`NotionAPI.getPage failure ${pageId}`, async () => {
     const api = new NotionAPI()
-    await expect(() =>
-      api.getPage(pageId, { gotOptions: { timeout: 1000 } })
-    ).rejects.toThrow()
+    await expect(() => api.getPage(pageId, { gotOptions: { timeout: 1000 } })).rejects.toThrow()
   })
 }

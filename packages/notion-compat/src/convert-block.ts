@@ -194,9 +194,7 @@ export function convertBlock({
       }
 
       if (block.bookmark.caption) {
-        compatBlock.properties.description = convertRichText(
-          block.bookmark.caption
-        )
+        compatBlock.properties.description = convertRichText(block.bookmark.caption)
       }
       break
 
@@ -226,9 +224,7 @@ export function convertBlock({
         const page = pageMap[block.id] as types.Page
         if (page) {
           if (page.properties.title) {
-            compatBlock.properties.title = convertRichText(
-              (page.properties.title as any).title
-            )
+            compatBlock.properties.title = convertRichText((page.properties.title as any).title)
           }
 
           if (page.cover) {
@@ -319,24 +315,19 @@ export function convertBlock({
     case 'table':
       if (blockDetails.table_width && blockDetails.table_width > 0) {
         // There is no API to get the column ID. Used the index instead.
-        compatBlock.format.table_block_column_order = Array.from(
-          { length: blockDetails.table_width },
-          (_, i) => '' + i
-        )
-        compatBlock.format.table_block_column_format =
-          compatBlock.format.table_block_column_order.map((order) => {
-            return {
-              [order]: {
-                // TODO: The SimpleTable column has no width and color. API is not supported.
-                // width: 155,
-                // color:
-              }
+        compatBlock.format.table_block_column_order = Array.from({ length: blockDetails.table_width }, (_, i) => '' + i)
+        compatBlock.format.table_block_column_format = compatBlock.format.table_block_column_order.map(order => {
+          return {
+            [order]: {
+              // TODO: The SimpleTable column has no width and color. API is not supported.
+              // width: 155,
+              // color:
             }
-          })
+          }
+        })
       }
       if (blockDetails.has_column_header) {
-        compatBlock.format.table_block_column_header =
-          blockDetails.has_column_header
+        compatBlock.format.table_block_column_header = blockDetails.has_column_header
       }
       if (blockDetails.has_row_header) {
         compatBlock.format.table_block_row_header = blockDetails.has_row_header
@@ -345,7 +336,7 @@ export function convertBlock({
 
     case 'table_row':
       compatBlock.properties = {
-        ...block.table_row?.cells?.map((cell) => convertRichText(cell))
+        ...block.table_row?.cells?.map(cell => convertRichText(cell))
       }
       break
 
@@ -426,10 +417,7 @@ export function convertBlock({
               break
 
             case 'open.spotify.com':
-              if (
-                u.pathname.includes('/embed/') ||
-                u.pathname.includes('/embed-podcast/')
-              ) {
+              if (u.pathname.includes('/embed/') || u.pathname.includes('/embed-podcast/')) {
                 break
               }
 

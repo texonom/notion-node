@@ -52,29 +52,20 @@ export const Breadcrumbs: React.FC<{
         }
 
         if (breadcrumb.active) {
-          componentMap.pageLink = (props) => <div {...props} />
+          componentMap.pageLink = props => <div {...props} />
         } else {
           pageLinkProps.href = mapPageUrl(breadcrumb.pageId)
         }
 
         return (
           <React.Fragment key={breadcrumb.pageId}>
-            <componentMap.pageLink
-              className={cs('breadcrumb', breadcrumb.active && 'active')}
-              {...pageLinkProps}
-            >
-              {breadcrumb.icon && (
-                <PageIcon className='icon' block={breadcrumb.block} />
-              )}
+            <componentMap.pageLink className={cs('breadcrumb', breadcrumb.active && 'active')} {...pageLinkProps}>
+              {breadcrumb.icon && <PageIcon className='icon' block={breadcrumb.block} />}
 
-              {breadcrumb.title && (
-                <span className='title'>{breadcrumb.title}</span>
-              )}
+              {breadcrumb.title && <span className='title'>{breadcrumb.title}</span>}
             </componentMap.pageLink>
 
-            {index < breadcrumbs.length - 1 && (
-              <span className='spacer'>/</span>
-            )}
+            {index < breadcrumbs.length - 1 && <span className='spacer'>/</span>}
           </React.Fragment>
         )
       })}
@@ -87,8 +78,7 @@ export const Search: React.FC<{
   search?: SearchNotionFn
   title?: React.ReactNode
 }> = ({ block, search, title = 'Search' }) => {
-  const { searchNotion, rootPageId, isShowingSearch, onHideSearch } =
-    useNotionContext()
+  const { searchNotion, rootPageId, isShowingSearch, onHideSearch } = useNotionContext()
   const onSearchNotion = search || searchNotion
 
   const [isSearchOpen, setIsSearchOpen] = React.useState(isShowingSearch)
@@ -107,13 +97,13 @@ export const Search: React.FC<{
     }
   }, [onHideSearch])
 
-  useHotkeys('cmd+p', (event) => {
+  useHotkeys('cmd+p', event => {
     onOpenSearch()
     event.preventDefault()
     event.stopPropagation()
   })
 
-  useHotkeys('cmd+k', (event) => {
+  useHotkeys('cmd+k', event => {
     onOpenSearch()
     event.preventDefault()
     event.stopPropagation()
@@ -124,11 +114,7 @@ export const Search: React.FC<{
   return (
     <>
       {hasSearch && (
-        <div
-          role='button'
-          className={cs('breadcrumb', 'button', 'notion-search-button')}
-          onClick={onOpenSearch}
-        >
+        <div role='button' className={cs('breadcrumb', 'button', 'notion-search-button')} onClick={onOpenSearch}>
           <SearchIcon className='searchIcon' />
 
           {title && <span className='title'>{title}</span>}

@@ -8,8 +8,6 @@ export interface NotionDateTime {
 }
 
 export const formatNotionDateTime = (datetime: NotionDateTime) => {
-  const dateString = `${datetime.start_time || ''} ${datetime.start_date} ${
-    datetime.time_zone || ''
-  }`
+  const dateString = `${datetime.start_time || ''} ${datetime.start_date} ${datetime.time_zone || ''}`
   return formatDate(dateString)
 }

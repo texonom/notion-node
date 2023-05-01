@@ -30,10 +30,7 @@ const page = await api.getPage('067dd719-a912-471e-a9a3-ac10710e7fdf')
 // fetch the data for a specific collection instance
 const collectionId = '2d8aec23-8281-4a94-9090-caaf823dd21a'
 const collectionViewId = 'ab639a5a-853e-45e1-9ef7-133b486c0acf'
-const collectionData = await api.getCollectionData(
-  collectionId,
-  collectionViewId
-)
+const collectionData = await api.getCollectionData(collectionId, collectionViewId)
 ```
 
 ### Fetch a database's content
@@ -44,7 +41,7 @@ You can pass a database ID to the `getPage` method. The response is an object wh
 - `collection`
 - `collection_view`
 
-The value of the `block` property maps the id of each block object present in the database to its corresponding properties like type, parent id, created time, last edited by, and more. 
+The value of the `block` property maps the id of each block object present in the database to its corresponding properties like type, parent id, created time, last edited by, and more.
 
 ```
 {
@@ -67,8 +64,7 @@ The map of blocks is arranged as followed:
 - The next ids are of all the children pages inside the database
 - After that comes all the children blocks of each page.
 
-
-Please note that a block object can take many types: header, text, list, media, and almost any block supported by Notion. It can also be *a page* or a *collection view*.
+Please note that a block object can take many types: header, text, list, media, and almost any block supported by Notion. It can also be _a page_ or a _collection view_.
 
 Example of a block object of type `text`:
 
@@ -125,6 +121,7 @@ Example of a block object of type `page`:
 ```
 
 Example of a block object of type `collection_view`:
+
 ```
 {
   role: 'reader',

@@ -45,10 +45,7 @@ const iconMap = {
   last_edited_by: Person2Icon
 }
 
-export const PropertyIcon: React.FC<PropertyIconProps> = ({
-  type,
-  ...rest
-}) => {
+export const PropertyIcon: React.FC<PropertyIconProps> = ({ type, ...rest }) => {
   const icon = iconMap[type] as any
   if (!icon) return null
 

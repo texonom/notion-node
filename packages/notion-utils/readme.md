@@ -21,9 +21,7 @@ This package is compatible with both Node.js and client-side web usage.
 ```ts
 import { parsePageId } from '@3bases/notion-utils'
 
-parsePageId(
-  'https://www.notion.so/Notion-Tests-067dd719a912471ea9a3ac10710e7fdf'
-)
+parsePageId('https://www.notion.so/Notion-Tests-067dd719a912471ea9a3ac10710e7fdf')
 // '067dd719-a912-471e-a9a3-ac10710e7fdf'
 
 parsePageId('About-d9ae0c6e7cad49a78e21d240cf2e3d04')

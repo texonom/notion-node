@@ -4,8 +4,7 @@ export { isUrl, formatDate, formatNotionDateTime } from '@3bases/notion-utils'
 export * from './map-image-url'
 export * from './map-page-url'
 
-export const cs = (...classes: Array<string | undefined | false>) =>
-  classes.filter((a) => !!a).join(' ')
+export const cs = (...classes: Array<string | undefined | false>) => classes.filter(a => !!a).join(' ')
 
 const groupBlockContent = (blockMap: BlockMap): string[][] => {
   const output: string[][] = []
@@ -13,11 +12,11 @@ const groupBlockContent = (blockMap: BlockMap): string[][] => {
   let lastType: string | undefined = undefined
   let index = -1
 
-  Object.keys(blockMap).forEach((id) => {
+  Object.keys(blockMap).forEach(id => {
     const blockValue = blockMap[id]?.value
 
     if (blockValue) {
-      blockValue.content?.forEach((blockId) => {
+      blockValue.content?.forEach(blockId => {
         const blockType = blockMap[blockId]?.value?.type
 
         if (blockType && blockType !== lastType) {
@@ -40,7 +39,7 @@ const groupBlockContent = (blockMap: BlockMap): string[][] => {
 
 export const getListNumber = (blockId: string, blockMap: BlockMap) => {
   const groups = groupBlockContent(blockMap)
-  const group = groups.find((g) => g.includes(blockId))
+  const group = groups.find(g => g.includes(blockId))
 
   if (!group) {
     return
@@ -69,8 +68,7 @@ export const getYoutubeId = (url: string): string | null => {
     if (!youtubeDomains.has(hostname)) {
       return null
     }
-    const regExp =
-      /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/i
+    const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/i
 
     const match = url.match(regExp)
     if (match && match[2].length == 11) {

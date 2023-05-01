@@ -1,9 +1,6 @@
 import * as React from 'react'
 
-import {
-  Block as BlockType,
-  SyncPointerBlock as SyncPointerBlockType
-} from '@3bases/notion-types'
+import { Block as BlockType, SyncPointerBlock as SyncPointerBlockType } from '@3bases/notion-types'
 
 import { NotionBlockRenderer } from '../renderer'
 
@@ -20,18 +17,11 @@ export const SyncPointerBlock: React.FC<{
   }
 
   const syncPointerBlock = block as SyncPointerBlockType
-  const referencePointerId =
-    syncPointerBlock?.format?.transclusion_reference_pointer?.id
+  const referencePointerId = syncPointerBlock?.format?.transclusion_reference_pointer?.id
 
   if (!referencePointerId) {
     return null
   }
 
-  return (
-    <NotionBlockRenderer
-      key={referencePointerId}
-      level={level}
-      blockId={referencePointerId}
-    />
-  )
+  return <NotionBlockRenderer key={referencePointerId} level={level} blockId={referencePointerId} />
 }

@@ -13,15 +13,7 @@ export const PageAside: React.FC<{
   hasAside: boolean
   pageAside?: React.ReactNode
   className?: string
-}> = ({
-  toc,
-  activeSection,
-  setActiveSection,
-  pageAside,
-  hasToc,
-  hasAside,
-  className
-}) => {
+}> = ({ toc, activeSection, setActiveSection, pageAside, hasToc, hasAside, className }) => {
   const throttleMs = 100
   const actionSectionScrollSpy = React.useMemo(
     () =>
@@ -86,12 +78,10 @@ export const PageAside: React.FC<{
     <aside className={cs('notion-aside', className)}>
       {hasToc && (
         <div className='notion-aside-table-of-contents'>
-          <div className='notion-aside-table-of-contents-header'>
-            Table of Contents
-          </div>
+          <div className='notion-aside-table-of-contents-header'>Table of Contents</div>
 
           <nav className='notion-table-of-contents'>
-            {toc.map((tocItem) => {
+            {toc.map(tocItem => {
               const id = uuidToId(tocItem.id)
 
               return (
@@ -101,17 +91,14 @@ export const PageAside: React.FC<{
                   className={cs(
                     'notion-table-of-contents-item',
                     `notion-table-of-contents-item-indent-level-${tocItem.indentLevel}`,
-                    activeSection === id &&
-                      'notion-table-of-contents-active-item'
-                  )}
-                >
+                    activeSection === id && 'notion-table-of-contents-active-item'
+                  )}>
                   <span
                     className='notion-table-of-contents-item-body'
                     style={{
                       display: 'inline-block',
                       marginLeft: tocItem.indentLevel * 16
-                    }}
-                  >
+                    }}>
                     {tocItem.text}
                   </span>
                 </a>
