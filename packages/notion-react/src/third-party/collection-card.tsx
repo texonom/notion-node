@@ -30,9 +30,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
     const contentBlockId = block.content?.find(blockId => {
       const block = recordMap.block[blockId]?.value
 
-      if (block?.type === 'image') {
-        return true
-      }
+      if (block?.type === 'image') return true
     })
 
     if (contentBlockId) {
@@ -56,9 +54,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
       }
     }
 
-    if (!coverContent) {
-      coverContent = <div className='notion-collection-card-cover-empty' />
-    }
+    if (!coverContent) coverContent = <div className='notion-collection-card-cover-empty' />
   } else if (cover?.type === 'page_cover') {
     const { page_cover } = block.format || {}
 
@@ -81,12 +77,12 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
     const schema = collection.schema[property]
     const data = block.properties?.[property]
 
-    if (schema && data) {
+    if (schema && data)
       if (schema.type === 'file') {
         const files = data.filter(v => v.length === 2).map(f => f.flat().flat())
         const file = files[0]
 
-        if (file) {
+        if (file)
           coverContent = (
             <span className={`notion-property-${schema.type}`}>
               <LazyImage
@@ -99,15 +95,13 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
               />
             </span>
           )
-        }
       } else {
         coverContent = <Property propertyId={property} schema={schema} data={data} />
       }
-    }
   }
   let linkProperties = []
   //check if a visible property has a url and we settings are for linking to it for the card
-  if (isLinkCollectionToUrlProperty) {
+  if (isLinkCollectionToUrlProperty)
     linkProperties = properties
       ?.filter(p => p.visible && p.property !== 'title' && collection.schema[p.property])
       .filter(p => {
@@ -120,11 +114,10 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
         return block.properties[p.property]
       })
       ?.filter(p => p && p.length > 0 && p[0] != undefined) //case where the url is empty
-  }
+
   let url = null
-  if (linkProperties && linkProperties.length > 0 && linkProperties[0].length > 0 && linkProperties[0][0].length > 0) {
+  if (linkProperties && linkProperties.length > 0 && linkProperties[0].length > 0 && linkProperties[0][0].length > 0)
     url = linkProperties[0][0][0]
-  }
 
   const innerCard = (
     <>

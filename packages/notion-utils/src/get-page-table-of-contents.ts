@@ -30,14 +30,13 @@ export const getPageTableOfContents = (
       if (block) {
         const { type } = block
 
-        if (type === 'header' || type === 'sub_header' || type === 'sub_sub_header') {
+        if (type === 'header' || type === 'sub_header' || type === 'sub_sub_header')
           return {
             id: blockId,
             type,
             text: getTextContent(block.properties?.title),
             indentLevel: indentLevels[type]
           }
-        }
       }
 
       return null

@@ -60,9 +60,7 @@ export class NotionAPI {
     })
     const recordMap = page?.recordMap as notion.ExtendedRecordMap
 
-    if (!recordMap?.block) {
-      throw new Error(`Notion page not found "${uuidToId(pageId)}"`)
-    }
+    if (!recordMap?.block) throw new Error(`Notion page not found "${uuidToId(pageId)}"`)
 
     // ensure that all top-level maps exist
     recordMap.collection = recordMap.collection ?? {}
@@ -74,21 +72,18 @@ export class NotionAPI {
     recordMap.collection_query = {}
     recordMap.signed_urls = {}
 
-    if (fetchMissingBlocks) {
+    if (fetchMissingBlocks)
       // eslint-disable-next-line no-constant-condition
       while (true) {
         // fetch any missing content blocks
         const pendingBlockIds = getPageContentBlockIds(recordMap).filter(id => !recordMap.block[id])
 
-        if (!pendingBlockIds.length) {
-          break
-        }
+        if (!pendingBlockIds.length) break
 
         const newBlocks = await this.getBlocks(pendingBlockIds, gotOptions).then(res => res.recordMap.block)
 
         recordMap.block = { ...recordMap.block, ...newBlocks }
       }
-    }
 
     const contentBlockIds = getPageContentBlockIds(recordMap)
 
@@ -108,14 +103,12 @@ export class NotionAPI {
           (block.type === 'collection_view' || block.type === 'collection_view_page') &&
           getBlockCollectionId(block, recordMap)
 
-        if (collectionId) {
+        if (collectionId)
           return block.view_ids?.map(collectionViewId => ({
             collectionId,
             collectionViewId
           }))
-        } else {
-          return []
-        }
+        else return []
       })
 
       // fetch data for all collection view instances
@@ -176,9 +169,7 @@ export class NotionAPI {
     // NOTE: Similar to collection data, we default to eagerly fetching signed URL info
     // because it is preferable for many use cases as opposed to making these API calls
     // lazily from the client-side.
-    if (signFileUrls) {
-      await this.addSignedUrls({ recordMap, contentBlockIds, gotOptions })
-    }
+    if (signFileUrls) await this.addSignedUrls({ recordMap, contentBlockIds, gotOptions })
 
     return recordMap
   }
@@ -194,9 +185,7 @@ export class NotionAPI {
   }) {
     recordMap.signed_urls = {}
 
-    if (!contentBlockIds) {
-      contentBlockIds = getPageContentBlockIds(recordMap)
-    }
+    if (!contentBlockIds) contentBlockIds = getPageContentBlockIds(recordMap)
 
     const allFileInstances = contentBlockIds.flatMap(blockId => {
       const block = recordMap.block[blockId]?.value
@@ -211,12 +200,10 @@ export class NotionAPI {
           block.type === 'page')
       ) {
         const source = block.type === 'page' ? block.format?.page_cover : block.properties?.source?.[0]?.[0]
-        // console.log(block, source)
+        // console.info(block, source)
 
         if (source) {
-          if (!source.includes('secure.notion-static.com')) {
-            return []
-          }
+          if (!source.includes('secure.notion-static.com')) return []
 
           return {
             permissionRecord: {
@@ -231,22 +218,20 @@ export class NotionAPI {
       return []
     })
 
-    if (allFileInstances.length > 0) {
+    if (allFileInstances.length > 0)
       try {
         const { signedUrls } = await this.getSignedFileUrls(allFileInstances, gotOptions)
 
-        if (signedUrls.length === allFileInstances.length) {
+        if (signedUrls.length === allFileInstances.length)
           for (let i = 0; i < allFileInstances.length; ++i) {
             const file = allFileInstances[i]
             const signedUrl = signedUrls[i]
 
             recordMap.signed_urls[file.permissionRecord.id] = signedUrl
           }
-        }
       } catch (err) {
         console.warn('NotionAPI getSignedfileUrls error', err)
       }
-    }
   }
 
   public async getPageRaw(
@@ -263,9 +248,7 @@ export class NotionAPI {
   ) {
     const parsedPageId = parsePageId(pageId)
 
-    if (!parsedPageId) {
-      throw new Error(`invalid notion pageId "${pageId}"`)
-    }
+    if (!parsedPageId) throw new Error(`invalid notion pageId "${pageId}"`)
 
     const body = {
       pageId: parsedPageId,
@@ -307,7 +290,7 @@ export class NotionAPI {
     const groupBy = isBoardType ? collectionView?.format?.board_columns_by : collectionView?.format?.collection_group_by
 
     let filters = []
-    if (collectionView?.format?.property_filters) {
+    if (collectionView?.format?.property_filters)
       filters = collectionView.format?.property_filters.map(filterObj => {
         //get the inner filter
         return {
@@ -315,12 +298,9 @@ export class NotionAPI {
           property: filterObj?.filter?.property
         }
       })
-    }
 
     //Fixes formula filters from not working
-    if (collectionView?.query2?.filter?.filters) {
-      filters.push(...collectionView.query2.filter.filters)
-    }
+    if (collectionView?.query2?.filter?.filters) filters.push(...collectionView.query2.filter.filters)
 
     let loader: any = {
       type: 'reducer',
@@ -436,7 +416,7 @@ export class NotionAPI {
     }
 
     // if (isBoardType) {
-    //   console.log(
+    //   console.info(
     //     JSON.stringify(
     //       {
     //         collectionId,
@@ -547,13 +527,9 @@ export class NotionAPI {
       'Content-Type': 'application/json'
     }
 
-    if (this._authToken) {
-      headers.cookie = `token_v2=${this._authToken}`
-    }
+    if (this._authToken) headers.cookie = `token_v2=${this._authToken}`
 
-    if (this._activeUser) {
-      headers['x-notion-active-user-header'] = this._activeUser
-    }
+    if (this._activeUser) headers['x-notion-active-user-header'] = this._activeUser
 
     const url = `${this._apiBaseUrl}/${endpoint}`
 
@@ -570,7 +546,7 @@ export class NotionAPI {
     //   body: JSON.stringify(body),
     //   headers
     // }).then((res) => {
-    //   console.log(endpoint, res)
+    //   console.info(endpoint, res)
     //   return res.json()
     // })
   }

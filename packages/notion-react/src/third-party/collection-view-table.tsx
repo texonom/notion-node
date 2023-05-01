@@ -65,15 +65,14 @@ function Table({ blockIds = [], collection, collectionView, width, padding }) {
 
   let properties = []
 
-  if (collectionView.format?.table_properties) {
+  if (collectionView.format?.table_properties)
     properties = collectionView.format.table_properties.filter(p => p.visible && collection.schema[p.property])
-  } else {
+  else
     properties = [{ property: 'title' }].concat(
       Object.keys(collection.schema)
         .filter(p => p !== 'title')
         .map(property => ({ property }))
     )
-  }
 
   return (
     <div className='notion-table' style={tableStyle}>
@@ -87,14 +86,10 @@ function Table({ blockIds = [], collection, collectionView, width, padding }) {
                   const isTitle = p.property === 'title'
                   const style: React.CSSProperties = {}
 
-                  if (p.width) {
-                    style.width = p.width
-                  } else if (isTitle) {
-                    style.width = 280
-                  } else {
-                    style.width = 200
-                    // style.width = `${100.0 / properties.length}%`
-                  }
+                  if (p.width) style.width = p.width
+                  else if (isTitle) style.width = 280
+                  else style.width = 200
+                  // style.width = `${100.0 / properties.length}%`
 
                   return (
                     <div className='notion-table-th' key={p.property}>
@@ -121,14 +116,10 @@ function Table({ blockIds = [], collection, collectionView, width, padding }) {
                     const isTitle = p.property === 'title'
                     const style: React.CSSProperties = {}
 
-                    if (p.width) {
-                      style.width = p.width
-                    } else if (isTitle) {
-                      style.width = 280
-                    } else {
-                      style.width = 200
-                      // style.width = `${100.0 / properties.length}%`
-                    }
+                    if (p.width) style.width = p.width
+                    else if (isTitle) style.width = 280
+                    else style.width = 200
+                    // style.width = `${100.0 / properties.length}%`
 
                     return (
                       <div

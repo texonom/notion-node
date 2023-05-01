@@ -19,9 +19,7 @@ export const PageTitleImpl: React.FC<{
 
   if (block.type === 'collection_view_page' || block.type === 'collection_view') {
     const title = getBlockTitle(block, recordMap)
-    if (!title) {
-      return null
-    }
+    if (!title) return null
 
     const titleDecoration: Decoration[] = [[title]]
 
@@ -36,9 +34,7 @@ export const PageTitleImpl: React.FC<{
     )
   }
 
-  if (!block.properties?.title) {
-    return null
-  }
+  if (!block.properties?.title) return null
 
   return (
     <span className={cs('notion-page-title', className)} {...rest}>

@@ -22,14 +22,10 @@ export function convertBlock({
     id: partialBlock.id
   }
 
-  if (children && children.length) {
-    compatBlock.content = children
-  }
+  if (children && children.length) compatBlock.content = children
 
   const block = partialBlock as types.Block
-  if (!block.type) {
-    return compatBlock as notion.Block
-  }
+  if (!block.type) return compatBlock as notion.Block
 
   compatBlock.properties = {}
   compatBlock.format = {}
@@ -66,24 +62,18 @@ export function convertBlock({
       } else {
         const parentPage = pageMap?.[parentId] as types.Page
 
-        if (parentPage) {
-          compatBlock.parent_table = 'block'
-        }
+        if (parentPage) compatBlock.parent_table = 'block'
       }
     }
   }
 
   const blockDetails = block[block.type]
   if (blockDetails) {
-    if (blockDetails.rich_text) {
-      compatBlock.properties.title = convertRichText(blockDetails.rich_text)
-    }
+    if (blockDetails.rich_text) compatBlock.properties.title = convertRichText(blockDetails.rich_text)
 
-    if (blockDetails.color) {
-      compatBlock.format.block_color = convertColor(blockDetails.color)
-    }
+    if (blockDetails.color) compatBlock.format.block_color = convertColor(blockDetails.color)
 
-    if (blockDetails.icon) {
+    if (blockDetails.icon)
       switch (blockDetails.icon.type) {
         case 'emoji':
           compatBlock.format.page_icon = blockDetails.icon.emoji
@@ -97,9 +87,8 @@ export function convertBlock({
           compatBlock.format.page_icon = blockDetails.icon.file.url
           break
       }
-    }
 
-    if (blockDetails.type) {
+    if (blockDetails.type)
       switch (blockDetails.type) {
         case 'external':
           compatBlock.properties.source = [[blockDetails.external.url]]
@@ -109,15 +98,13 @@ export function convertBlock({
           compatBlock.properties.source = [[blockDetails.file.url]]
           break
       }
-    }
   }
 
   switch (block.type) {
     case 'paragraph':
       compatBlock.type = 'text'
-      if (!block.paragraph?.rich_text?.length) {
-        delete compatBlock.properties
-      }
+      if (!block.paragraph?.rich_text?.length) delete compatBlock.properties
+
       break
 
     case 'heading_1':
@@ -145,9 +132,8 @@ export function convertBlock({
       break
 
     case 'to_do':
-      if (block.to_do?.checked) {
-        compatBlock.properties.checked = [['Yes']]
-      }
+      if (block.to_do?.checked) compatBlock.properties.checked = [['Yes']]
+
       break
 
     case 'toggle':
@@ -155,9 +141,8 @@ export function convertBlock({
       break
 
     case 'code':
-      if (block.code.language) {
-        compatBlock.properties.language = [[block.code.language]]
-      }
+      if (block.code.language) compatBlock.properties.language = [[block.code.language]]
+
       break
 
     case 'callout':
@@ -189,13 +174,10 @@ export function convertBlock({
       break
 
     case 'bookmark':
-      if (block.bookmark.url) {
-        compatBlock.properties.link = [[block.bookmark.url]]
-      }
+      if (block.bookmark.url) compatBlock.properties.link = [[block.bookmark.url]]
 
-      if (block.bookmark.caption) {
-        compatBlock.properties.description = convertRichText(block.bookmark.caption)
-      }
+      if (block.bookmark.caption) compatBlock.properties.description = convertRichText(block.bookmark.caption)
+
       break
 
     case 'link_to_page':
@@ -223,9 +205,7 @@ export function convertBlock({
       if (pageMap) {
         const page = pageMap[block.id] as types.Page
         if (page) {
-          if (page.properties.title) {
-            compatBlock.properties.title = convertRichText((page.properties.title as any).title)
-          }
+          if (page.properties.title) compatBlock.properties.title = convertRichText((page.properties.title as any).title)
 
           if (page.cover) {
             switch (page.cover.type) {
@@ -242,7 +222,7 @@ export function convertBlock({
             compatBlock.format.page_cover_position = 0.5
           }
 
-          if (page.icon) {
+          if (page.icon)
             switch (page.icon.type) {
               case 'emoji':
                 compatBlock.format.page_icon = page.icon.emoji
@@ -256,9 +236,8 @@ export function convertBlock({
                 compatBlock.format.page_icon = page.icon.file.url
                 break
             }
-          }
 
-          if (page.parent) {
+          if (page.parent)
             switch (page.parent.type) {
               case 'workspace':
                 compatBlock.parent_table = 'space'
@@ -272,15 +251,10 @@ export function convertBlock({
                 compatBlock.parent_table = 'block'
                 break
             }
-          }
         }
       }
 
-      if (block.child_page) {
-        if (block.child_page.title) {
-          compatBlock.properties.title = [[block.child_page.title]]
-        }
-      }
+      if (block.child_page) if (block.child_page.title) compatBlock.properties.title = [[block.child_page.title]]
 
       break
     }
@@ -303,9 +277,8 @@ export function convertBlock({
       break
 
     case 'equation':
-      if (block.equation?.expression) {
-        compatBlock.properties.title = [[block.equation.expression]]
-      }
+      if (block.equation?.expression) compatBlock.properties.title = [[block.equation.expression]]
+
       break
 
     case 'child_database':
@@ -326,12 +299,10 @@ export function convertBlock({
           }
         })
       }
-      if (blockDetails.has_column_header) {
-        compatBlock.format.table_block_column_header = blockDetails.has_column_header
-      }
-      if (blockDetails.has_row_header) {
-        compatBlock.format.table_block_row_header = blockDetails.has_row_header
-      }
+      if (blockDetails.has_column_header) compatBlock.format.table_block_column_header = blockDetails.has_column_header
+
+      if (blockDetails.has_row_header) compatBlock.format.table_block_row_header = blockDetails.has_row_header
+
       break
 
     case 'table_row':
@@ -417,15 +388,10 @@ export function convertBlock({
               break
 
             case 'open.spotify.com':
-              if (u.pathname.includes('/embed/') || u.pathname.includes('/embed-podcast/')) {
-                break
-              }
+              if (u.pathname.includes('/embed/') || u.pathname.includes('/embed-podcast/')) break
 
-              if (u.pathname.startsWith('/playlist/')) {
-                u.pathname = `/embed${u.pathname}`
-              } else if (u.pathname.startsWith('/episode/')) {
-                u.pathname = `/embed-podcast${u.pathname}`
-              }
+              if (u.pathname.startsWith('/playlist/')) u.pathname = `/embed${u.pathname}`
+              else if (u.pathname.startsWith('/episode/')) u.pathname = `/embed-podcast${u.pathname}`
 
               u.search = ''
               compatBlock.format.display_source = u.toString()

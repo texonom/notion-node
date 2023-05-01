@@ -14,7 +14,7 @@ const pageIdFixturesFailure = [
   'foo' // invalid page id
 ]
 
-for (const pageId of pageIdFixturesSuccess) {
+for (const pageId of pageIdFixturesSuccess)
   test(
     `NotionAPI.getPage success ${pageId}`,
     async () => {
@@ -26,11 +26,9 @@ for (const pageId of pageIdFixturesSuccess) {
     },
     { timeout: 60000 }
   )
-}
 
-for (const pageId of pageIdFixturesFailure) {
+for (const pageId of pageIdFixturesFailure)
   test(`NotionAPI.getPage failure ${pageId}`, async () => {
     const api = new NotionAPI()
     await expect(() => api.getPage(pageId, { gotOptions: { timeout: 1000 } })).rejects.toThrow()
   })
-}

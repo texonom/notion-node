@@ -18,25 +18,19 @@ export const getBlockParentPage = (
   let currentRecord: types.Block | types.Collection = block
 
   while (currentRecord != null) {
-    if (inclusive && (currentRecord as types.Block)?.type === 'page') {
-      return currentRecord as types.PageBlock
-    }
+    if (inclusive && (currentRecord as types.Block)?.type === 'page') return currentRecord as types.PageBlock
 
     const parentId: string = currentRecord.parent_id
     const parentTable = currentRecord.parent_table
 
-    if (!parentId) {
-      break
-    }
+    if (!parentId) break
 
     if (parentTable === 'collection') {
       currentRecord = recordMap.collection[parentId]?.value
     } else {
       currentRecord = recordMap.block[parentId]?.value
 
-      if ((currentRecord as types.Block)?.type === 'page') {
-        return currentRecord as types.PageBlock
-      }
+      if ((currentRecord as types.Block)?.type === 'page') return currentRecord as types.PageBlock
     }
   }
 

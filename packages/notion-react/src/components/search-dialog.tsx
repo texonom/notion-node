@@ -132,9 +132,7 @@ export class SearchDialog extends React.Component<{
   }
 
   _onAfterOpen = () => {
-    if (this._inputRef.current) {
-      this._inputRef.current.focus()
-    }
+    if (this._inputRef.current) this._inputRef.current.focus()
   }
 
   _onChangeQuery = e => {
@@ -180,7 +178,7 @@ export class SearchDialog extends React.Component<{
       ancestorId: rootBlockId
     })
 
-    console.log('search', query, result)
+    console.info('search', query, result)
 
     let searchResult: any = null // TODO
     let searchError: types.APIError = null
@@ -196,9 +194,7 @@ export class SearchDialog extends React.Component<{
           if (!block) return
 
           const title = getBlockTitle(block, searchResult.recordMap)
-          if (!title) {
-            return
-          }
+          if (!title) return
 
           result.title = title
           result.block = block
@@ -208,13 +204,10 @@ export class SearchDialog extends React.Component<{
               inclusive: true
             }) || block
 
-          if (!result.page.id) {
-            return
-          }
+          if (!result.page.id) return
 
-          if (result.highlight?.text) {
+          if (result.highlight?.text)
             result.highlight.html = result.highlight.text.replace(/<gzkNfoUU>/gi, '<b>').replace(/<\/gzkNfoUU>/gi, '</b>')
-          }
 
           return result
         })
@@ -231,8 +224,6 @@ export class SearchDialog extends React.Component<{
       searchResult.results = Object.values(searchResultsMap)
     }
 
-    if (this.state.query === query) {
-      this.setState({ isLoading: false, searchResult, searchError })
-    }
+    if (this.state.query === query) this.setState({ isLoading: false, searchResult, searchError })
   }
 }

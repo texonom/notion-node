@@ -51,9 +51,7 @@ function List({ blockIds, collection, collectionView }) {
                       const schema = collection.schema[p.property]
                       const data = block && block.properties?.[p.property]
 
-                      if (!schema) {
-                        return null
-                      }
+                      if (!schema) return null
 
                       return (
                         <div className='notion-list-item-property' key={p.property}>

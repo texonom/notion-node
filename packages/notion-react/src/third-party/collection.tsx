@@ -30,7 +30,7 @@ export const Collection: React.FC<{
    * To circumvent this issue, we're passing the context value directly to
    * `Collection` so all children have the correct context values.
    */
-  // console.log('Collection', Object.keys(recordMap.block).length)
+  // console.info('Collection', Object.keys(recordMap.block).length)
 
   const context: NotionContext = React.useMemo(
     () => ({
@@ -40,9 +40,7 @@ export const Collection: React.FC<{
   )
 
   if (block.type === 'page') {
-    if (block.parent_table !== 'collection') {
-      return null
-    }
+    if (block.parent_table !== 'collection') return null
 
     return (
       <NotionContextProvider {...context}>
@@ -83,7 +81,7 @@ const CollectionViewBlock: React.FC<{
 
   const onChangeView = React.useCallback(
     (collectionViewId: string) => {
-      console.log('change collection view', collectionViewId)
+      console.info('change collection view', collectionViewId)
 
       setCollectionState({
         ...collectionState,
@@ -94,9 +92,7 @@ const CollectionViewBlock: React.FC<{
   )
 
   let { width: windowWidth } = useWindowSize()
-  if (isServer) {
-    windowWidth = 1024
-  }
+  if (isServer) windowWidth = 1024
 
   const collection = recordMap.collection[collectionId]?.value
   const collectionView = recordMap.collection_view[collectionViewId]?.value
@@ -106,27 +102,24 @@ const CollectionViewBlock: React.FC<{
   const { width, padding } = React.useMemo(() => {
     const style: React.CSSProperties = {}
 
-    if (collectionView?.type !== 'table' && collectionView?.type !== 'board') {
+    if (collectionView?.type !== 'table' && collectionView?.type !== 'board')
       return {
         style,
         width: 0,
         padding: 0
       }
-    }
 
     const width = windowWidth
     // TODO: customize for mobile?
     const maxNotionBodyWidth = 708
     let notionBodyWidth = maxNotionBodyWidth
 
-    if (parentPage?.format?.page_full_width) {
-      notionBodyWidth = (width - 2 * Math.min(96, width * 0.08)) | 0
-    } else {
+    if (parentPage?.format?.page_full_width) notionBodyWidth = (width - 2 * Math.min(96, width * 0.08)) | 0
+    else
       notionBodyWidth =
         width < maxNotionBodyWidth
           ? (width - width * 0.02) | 0 // 2vw
           : maxNotionBodyWidth
-    }
 
     const padding = isServer && !isMounted ? 96 : ((width - notionBodyWidth) / 2) | 0
     style.paddingLeft = padding
@@ -139,7 +132,7 @@ const CollectionViewBlock: React.FC<{
     }
   }, [windowWidth, parentPage, collectionView?.type, isMounted])
 
-  // console.log({
+  // console.info({
   //   width,
   //   padding
   // })
@@ -157,12 +150,11 @@ const CollectionViewBlock: React.FC<{
 
   const title = getTextContent(collection.name).trim()
   const showTitle = collectionView.format?.hide_linked_collection_name !== true && title
-  if (collection.icon) {
+  if (collection.icon)
     block.format = {
       ...block.format,
       page_icon: collection.icon
     }
-  }
 
   return (
     <>
