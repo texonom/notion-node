@@ -1,78 +1,37 @@
-name: CI
+name: Build & Test
 
-on: [push, pull_request]
+on:
+  push:
 
 jobs:
-  test:
+  buildtest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 16
-          cache: pnpm
+          node-version: 18.x
 
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm test
-
-  build-minimal:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
+      - name: Cache node modules
+        uses: actions/cache@v3
         with:
-          node-version: 16
-          cache: pnpm
+          path: node_modules
+          key: ${{ runner.OS }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
 
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-
-      - name: Build minimal example
+      - name: Install npm dependencies
         run: |
-          cd examples/minimal
+          npm i -g pnpm
+          pnpm i
+
+      - name: Build
+        run: |
           pnpm build
 
-  build-full:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-
-      - name: Build full example
+      - name: Coverage
         run: |
-          cd examples/full
-          pnpm build
-
-  # TODO: using the official API with GitHub Actions results in too much rate
-  # limiting and false negative build failures, so we're disabling it for now.
-  # build-full-official-api:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 16
-  #         cache: pnpm
-
-  #     - run: pnpm install --frozen-lockfile
-  #     - run: pnpm build
-
-  #     - name: Build full example using the official Notion API
-
-  #       env:
-  #         USE_OFFICIAL_NOTION_API: true
-  #         NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-
-  #       run: |
-  #         cd examples/full
-  #         pnpm build
+          pnpm coverage
