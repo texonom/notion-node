@@ -32,9 +32,7 @@ export const Breadcrumbs: React.FC<{
 
   const breadcrumbs = React.useMemo(() => {
     const breadcrumbs = getPageBreadcrumbs(recordMap, block.id)
-    if (rootOnly) {
-      return [breadcrumbs[0]].filter(Boolean)
-    }
+    if (rootOnly) return [breadcrumbs[0]].filter(Boolean)
 
     return breadcrumbs
   }, [recordMap, block.id, rootOnly])
@@ -42,20 +40,15 @@ export const Breadcrumbs: React.FC<{
   return (
     <div className='breadcrumbs' key='breadcrumbs'>
       {breadcrumbs.map((breadcrumb, index: number) => {
-        if (!breadcrumb) {
-          return null
-        }
+        if (!breadcrumb) return null
 
         const pageLinkProps: any = {}
         const componentMap = {
           pageLink: components.PageLink
         }
 
-        if (breadcrumb.active) {
-          componentMap.pageLink = props => <div {...props} />
-        } else {
-          pageLinkProps.href = mapPageUrl(breadcrumb.pageId)
-        }
+        if (breadcrumb.active) componentMap.pageLink = props => <div {...props} />
+        else pageLinkProps.href = mapPageUrl(breadcrumb.pageId)
 
         return (
           <React.Fragment key={breadcrumb.pageId}>
@@ -92,9 +85,7 @@ export const Search: React.FC<{
 
   const onCloseSearch = React.useCallback(() => {
     setIsSearchOpen(false)
-    if (onHideSearch) {
-      onHideSearch()
-    }
+    if (onHideSearch) onHideSearch()
   }, [onHideSearch])
 
   useHotkeys('cmd+p', event => {

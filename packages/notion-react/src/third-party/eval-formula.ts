@@ -65,17 +65,14 @@ export function evalFormula(formula: types.Formula, context: EvalFormulaContext)
 
         case 'boolean':
           // TODO: handle chceckbox properties
-          if (typeof text === 'string') {
-            return text === 'true'
-          } else {
-            return !!text
-          }
+          if (typeof text === 'string') return text === 'true'
+          else return !!text
 
         case 'date': {
-          // console.log('date', text, value)
+          // console.info('date', text, value)
 
           const v = getDateValue(value)
-          if (v) {
+          if (v)
             if (endDate && v.end_date) {
               const date = new Date(v.end_date)
               return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
@@ -83,9 +80,7 @@ export function evalFormula(formula: types.Formula, context: EvalFormulaContext)
               const date = new Date(v.start_date)
               return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
             }
-          } else {
-            return new Date(text)
-          }
+          else return new Date(text)
         }
 
         default:
@@ -101,7 +96,7 @@ export function evalFormula(formula: types.Formula, context: EvalFormulaContext)
       return evalFunctionFormula(formula, ctx)
 
     default:
-      // console.log(formula)
+      // console.info(formula)
       throw new Error(`invalid or unsupported formula "${(formula as any)?.type}`)
   }
 }
@@ -168,14 +163,10 @@ function evalFunctionFormula(
       const v0 = evalFormula(args[0], ctx)
       const v1 = evalFormula(args[1], ctx)
 
-      if (typeof v0 === 'number') {
-        return v0 + +v1
-      } else if (typeof v0 === 'string') {
-        return v0 + `${v1}`
-      } else {
-        // TODO
-        return v0
-      }
+      if (typeof v0 === 'number') return v0 + +v1
+      else if (typeof v0 === 'string') return v0 + `${v1}`
+      // TODO
+      else return v0
     }
 
     case 'cbrt':
@@ -261,12 +252,9 @@ function evalFunctionFormula(
           return value
 
         case 'object':
-          if (value instanceof Date) {
-            return format(value as Date, 'MMM d, YYY')
-          } else {
-            // shouldn't ever get here
-            return `${value}`
-          }
+          if (value instanceof Date) return format(value as Date, 'MMM d, YYY')
+          // shouldn't ever get here
+          else return `${value}`
 
         case 'number':
         default:
@@ -380,7 +368,7 @@ function evalFunctionFormula(
       return getYear(evalFormula(args[0], ctx) as Date)
 
     default:
-      // console.log(formula)
+      // console.info(formula)
       throw new Error(`invalid or unsupported function formula "${(formula as any)?.type}`)
   }
 }

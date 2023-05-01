@@ -12,16 +12,12 @@ export const getPageBreadcrumbs = (recordMap: types.ExtendedRecordMap, activePag
 
   do {
     const block = blockMap[currentPageId]?.value
-    if (!block) {
-      break
-    }
+    if (!block) break
 
     const title = getBlockTitle(block, recordMap)
     const icon = getBlockIcon(block, recordMap)
 
-    if (!(title || icon)) {
-      break
-    }
+    if (!(title || icon)) break
 
     breadcrumbs.push({
       block,
@@ -34,9 +30,7 @@ export const getPageBreadcrumbs = (recordMap: types.ExtendedRecordMap, activePag
     const parentBlock = getBlockParentPage(block, recordMap)
     const parentId = parentBlock?.id
 
-    if (!parentId) {
-      break
-    }
+    if (!parentId) break
 
     currentPageId = parentId
 

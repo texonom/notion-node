@@ -33,13 +33,12 @@ export const Code: React.FC<{
 
   const codeRef = React.useRef()
   React.useEffect(() => {
-    if (codeRef.current) {
+    if (codeRef.current)
       try {
         highlightElement(codeRef.current)
       } catch (err) {
         console.warn('prismjs highlight error', err)
       }
-    }
   }, [codeRef])
 
   const onClickCopyToClipboard = React.useCallback(() => {

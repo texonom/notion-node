@@ -14,9 +14,7 @@ export const EOI: React.FC<{
 }> = ({ block, inline, className }) => {
   const { components } = useNotionContext()
   const { original_url, attributes, domain } = block?.format || {}
-  if (!original_url || !attributes) {
-    return null
-  }
+  if (!original_url || !attributes) return null
 
   const title = attributes.find(attr => attr.id === 'title')?.values[0]
   let owner = attributes.find(attr => attr.id === 'owner')?.values[0]
@@ -34,9 +32,8 @@ export const EOI: React.FC<{
       break
 
     default:
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`Unsupported external_object_instance domain "${domain}"`, JSON.stringify(block, null, 2))
-      }
+      if (process.env.NODE_ENV !== 'production')
+        console.info(`Unsupported external_object_instance domain "${domain}"`, JSON.stringify(block, null, 2))
 
       return null
   }

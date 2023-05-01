@@ -56,9 +56,7 @@ export const PageIconImpl: React.FC<{
     }
   }
 
-  if (!content) {
-    return null
-  }
+  if (!content) return null
 
   return (
     <div

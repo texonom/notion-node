@@ -17,9 +17,7 @@ export function getCollectionGroups(collection: any, collectionView: any, collec
     let schema = collection.schema[property]
 
     // Checkbox boolen value must be Yes||No
-    if (type === 'checkbox' && value) {
-      queryValue = 'Yes'
-    }
+    if (type === 'checkbox' && value) queryValue = 'Yes'
 
     if (isDateValue) {
       schema = {

@@ -27,11 +27,10 @@ export const LazyImage: React.FC<{
 
   const onLoad = React.useCallback(
     (e: any) => {
-      if (zoomable && (e.target.src || e.target.srcset)) {
+      if (zoomable && (e.target.src || e.target.srcset))
         if (zoomRef.current) {
           ;(zoomRef.current as any).attach(e.target)
         }
-      }
     },
     [zoomRef, zoomable]
   )
@@ -50,7 +49,7 @@ export const LazyImage: React.FC<{
   if (previewImage) {
     const aspectRatio = previewImage.originalHeight / previewImage.originalWidth
 
-    if (components.Image) {
+    if (components.Image)
       // TODO: could try using next/image onLoadComplete to replace LazyImageFull
       // while retaining our blur implementation
       return (
@@ -67,7 +66,6 @@ export const LazyImage: React.FC<{
           onLoad={onLoad}
         />
       )
-    }
 
     return (
       <LazyImageFull src={src} {...rest} experimentalDecode={true}>
@@ -130,7 +128,7 @@ export const LazyImage: React.FC<{
 
       If you have a use case that is affected by this, please open an issue on github.
     */
-    if (components.Image && forceCustomImages) {
+    if (components.Image && forceCustomImages)
       return (
         <components.Image
           src={src}
@@ -143,7 +141,6 @@ export const LazyImage: React.FC<{
           onLoad={onLoad}
         />
       )
-    }
 
     // Default image element
     return (

@@ -17,9 +17,7 @@ export const wrapNextImage = (NextImage: any): React.FC<any> => {
 
     ...rest
   }) {
-    if (!layout) {
-      layout = width && height ? 'intrinsic' : 'fill'
-    }
+    if (!layout) layout = width && height ? 'intrinsic' : 'fill'
 
     return (
       <NextImage

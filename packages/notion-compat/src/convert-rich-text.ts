@@ -10,57 +10,36 @@ export function convertRichText(richText: types.RichText): notion.Decoration[] {
 export function convertRichTextItem(richTextItem: types.RichTextItem): notion.Decoration {
   const subdecorations: notion.SubDecoration[] = []
 
-  if (richTextItem.annotations.bold) {
-    subdecorations.push(['b'])
-  }
+  if (richTextItem.annotations.bold) subdecorations.push(['b'])
 
-  if (richTextItem.annotations.italic) {
-    subdecorations.push(['i'])
-  }
+  if (richTextItem.annotations.italic) subdecorations.push(['i'])
 
-  if (richTextItem.annotations.strikethrough) {
-    subdecorations.push(['s'])
-  }
+  if (richTextItem.annotations.strikethrough) subdecorations.push(['s'])
 
-  if (richTextItem.annotations.underline) {
-    subdecorations.push(['_'])
-  }
+  if (richTextItem.annotations.underline) subdecorations.push(['_'])
 
-  if (richTextItem.annotations.code) {
-    subdecorations.push(['c'])
-  }
+  if (richTextItem.annotations.code) subdecorations.push(['c'])
 
-  if (richTextItem.annotations.color !== 'default') {
-    subdecorations.push(['h', convertColor(richTextItem.annotations.color)])
-  }
+  if (richTextItem.annotations.color !== 'default') subdecorations.push(['h', convertColor(richTextItem.annotations.color)])
 
   const details = richTextItem[richTextItem.type]
-  if (details) {
-    if (details.link) {
-      subdecorations.push(['a', details.link.url])
-    }
-  }
+  if (details) if (details.link) subdecorations.push(['a', details.link.url])
 
   switch (richTextItem.type) {
     case 'text': {
-      if (subdecorations.length) {
-        return [richTextItem.text.content, subdecorations]
-      } else {
-        return [richTextItem.text.content]
-      }
+      if (subdecorations.length) return [richTextItem.text.content, subdecorations]
+      else return [richTextItem.text.content]
     }
 
     case 'equation':
-      if (richTextItem.equation?.expression) {
-        subdecorations.unshift(['e', richTextItem.equation.expression])
-      }
+      if (richTextItem.equation?.expression) subdecorations.unshift(['e', richTextItem.equation.expression])
 
       return ['⁍', subdecorations]
 
     case 'mention': {
       const { mention } = richTextItem
 
-      if (mention) {
+      if (mention)
         switch (mention.type) {
           case 'link_preview':
             // TODO: this should be an eoi, but we don't hae the proper data
@@ -100,7 +79,6 @@ export function convertRichTextItem(richTextItem: types.RichTextItem): notion.De
             // TODO
             break
         }
-      }
 
       return [richTextItem.plain_text, subdecorations]
     }
