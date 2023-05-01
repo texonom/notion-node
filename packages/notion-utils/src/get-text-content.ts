@@ -1,4 +1,4 @@
-import * as types from 'notion-types'
+import * as types from '@3bases/notion-types'
 
 /**
  * Gets the raw, unformatted text content of a block's content value.

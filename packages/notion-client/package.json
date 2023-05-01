@@ -1,10 +1,10 @@
 {
-  "name": "notion-client",
-  "version": "6.16.0",
+  "name": "@3bases/notion-client",
+  "version": "1.0.0",
   "type": "module",
   "description": "Robust TypeScript client for the unofficial Notion API.",
-  "repository": "NotionX/react-notion-x",
-  "author": "Travis Fischer <travis@transitivebullsh.it>",
+  "repository": "3bases/notion",
+  "author": "Alan Jo <sungle3737@gmail.com>",
   "license": "MIT",
   "main": "./build/index.js",
   "module": "./build/index.js",
@@ -19,23 +19,12 @@
   "scripts": {
     "build": "tsup",
     "watch": "tsup --watch --silent --onSuccess 'echo build successful'",
-    "test": "ava"
+    "test": "vitest --run"
   },
   "dependencies": {
     "got": "^11.8.1",
-    "notion-types": "^6.16.0",
-    "notion-utils": "^6.16.0",
+    "@3bases/notion-types": "^1.0.0",
+    "@3bases/notion-utils": "^1.0.0",
     "p-map": "^5.3.0"
-  },
-  "ava": {
-    "snapshotDir": ".snapshots",
-    "extensions": {
-      "ts": "module"
-    },
-    "nodeArguments": [
-      "--loader=ts-node/esm",
-      "--no-warnings",
-      "--experimental-specifier-resolution=node"
-    ]
   }
 }

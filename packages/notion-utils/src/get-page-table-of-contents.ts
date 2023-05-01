@@ -1,4 +1,4 @@
-import * as types from 'notion-types'
+import * as types from '@3bases/notion-types'
 
 import { getTextContent } from './get-text-content'
 

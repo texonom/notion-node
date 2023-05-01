@@ -25,9 +25,6 @@
 
     "lib": ["ESNext", "ESNext.Array", "DOM"],
 
-    "baseUrl": ".",
-    "paths": {
-      "*": ["types/*"]
-    }
+    "baseUrl": "."
   }
 }

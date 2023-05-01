@@ -1,4 +1,4 @@
-import { Block, ExtendedRecordMap } from 'notion-types'
+import { Block, ExtendedRecordMap } from '@3bases/notion-types'
 
 import { getBlockCollectionId } from './get-block-collection-id'
 import { getTextContent } from './get-text-content'

@@ -1,4 +1,4 @@
-import * as types from 'notion-types'
+import * as types from '@3bases/notion-types'
 
 /**
  * Attempts to find a valid date from a given property.
