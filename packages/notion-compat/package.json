@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@notionhq/client": "^1.0.4",
-    "notion-client": "^1.0.0"
+    "@3bases/notion-client": "^1.0.0"
   },
   "peerDependencies": {
     "@notionhq/client": "^1.0.4"
