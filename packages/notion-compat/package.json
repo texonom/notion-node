@@ -19,8 +19,8 @@
   "scripts": {
     "build": "tsup",
     "watch": "tsup --watch --silent --onSuccess 'echo build successful'",
-    "release": "standard-version --release-as $RELEASE",
-    "prerelease": "standard-version --prerelease $PRE",
+    "prerelease": "standard-version --skip.changelog --prerelease",
+    "release": "standard-version --release-as",
     "pu": "pnpm publish"
   },
   "dependencies": {

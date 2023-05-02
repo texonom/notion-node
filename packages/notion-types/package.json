@@ -13,8 +13,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "release": "standard-version --release-as $RELEASE",
-    "prerelease": "standard-version --prerelease $PRE",
+    "prerelease": "standard-version --skip.changelog --prerelease",
+    "release": "standard-version --release-as",
     "pu": "pnpm publish"
   },
   "engines": {
