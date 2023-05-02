@@ -18,6 +18,7 @@ coverage
 .cache
 tsconfig.tsbuildinfo
 
+.eslintcache
 npm-debug.log*
 .vscode/settings.json
 
