@@ -1,5 +1,5 @@
 {
-  "name": "notion",
+  "name": "@3bases/notion-node",
   "private": true,
   "description": "Fast and accurate React renderer for Notion. TS batteries included.",
   "repository": "3bases/notion",
