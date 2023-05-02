@@ -1,6 +1,9 @@
 {
   "baseBranch": "origin/main",
   "pipeline": {
-    "build": {}
+    "build": {},
+    "release": {},
+    "prerelease": {},
+    "pu": { "dependsOn": ["build"] }
   }
 }

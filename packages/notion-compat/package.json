@@ -18,18 +18,27 @@
   },
   "scripts": {
     "build": "tsup",
-    "watch": "tsup --watch --silent --onSuccess 'echo build successful'"
+    "watch": "tsup --watch --silent --onSuccess 'echo build successful'",
+    "release": "standard-version --release-as $RELEASE",
+    "prerelease": "standard-version --prerelease $PRE",
+    "pu": "pnpm publish"
   },
   "dependencies": {
-    "@3bases/notion-types": "^1.0.0",
-    "@3bases/notion-utils": "^1.0.0",
+    "@3bases/notion-types": "workspace:^",
+    "@3bases/notion-utils": "workspace:^",
     "p-queue": "^7.2.0"
   },
   "devDependencies": {
     "@notionhq/client": "^1.0.4",
-    "@3bases/notion-client": "^1.0.0"
+    "@3bases/notion-client": "workspace:^"
   },
   "peerDependencies": {
     "@notionhq/client": "^1.0.4"
+  },
+  "standard-version": {
+    "skip": {
+      "commit": true,
+      "tag": true
+    }
   }
 }
