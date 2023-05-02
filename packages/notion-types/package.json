@@ -12,9 +12,18 @@
     "build"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "release": "standard-version --release-as $RELEASE",
+    "prerelease": "standard-version --prerelease $PRE",
+    "pu": "pnpm publish"
   },
   "engines": {
     "node": ">=12"
+  },
+  "standard-version": {
+    "skip": {
+      "commit": true,
+      "tag": true
+    }
   }
 }

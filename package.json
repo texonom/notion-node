@@ -14,20 +14,18 @@
     "examples/*"
   ],
   "scripts": {
+    "prepare": "husky install",
     "build": "turbo run build",
-    "link": "pnpm exec \"pnpm link\" --no-private",
     "dev": "turbo watch",
-    "prebuild": "turbo clean",
-    "prewatch": "turbo clean",
     "clean": "rm -rf packages/*/build packages/*/.turbo node_modules/.cache",
-    "pretest": "turbo build",
     "test": "vitest",
     "coverage": "vitest --run --coverage",
-    "lint": "eslint '**/*.{ts,tsx}' --fix --ignore-path .gitignore",
+    "lint": "eslint \"**/*.{ts,tsx}\" --fix --ignore-path .gitignore",
     "format": "prettier \"**/*.{js,json,md,css,js,ts,tsx}\" --write --ignore-path .gitignore",
-    "predeploy": "turbo build",
-    "deploy": "pnpm publish",
-    "prepare": "husky install"
+    "release": "turbo run release --force && standard-version -a -t '' --release-as $RELEASE",
+    "prerelease": "turbo run prerelease --force && standard-version -a -t '' --skip.changelog --prerelease $PRE",
+    "pu": "pnpm publish",
+    "predeploy": "turbo build"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.3.1",
@@ -51,5 +49,16 @@
     "typescript": "^4.8.4",
     "vite": "^4.3.3",
     "vitest": "^0.30.1"
+  },
+  "standard-version": {
+    "scripts": {
+      "precommit": "git add .",
+      "postchangelog": "pnpm format"
+    },
+    "skip": {
+      "changelog": true,
+      "commit": true,
+      "tag": true
+    }
   }
 }
