@@ -6,7 +6,7 @@ export default defineConfig({
   target: 'es2015',
   platform: 'browser',
   format: ['esm'],
-  splitting: false,
+  splitting: true,
   sourcemap: true,
   minify: true,
   shims: false

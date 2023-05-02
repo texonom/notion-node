@@ -13,7 +13,8 @@ const baseConfig: Options = {
   target: 'es2015',
   platform: 'browser',
   format: ['esm'],
-  splitting: false,
+  splitting: true,
+  minify: true,
   shims: false
 }
 

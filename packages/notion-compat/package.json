@@ -1,6 +1,6 @@
 {
   "name": "@3bases/notion-compat",
-  "version": "1.1.0-alpha.0",
+  "version": "1.1.0-alpha.1",
   "type": "module",
   "description": "Compatibility layer between the official Notion API and unofficial private API.",
   "repository": "3bases/notion",
@@ -17,7 +17,7 @@
     "node": ">=12"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsc && tsup",
     "watch": "tsup --watch --silent --onSuccess 'echo build successful'",
     "prerelease": "standard-version --skip.changelog --prerelease",
     "release": "standard-version --release-as",

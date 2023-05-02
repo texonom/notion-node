@@ -1,6 +1,6 @@
 {
   "name": "@3bases/notion-utils",
-  "version": "1.1.0-alpha.0",
+  "version": "1.1.0-alpha.1",
   "type": "module",
   "description": "Useful utilities for working with Notion data. Isomorphic.",
   "repository": "3bases/notion",
@@ -23,7 +23,7 @@
     "node": ">=12"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsc && tsup",
     "watch": "tsup --watch --silent --onSuccess 'echo build successful'",
     "test": "vitest --run",
     "prerelease": "standard-version --skip.changelog --prerelease",

@@ -6,7 +6,7 @@ export default defineConfig({
   target: 'node14',
   platform: 'node',
   format: ['esm'],
-  splitting: false,
+  splitting: true,
   sourcemap: true,
   minify: true,
   shims: false
