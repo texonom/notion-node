@@ -71,10 +71,10 @@ importers:
   packages/notion-client:
     dependencies:
       '@3bases/notion-types':
-        specifier: ^1.0.0
+        specifier: workspace:^
         version: link:../notion-types
       '@3bases/notion-utils':
-        specifier: ^1.0.0
+        specifier: workspace:^
         version: link:../notion-utils
       got:
         specifier: ^11.8.1
@@ -86,17 +86,17 @@ importers:
   packages/notion-compat:
     dependencies:
       '@3bases/notion-types':
-        specifier: ^1.0.0
+        specifier: workspace:^
         version: link:../notion-types
       '@3bases/notion-utils':
-        specifier: ^1.0.0
+        specifier: workspace:^
         version: link:../notion-utils
       p-queue:
         specifier: ^7.2.0
         version: 7.2.0
     devDependencies:
       '@3bases/notion-client':
-        specifier: ^1.0.0
+        specifier: workspace:^
         version: link:../notion-client
       '@notionhq/client':
         specifier: ^1.0.4
@@ -105,10 +105,10 @@ importers:
   packages/notion-react:
     dependencies:
       '@3bases/notion-types':
-        specifier: ^1.0.0
+        specifier: workspace:^
         version: link:../notion-types
       '@3bases/notion-utils':
-        specifier: ^1.0.0
+        specifier: workspace:^
         version: link:../notion-utils
       '@fisch0920/medium-zoom':
         specifier: ^1.0.7
@@ -177,7 +177,7 @@ importers:
   packages/notion-utils:
     dependencies:
       '@3bases/notion-types':
-        specifier: ^1.0.0
+        specifier: workspace:^
         version: link:../notion-types
       is-url-superb:
         specifier: ^6.1.0
