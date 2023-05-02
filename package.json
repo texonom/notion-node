@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "prepare": "husky install",
+    "link": "turbo link",
     "build": "turbo run build",
     "dev": "turbo watch",
     "clean": "rm -rf packages/*/build packages/*/.turbo node_modules/.cache",
@@ -22,8 +23,8 @@
     "coverage": "vitest --run --coverage",
     "lint": "eslint \"**/*.{ts,tsx}\" --fix --ignore-path .gitignore",
     "format": "prettier \"**/*.{js,json,md,css,js,ts,tsx}\" --write --ignore-path .gitignore",
-    "release": "turbo run release --force && standard-version -a -t '' --release-as $RELEASE",
-    "prerelease": "turbo run prerelease --force && standard-version -a -t '' --skip.changelog --prerelease $PRE",
+    "prerelease": "standard-version -a -t '' --skip.changelog --prerelease",
+    "release": "standard-version -a -t '' --release-as $RELEASE",
     "pu": "pnpm publish",
     "predeploy": "turbo build"
   },
