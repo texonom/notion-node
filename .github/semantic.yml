@@ -3,17 +3,13 @@ types:
   - feat
   - fix
   - docs
-  - style
   - refactor
   - test
-  - ci
-  - cd
   - build
   - lint
+  - format
   - merge
   - typing
   - perf
   - meta
   - deps
-  - pr
-  - chore
