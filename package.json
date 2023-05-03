@@ -8,10 +8,6 @@
   "engines": {
     "node": ">=12"
   },
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
   "scripts": {
     "prepare": "husky install",
     "link": "turbo link",
@@ -27,7 +23,6 @@
     "pu": "turbo pu -- --access=public --no-git-checks"
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^3.3.1",
     "@types/node": "^18.11.0",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
@@ -43,7 +38,6 @@
     "prettier": "^2.8.8",
     "standard-version": "^9.5.0",
     "tsup": "^6.7.0",
-    "tsx": "^3.12.7",
     "turbo": "^1.9.3",
     "typescript": "^4.8.4",
     "vite": "^4.3.3",
