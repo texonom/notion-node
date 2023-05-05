@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 
-import { parsePageId } from './parse-page-id'
+import { parsePageId } from '../src/parse-page-id'
 
 const pageIdFixturesSuccess = [
   '267c0d1f1df8457f9b5c8f7efca16d83',

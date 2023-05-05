@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 
-import { normalizeUrl } from './normalize-url'
+import { normalizeUrl } from '../src/normalize-url'
 
 test('normalizeUrl invalid', () => {
   expect(normalizeUrl()).toBe('')
