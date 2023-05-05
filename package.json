@@ -14,7 +14,7 @@
     "build": "turbo run build",
     "dev": "turbo watch",
     "clean": "rm -rf packages/*/build packages/*/.turbo node_modules/.cache",
-    "test": "vitest",
+    "test": "vitest --run",
     "coverage": "vitest --run --coverage",
     "lint": "eslint \"**/*.{ts,tsx}\" --fix --ignore-path .gitignore --cache",
     "format": "prettier \"**/*.{js,json,md,css,js,ts,tsx}\" --write --ignore-path .gitignore",
