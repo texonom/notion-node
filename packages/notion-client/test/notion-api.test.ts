@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 
-import { NotionAPI } from './notion-api'
+import { NotionAPI } from '../src/notion-api'
 
 const pageIdFixturesSuccess = [
   'e0ae7b40-dd23-463e-a7bc-92195d6ec7fd',
