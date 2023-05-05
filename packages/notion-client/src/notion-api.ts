@@ -1,6 +1,5 @@
 // import { promises as fs } from 'fs'
 import * as notion from '@3bases/notion-types'
-import got, { OptionsOfJSONResponseBody } from 'got'
 import { getBlockCollectionId, getPageContentBlockIds, parsePageId, uuidToId } from '@3bases/notion-utils'
 import pMap from 'p-map'
 
@@ -42,7 +41,7 @@ export class NotionAPI {
       signFileUrls = true,
       chunkLimit = 100,
       chunkNumber = 0,
-      gotOptions
+      fetchOption
     }: {
       concurrency?: number
       fetchMissingBlocks?: boolean
@@ -50,13 +49,13 @@ export class NotionAPI {
       signFileUrls?: boolean
       chunkLimit?: number
       chunkNumber?: number
-      gotOptions?: OptionsOfJSONResponseBody
+      fetchOption?: types.FetchOption
     } = {}
   ): Promise<notion.ExtendedRecordMap> {
     const page = await this.getPageRaw(pageId, {
       chunkLimit,
       chunkNumber,
-      gotOptions
+      fetchOption
     })
     const recordMap = page?.recordMap as notion.ExtendedRecordMap
 
@@ -80,7 +79,7 @@ export class NotionAPI {
 
         if (!pendingBlockIds.length) break
 
-        const newBlocks = await this.getBlocks(pendingBlockIds, gotOptions).then(res => res.recordMap.block)
+        const newBlocks = await this.getBlocks(pendingBlockIds, fetchOption).then(res => res.recordMap.block)
 
         recordMap.block = { ...recordMap.block, ...newBlocks }
       }
@@ -120,13 +119,8 @@ export class NotionAPI {
 
           try {
             const collectionData = await this.getCollectionData(collectionId, collectionViewId, collectionView, {
-              gotOptions
+              fetchOption
             })
-
-            // await fs.writeFile(
-            //   `${collectionId}-${collectionViewId}.json`,
-            //   JSON.stringify(collectionData.result, null, 2)
-            // )
 
             recordMap.block = {
               ...recordMap.block,
@@ -169,7 +163,7 @@ export class NotionAPI {
     // NOTE: Similar to collection data, we default to eagerly fetching signed URL info
     // because it is preferable for many use cases as opposed to making these API calls
     // lazily from the client-side.
-    if (signFileUrls) await this.addSignedUrls({ recordMap, contentBlockIds, gotOptions })
+    if (signFileUrls) await this.addSignedUrls({ recordMap, contentBlockIds, fetchOption })
 
     return recordMap
   }
@@ -177,11 +171,11 @@ export class NotionAPI {
   public async addSignedUrls({
     recordMap,
     contentBlockIds,
-    gotOptions = {}
+    fetchOption = {}
   }: {
     recordMap: notion.ExtendedRecordMap
     contentBlockIds?: string[]
-    gotOptions?: OptionsOfJSONResponseBody
+    fetchOption?: types.FetchOption
   }) {
     recordMap.signed_urls = {}
 
@@ -200,7 +194,6 @@ export class NotionAPI {
           block.type === 'page')
       ) {
         const source = block.type === 'page' ? block.format?.page_cover : block.properties?.source?.[0]?.[0]
-        // console.info(block, source)
 
         if (source) {
           if (!source.includes('secure.notion-static.com')) return []
@@ -220,7 +213,7 @@ export class NotionAPI {
 
     if (allFileInstances.length > 0)
       try {
-        const { signedUrls } = await this.getSignedFileUrls(allFileInstances, gotOptions)
+        const { signedUrls } = await this.getSignedFileUrls(allFileInstances, fetchOption)
 
         if (signedUrls.length === allFileInstances.length)
           for (let i = 0; i < allFileInstances.length; ++i) {
@@ -237,13 +230,13 @@ export class NotionAPI {
   public async getPageRaw(
     pageId: string,
     {
-      gotOptions,
+      fetchOption,
       chunkLimit = 100,
       chunkNumber = 0
     }: {
       chunkLimit?: number
       chunkNumber?: number
-      gotOptions?: OptionsOfJSONResponseBody
+      fetchOption?: types.FetchOption
     } = {}
   ) {
     const parsedPageId = parsePageId(pageId)
@@ -261,20 +254,20 @@ export class NotionAPI {
     return this.fetch<notion.PageChunk>({
       endpoint: 'loadPageChunk',
       body,
-      gotOptions
+      fetchOption
     })
   }
 
   public async getCollectionData(
     collectionId: string,
     collectionViewId: string,
-    collectionView: any,
+    collectionView: notion.BaseCollectionView,
     {
       limit = 9999,
       searchQuery = '',
       userTimeZone = this._userTimeZone,
       loadContentCover = true,
-      gotOptions
+      fetchOption
     }: {
       type?: notion.CollectionViewType
       limit?: number
@@ -282,7 +275,7 @@ export class NotionAPI {
       userTimeZone?: string
       userLocale?: string
       loadContentCover?: boolean
-      gotOptions?: OptionsOfJSONResponseBody
+      fetchOption?: types.FetchOption
     } = {}
   ) {
     const type = collectionView?.type
@@ -407,81 +400,46 @@ export class NotionAPI {
         ...collectionView?.query2,
         searchQuery,
         userTimeZone,
-        //TODO: add filters here
-        filter: {
-          filters: filters,
-          operator: 'and'
-        }
+        filter: { filters, operator: 'and' }
       }
     }
-
-    // if (isBoardType) {
-    //   console.info(
-    //     JSON.stringify(
-    //       {
-    //         collectionId,
-    //         collectionViewId,
-    //         loader,
-    //         groupBy: groupBy || 'NONE',
-    //         collectionViewQuery: collectionView.query2 || 'NONE'
-    //       },
-    //       null,
-    //       2
-    //     )
-    //   )
-    // }
 
     return this.fetch<notion.CollectionInstance>({
       endpoint: 'queryCollection',
       body: {
-        collection: {
-          id: collectionId
-        },
-        collectionView: {
-          id: collectionViewId
-        },
+        collection: { id: collectionId },
+        collectionView: { id: collectionViewId },
         loader
       },
-      gotOptions
+      fetchOption
     })
   }
 
-  public async getUsers(userIds: string[], gotOptions?: OptionsOfJSONResponseBody) {
+  public async getUsers(userIds: string[], fetchOption?: types.FetchOption) {
     return this.fetch<notion.RecordValues<notion.User>>({
       endpoint: 'getRecordValues',
-      body: {
-        requests: userIds.map(id => ({ id, table: 'notion_user' }))
-      },
-      gotOptions
+      body: { requests: userIds.map(id => ({ id, table: 'notion_user' })) },
+      fetchOption
     })
   }
 
-  public async getBlocks(blockIds: string[], gotOptions?: OptionsOfJSONResponseBody) {
+  public async getBlocks(blockIds: string[], fetchOption?: types.FetchOption) {
     return this.fetch<notion.PageChunk>({
       endpoint: 'syncRecordValues',
-      body: {
-        requests: blockIds.map(blockId => ({
-          // TODO: when to use table 'space' vs 'block'?
-          table: 'block',
-          id: blockId,
-          version: -1
-        }))
-      },
-      gotOptions
+      body: { requests: blockIds.map(blockId => ({ table: 'block', id: blockId, version: -1 })) },
+      fetchOption
     })
   }
 
-  public async getSignedFileUrls(urls: types.SignedUrlRequest[], gotOptions?: OptionsOfJSONResponseBody) {
+  public async getSignedFileUrls(urls: types.SignedUrlRequest[], fetchOption?: types.FetchOption) {
     return this.fetch<types.SignedUrlResponse>({
       endpoint: 'getSignedFileUrls',
-      body: {
-        urls
-      },
-      gotOptions
+      body: { urls },
+      fetchOption
     })
   }
 
-  public async search(params: notion.SearchParams, gotOptions?: OptionsOfJSONResponseBody) {
+  public async search(params: notion.SearchParams, fetchOption?: types.FetchOption) {
     const body = {
       type: 'BlocksInAncestor',
       source: 'quick_find_public',
@@ -506,48 +464,43 @@ export class NotionAPI {
     return this.fetch<notion.SearchResults>({
       endpoint: 'search',
       body,
-      gotOptions
+      fetchOption
     })
   }
 
   public async fetch<T>({
     endpoint,
     body,
-    gotOptions,
+    fetchOption,
     headers: clientHeaders
   }: {
     endpoint: string
     body: object
-    gotOptions?: OptionsOfJSONResponseBody
-    headers?: any
+    fetchOption?: types.FetchOption
+    headers?: HeadersInit
   }): Promise<T> {
-    const headers: any = {
+    const headers: HeadersInit = {
       ...clientHeaders,
-      ...gotOptions?.headers,
+      ...fetchOption?.headers,
       'Content-Type': 'application/json'
     }
 
-    if (this._authToken) headers.cookie = `token_v2=${this._authToken}`
-
+    if (this._authToken) headers['cookie'] = `token_v2=${this._authToken}`
     if (this._activeUser) headers['x-notion-active-user-header'] = this._activeUser
 
     const url = `${this._apiBaseUrl}/${endpoint}`
+    const requestInit = {
+      method: 'post',
+      body: JSON.stringify(body),
+      headers,
+      ...fetchOption
+    }
+    if (fetchOption?.timeout !== undefined) {
+      const ctrl = new AbortController()
+      setTimeout(() => ctrl.abort(), fetchOption.timeout)
+      requestInit.signal = ctrl.signal
+    }
 
-    return got
-      .post(url, {
-        ...gotOptions,
-        json: body,
-        headers
-      })
-      .json()
-
-    // return fetch(url, {
-    //   method: 'post',
-    //   body: JSON.stringify(body),
-    //   headers
-    // }).then((res) => {
-    //   console.info(endpoint, res)
-    //   return res.json()
-    // })
+    return fetch(url, requestInit).then(res => res.json())
   }
 }

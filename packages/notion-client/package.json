@@ -25,7 +25,6 @@
     "pu": "pnpm publish"
   },
   "dependencies": {
-    "got": "^11.8.1",
     "@3bases/notion-types": "workspace:^",
     "@3bases/notion-utils": "workspace:^",
     "p-map": "^5.3.0"

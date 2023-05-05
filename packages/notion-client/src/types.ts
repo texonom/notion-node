@@ -13,3 +13,5 @@ export interface PermissionRecord {
 export interface SignedUrlResponse {
   signedUrls: string[]
 }
+
+export type FetchOption = RequestInit & { timeout?: number }
