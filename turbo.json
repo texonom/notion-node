@@ -3,10 +3,9 @@
   "pipeline": {
     "build": {},
     "@3bases/notion-client#build": { "dependsOn": ["@3bases/notion-types#build"] },
-    "@3bases/notion-compat#build": { "dependsOn": ["@3bases/notion-types#build"] },
+    "@3bases/notion-compat#build": { "dependsOn": ["@3bases/notion-types#build", "@3bases/notion-utils#build"] },
     "@3bases/notion-utils#build": { "dependsOn": ["@3bases/notion-types#build"] },
     "@3bases/notion-react#build": { "dependsOn": ["@3bases/notion-types#build"] },
-    "release": {},
     "prerelease": {},
     "pu": { "dependsOn": ["build"] }
   }
