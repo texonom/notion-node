@@ -65,7 +65,7 @@
   --notion-header-height: 45px;
 }
 
-.dark-mode {
+.dark {
   --fg-color: rgba(255, 255, 255, 0.9);
   --fg-color-0: var(--fg-color);
   --fg-color-1: var(--fg-color);
@@ -977,7 +977,7 @@ svg.notion-page-icon {
   user-select: none;
 }
 
-.dark-mode .notion-bookmark {
+.dark .notion-bookmark {
   border-color: var(--bg-color-0);
 }
 
@@ -1101,7 +1101,7 @@ svg.notion-page-icon {
   border: 1px solid var(--fg-color-0);
 }
 
-.dark-mode .notion-callout {
+.dark .notion-callout {
   border-color: var(--bg-color-2);
 }
 
