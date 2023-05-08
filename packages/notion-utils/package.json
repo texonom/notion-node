@@ -20,7 +20,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=12"
+    "node": ">=v12.22.12"
   },
   "scripts": {
     "build": "tsc && tsup",
@@ -33,9 +33,9 @@
   "dependencies": {
     "is-url-superb": "^6.1.0",
     "mem": "^9.0.2",
-    "normalize-url": "^7.0.3",
+    "normalize-url": "^7.2.0",
     "@3bases/notion-types": "workspace:^",
-    "p-queue": "^7.2.0"
+    "p-queue": "^7.3.4"
   },
   "standard-version": {
     "skip": {

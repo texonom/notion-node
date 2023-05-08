@@ -14,7 +14,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=12"
+    "node": ">=v12.22.12"
   },
   "scripts": {
     "build": "tsc && tsup",
@@ -26,7 +26,7 @@
   "dependencies": {
     "@3bases/notion-types": "workspace:^",
     "@3bases/notion-utils": "workspace:^",
-    "p-queue": "^7.2.0"
+    "p-queue": "^7.3.4"
   },
   "devDependencies": {
     "@notionhq/client": "^1.0.4",
