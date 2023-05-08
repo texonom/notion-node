@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.base",
   "compilerOptions": {
-    "composite": true,
     "rootDir": "src",
     "outDir": "build",
     "tsBuildInfoFile": "build/.tsbuildinfo",
@@ -11,6 +10,5 @@
     "skipLibCheck": true,
     "jsx": "react"
   },
-  "include": ["src"],
-  "references": [{ "path": "../notion-types" }, { "path": "../notion-utils" }]
+  "include": ["src"]
 }
