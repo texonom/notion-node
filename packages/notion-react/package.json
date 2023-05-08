@@ -15,7 +15,7 @@
     "src/styles.css"
   ],
   "engines": {
-    "node": ">=12"
+    "node": ">=v18.16.0"
   },
   "scripts": {
     "build": "tsc && tsup",
