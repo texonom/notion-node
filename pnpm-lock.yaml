@@ -90,8 +90,8 @@ importers:
         specifier: workspace:^
         version: link:../notion-client
       '@notionhq/client':
-        specifier: ^1.0.4
-        version: 1.0.4
+        specifier: ^2.2.5
+        version: 2.2.5
 
   packages/notion-react:
     dependencies:
@@ -541,8 +541,8 @@ packages:
       fastq: 1.15.0
     dev: true
 
-  /@notionhq/client@1.0.4:
-    resolution: {integrity: sha512-m7zZ5l3RUktayf1lRBV1XMb8HSKsmWTv/LZPqP7UGC1NMzOlc+bbTOPNQ4CP/c1P4cP61VWLb/zBq7a3c0nMaw==}
+  /@notionhq/client@2.2.5:
+    resolution: {integrity: sha512-NobSaeSK0DMuxAIy2pg53Iv850tGFxXYEYacFBQgO634L1uwQv7WQCAdeFQpD3kJiEycQfSYv6RGC5VENEXjiQ==}
     engines: {node: '>=12'}
     dependencies:
       '@types/node-fetch': 2.6.3
