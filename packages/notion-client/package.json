@@ -27,7 +27,7 @@
   "dependencies": {
     "@3bases/notion-types": "workspace:^",
     "@3bases/notion-utils": "workspace:^",
-    "p-map": "^5.5.0"
+    "p-map": "^6.0.0"
   },
   "standard-version": {
     "skip": {
