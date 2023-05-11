@@ -136,8 +136,8 @@ importers:
         specifier: ^4.1.7
         version: 4.1.7
       '@types/node':
-        specifier: ^16.18.28
-        version: 16.18.28
+        specifier: ^18.16.7
+        version: 18.16.7
       '@types/react':
         specifier: ^17.0.59
         version: 17.0.59
@@ -629,10 +629,6 @@ packages:
     dependencies:
       '@types/node': 18.16.7
       form-data: 3.0.1
-    dev: true
-
-  /@types/node@16.18.28:
-    resolution: {integrity: sha512-SNMfiPqsiPoYfmyi+2qnDO4nZyMIOCab/CW+Slcml0lhIzkOizYzWtt/A7tgB3TSitd+YJKi8fSC2Cpm/VCp7A==}
     dev: true
 
   /@types/node@18.16.7:
