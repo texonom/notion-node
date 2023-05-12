@@ -1,4 +1,4 @@
-export * from './ncompat-api'
+export * from './notion-compat-api'
 export * from './convert-page'
 export * from './convert-block'
 export * from './convert-time'
