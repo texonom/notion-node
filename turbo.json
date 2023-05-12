@@ -6,6 +6,7 @@
     "@texonom/ncompat#build": { "dependsOn": ["@texonom/ntypes#build", "@texonom/nutils#build"] },
     "@texonom/nutils#build": { "dependsOn": ["@texonom/ntypes#build"] },
     "@texonom/nreact#build": { "dependsOn": ["@texonom/ntypes#build", "@texonom/nutils#build"] },
+    "release": {},
     "prerelease": {},
     "pu": { "dependsOn": ["build"] }
   }
