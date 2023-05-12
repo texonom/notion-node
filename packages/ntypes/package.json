@@ -1,0 +1,29 @@
+{
+  "name": "@texonom/ntypes",
+  "version": "1.1.0",
+  "type": "module",
+  "description": "TypeScript types for core Notion data structures.",
+  "repository": "texonom/notion",
+  "author": "Alan Jo <sungle3737@gmail.com>",
+  "license": "MIT",
+  "types": "./build/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prerelease": "standard-version --skip.changelog --prerelease",
+    "release": "standard-version --release-as",
+    "pu": "pnpm publish"
+  },
+  "engines": {
+    "node": ">=v12.22.12"
+  },
+  "standard-version": {
+    "skip": {
+      "commit": true,
+      "tag": true
+    }
+  }
+}

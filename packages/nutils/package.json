@@ -1,0 +1,46 @@
+{
+  "name": "@texonom/nutils",
+  "version": "1.1.0",
+  "type": "module",
+  "description": "Useful utilities for working with Notion data. Isomorphic.",
+  "repository": "texonom/notion",
+  "author": "Alan Jo <sungle3737@gmail.com>",
+  "license": "MIT",
+  "main": "./build/index.js",
+  "module": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "build"
+  ],
+  "engines": {
+    "node": ">=v12.22.12"
+  },
+  "scripts": {
+    "build": "tsc && tsup",
+    "watch": "tsup --watch --silent --onSuccess 'echo build successful'",
+    "test": "vitest --run",
+    "prerelease": "standard-version --skip.changelog --prerelease",
+    "release": "standard-version --release-as",
+    "pu": "pnpm publish"
+  },
+  "dependencies": {
+    "is-url-superb": "^6.1.0",
+    "mem": "^9.0.2",
+    "normalize-url": "^7.2.0",
+    "@texonom/ntypes": "workspace:^",
+    "p-queue": "^7.3.4"
+  },
+  "standard-version": {
+    "skip": {
+      "commit": true,
+      "tag": true
+    }
+  }
+}
