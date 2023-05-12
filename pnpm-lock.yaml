@@ -5,8 +5,8 @@ importers:
   .:
     devDependencies:
       '@types/node':
-        specifier: ^18.16.6
-        version: 18.16.6
+        specifier: ^18.16.7
+        version: 18.16.7
       '@typescript-eslint/eslint-plugin':
         specifier: ^5.59.5
         version: 5.59.5(@typescript-eslint/parser@5.59.5)(eslint@8.40.0)(typescript@4.9.5)
@@ -57,7 +57,7 @@ importers:
         version: 4.9.5
       vite:
         specifier: ^4.3.5
-        version: 4.3.5(@types/node@18.16.6)
+        version: 4.3.5(@types/node@18.16.7)
       vitest:
         specifier: ^0.31.0
         version: 0.31.0
@@ -136,8 +136,8 @@ importers:
         specifier: ^4.1.7
         version: 4.1.7
       '@types/node':
-        specifier: ^16.18.27
-        version: 16.18.27
+        specifier: ^16.18.28
+        version: 16.18.28
       '@types/react':
         specifier: ^17.0.59
         version: 17.0.59
@@ -627,16 +627,16 @@ packages:
   /@types/node-fetch@2.6.3:
     resolution: {integrity: sha512-ETTL1mOEdq/sxUtgtOhKjyB2Irra4cjxksvcMUR5Zr4n+PxVhsCD9WS46oPbHL3et9Zde7CNRr+WUNlcHvsX+w==}
     dependencies:
-      '@types/node': 18.16.6
+      '@types/node': 18.16.7
       form-data: 3.0.1
     dev: true
 
-  /@types/node@16.18.27:
-    resolution: {integrity: sha512-GFfndd/RINWD19W+xNJ9Qh/sOZ5ieTiOSagA86ER/12i/l+MEnQxsbldGRF23azWjRfe7zUlAldyrwN84a1E5w==}
+  /@types/node@16.18.28:
+    resolution: {integrity: sha512-SNMfiPqsiPoYfmyi+2qnDO4nZyMIOCab/CW+Slcml0lhIzkOizYzWtt/A7tgB3TSitd+YJKi8fSC2Cpm/VCp7A==}
     dev: true
 
-  /@types/node@18.16.6:
-    resolution: {integrity: sha512-N7KINmeB8IN3vRR8dhgHEp+YpWvGFcpDoh5XZ8jB5a00AdFKCKEyyGTOPTddUf4JqU1ZKTVxkOxakDvchNVI2Q==}
+  /@types/node@18.16.7:
+    resolution: {integrity: sha512-MFg7ua/bRtnA1hYE3pVyWxGd/r7aMqjNOdHvlSsXV3n8iaeGKkOaPzpJh6/ovf4bEXWcojkeMJpTsq3mzXW4IQ==}
 
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -3043,7 +3043,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.16.6
+      '@types/node': 18.16.7
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: false
@@ -4972,7 +4972,7 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: true
 
-  /vite-node@0.31.0(@types/node@18.16.6):
+  /vite-node@0.31.0(@types/node@18.16.7):
     resolution: {integrity: sha512-8x1x1LNuPvE2vIvkSB7c1mApX5oqlgsxzHQesYF7l5n1gKrEmrClIiZuOFbFDQcjLsmcWSwwmrWrcGWm9Fxc/g==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -4982,7 +4982,7 @@ packages:
       mlly: 1.2.0
       pathe: 1.1.0
       picocolors: 1.0.0
-      vite: 4.3.5(@types/node@18.16.6)
+      vite: 4.3.5(@types/node@18.16.7)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -4993,7 +4993,7 @@ packages:
       - terser
     dev: true
 
-  /vite@4.3.5(@types/node@18.16.6):
+  /vite@4.3.5(@types/node@18.16.7):
     resolution: {integrity: sha512-0gEnL9wiRFxgz40o/i/eTBwm+NEbpUeTWhzKrZDSdKm6nplj+z4lKz8ANDgildxHm47Vg8EUia0aicKbawUVVA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -5018,7 +5018,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 18.16.6
+      '@types/node': 18.16.7
       esbuild: 0.17.18
       postcss: 8.4.23
       rollup: 3.21.2
@@ -5059,7 +5059,7 @@ packages:
     dependencies:
       '@types/chai': 4.3.5
       '@types/chai-subset': 1.3.3
-      '@types/node': 18.16.6
+      '@types/node': 18.16.7
       '@vitest/expect': 0.31.0
       '@vitest/runner': 0.31.0
       '@vitest/snapshot': 0.31.0
@@ -5079,8 +5079,8 @@ packages:
       strip-literal: 1.0.1
       tinybench: 2.5.0
       tinypool: 0.5.0
-      vite: 4.3.5(@types/node@18.16.6)
-      vite-node: 0.31.0(@types/node@18.16.6)
+      vite: 4.3.5(@types/node@18.16.7)
+      vite-node: 0.31.0(@types/node@18.16.7)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
