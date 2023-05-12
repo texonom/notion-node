@@ -7,6 +7,7 @@ export default defineConfig({
   platform: 'node',
   format: ['esm'],
   splitting: true,
+  dts: true,
   sourcemap: true,
   minify: true,
   shims: false
