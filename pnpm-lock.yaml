@@ -62,51 +62,51 @@ importers:
         specifier: ^0.31.0
         version: 0.31.0
 
-  packages/notion-client:
+  packages/nclient:
     dependencies:
-      '@3bases/notion-types':
+      '@texonom/ntypes':
         specifier: workspace:^
-        version: link:../notion-types
-      '@3bases/notion-utils':
+        version: link:../ntypes
+      '@texonom/nutils':
         specifier: workspace:^
-        version: link:../notion-utils
+        version: link:../nutils
       p-map:
         specifier: ^5.5.0
         version: 5.5.0
 
-  packages/notion-compat:
+  packages/ncompat:
     dependencies:
-      '@3bases/notion-types':
+      '@texonom/ntypes':
         specifier: workspace:^
-        version: link:../notion-types
-      '@3bases/notion-utils':
+        version: link:../ntypes
+      '@texonom/nutils':
         specifier: workspace:^
-        version: link:../notion-utils
+        version: link:../nutils
       p-queue:
         specifier: ^7.3.4
         version: 7.3.4
     devDependencies:
-      '@3bases/notion-client':
-        specifier: workspace:^
-        version: link:../notion-client
       '@notionhq/client':
         specifier: ^1.0.4
         version: 1.0.4
+      '@texonom/nclient':
+        specifier: workspace:^
+        version: link:../nclient
 
-  packages/notion-react:
+  packages/nreact:
     dependencies:
-      '@3bases/notion-types':
-        specifier: workspace:^
-        version: link:../notion-types
-      '@3bases/notion-utils':
-        specifier: workspace:^
-        version: link:../notion-utils
       '@fisch0920/medium-zoom':
         specifier: ^1.0.7
         version: 1.0.7
       '@matejmazur/react-katex':
         specifier: ^3.1.3
         version: 3.1.3(katex@0.16.7)(react@17.0.2)
+      '@texonom/ntypes':
+        specifier: workspace:^
+        version: link:../ntypes
+      '@texonom/nutils':
+        specifier: workspace:^
+        version: link:../nutils
       katex:
         specifier: ^0.16.7
         version: 0.16.7
@@ -160,13 +160,13 @@ importers:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
 
-  packages/notion-types: {}
+  packages/ntypes: {}
 
-  packages/notion-utils:
+  packages/nutils:
     dependencies:
-      '@3bases/notion-types':
+      '@texonom/ntypes':
         specifier: workspace:^
-        version: link:../notion-types
+        version: link:../ntypes
       is-url-superb:
         specifier: ^6.1.0
         version: 6.1.0
@@ -3240,7 +3240,7 @@ packages:
     dev: true
 
   /lodash.throttle@4.1.1:
-    resolution: {integrity: sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==}
+    resolution: {integrity: sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=}
     dev: true
 
   /lodash@4.17.21:

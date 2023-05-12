@@ -1,0 +1,38 @@
+{
+  "name": "@texonom/nclient",
+  "version": "1.1.0",
+  "type": "module",
+  "description": "Robust TypeScript client for the unofficial Notion API.",
+  "repository": "texonom/notion",
+  "author": "Alan Jo <sungle3737@gmail.com>",
+  "license": "MIT",
+  "main": "./build/index.js",
+  "module": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "build"
+  ],
+  "engines": {
+    "node": ">=v12.22.12"
+  },
+  "scripts": {
+    "build": "tsc && tsup",
+    "watch": "tsup --watch --silent --onSuccess 'echo build successful'",
+    "test": "vitest --run",
+    "prerelease": "standard-version --skip.changelog --prerelease",
+    "release": "standard-version --release-as",
+    "pu": "pnpm publish"
+  },
+  "dependencies": {
+    "@texonom/ntypes": "workspace:^",
+    "@texonom/nutils": "workspace:^",
+    "p-map": "^5.5.0"
+  },
+  "standard-version": {
+    "skip": {
+      "commit": true,
+      "tag": true
+    }
+  }
+}

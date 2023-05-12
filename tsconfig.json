@@ -3,16 +3,16 @@
   "include": [],
   "references": [
     {
-      "path": "./packages/notion-types/tsconfig.json"
+      "path": "./packages/ntypes/tsconfig.json"
     },
     {
-      "path": "./packages/notion-utils/tsconfig.json"
+      "path": "./packages/nutils/tsconfig.json"
     },
     {
-      "path": "./packages/notion-client/tsconfig.json"
+      "path": "./packages/nclient/tsconfig.json"
     },
     {
-      "path": "./packages/notion-react/tsconfig.json"
+      "path": "./packages/nreact/tsconfig.json"
     }
   ]
 }
