@@ -20,7 +20,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=v12.22.12"
+    "node": ">=v18.16.0"
   },
   "scripts": {
     "build": "tsc && tsup",
