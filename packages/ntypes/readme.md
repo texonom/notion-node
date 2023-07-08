@@ -1,12 +1,12 @@
 <p align="center">
-  <img alt="React Notion X" src="https://raw.githubusercontent.com/texonom/notion/master/media/notion-ts.png" width="689">
+  <img alt="React Notion X" src="https://raw.githubusercontent.com/texonom/notion-node/master/media/notion-ts.png" width="689">
 </p>
 
 # ntypes
 
 > TypeScript types for core Notion data structures.
 
-[![NPM](https://img.shields.io/npm/v/ntypes.svg)](https://www.npmjs.com/package/ntypes) [![Build Status](https://github.com/texonom/notion/actions/workflows/test.yml/badge.svg)](https://github.com/texonom/notion/actions/workflows/test.yml) [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
+[![NPM](https://img.shields.io/npm/v/ntypes.svg)](https://www.npmjs.com/package/ntypes) [![Build Status](https://github.com/texonom/notion-node/actions/workflows/test.yml/badge.svg)](https://github.com/texonom/notion-node/actions/workflows/test.yml) [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
 
 ## Install
 
@@ -24,7 +24,7 @@ import * as notion from '@texonom/ntypes'
 
 ## Docs
 
-See the [full docs](https://github.com/texonom/notion).
+See the [full docs](https://github.com/texonom/notion-node).
 
 ## License
 
