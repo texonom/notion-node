@@ -1,10 +1,10 @@
 {
   "name": "notion-node",
   "description": "Fast and accurate React renderer for Notion. TS batteries included.",
-  "repository": "texonom/notion",
+  "repository": "texonom/notion-node",
   "author": "Alan Jo <sungle3737@gmail.com>",
   "license": "MIT",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "engines": {
     "node": ">=v12.22.12"
   },
