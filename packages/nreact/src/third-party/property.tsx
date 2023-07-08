@@ -86,7 +86,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
           content = null
         }
 
-        return content
+        return content as Exclude<FormulaResult, Date>
       },
     [block?.properties, collection?.schema, schema]
   )
