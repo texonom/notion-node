@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="React Notion X" src="https://raw.githubusercontent.com/texonom/notion/master/media/notion-ts.png" width="689">
+  <img alt="React Notion X" src="https://raw.githubusercontent.com/texonom/notion-node/master/media/notion-ts.png" width="689">
 </p>
 
 # ncompat
@@ -34,7 +34,7 @@ Currently, ~20 blocks have full compatibility and 8 have partial compatibility (
 
 I recommend checking out [the ncompat demo](https://nreact-official-api-demo.transitivebullsh.it/) side-by-side with the [normal nreact demo](https://nreact-demo.transitivebullsh.it/) (which uses the unofficial Notion API via `nclient`) and the [equivalent public notion page](https://transitive-bs.notion.site/Notion-Kit-Test-Suite-067dd719a912471ea9a3ac10710e7fdf).
 
-Note that using the official API with `ncompat` is **significantly slower** than using the unofficial API via `nclient` because of [reasons](https://github.com/texonom/notion/issues/269#issuecomment-1100648873).
+Note that using the official API with `ncompat` is **significantly slower** than using the unofficial API via `nclient` because of [reasons](https://github.com/texonom/notion-node/issues/269#issuecomment-1100648873).
 
 The main feature missing from `ncompat` right now is collection (database) support. PRs welcome 😃
 

@@ -27,6 +27,8 @@ Version update in `package.json` is automated by `standard-version`
 VERSION=
 pnpm release $VERSION # Apply workspace
 pnpm turbo release -- $VERSION
+pnpm format
+git commit -am "meta: deployment commit for $VERSION"
 pnpm turbo pu
 ```
 
