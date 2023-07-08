@@ -295,7 +295,7 @@ export class NotionAPI {
     //Fixes formula filters from not working
     if (collectionView?.query2?.filter?.filters) filters.push(...collectionView.query2.filter.filters)
 
-    let loader: any = {
+    let loader: unknown = {
       type: 'reducer',
       reducers: {
         collection_group_results: {
@@ -444,7 +444,7 @@ export class NotionAPI {
       type: 'BlocksInAncestor',
       source: 'quick_find_public',
       ancestorId: parsePageId(params.ancestorId),
-      sort: 'Relevance',
+      sort: { field: 'relevance' },
       limit: params.limit || 20,
       query: params.query,
       filters: {

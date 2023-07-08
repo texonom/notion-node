@@ -32,3 +32,23 @@ for (const pageId of pageIdFixturesFailure)
     const api = new NotionAPI()
     await expect(() => api.getPage(pageId, { fetchOption: { timeout: 1000 } })).rejects.toThrow()
   })
+
+test.concurrent(
+  `Search`,
+  async () => {
+    const api = new NotionAPI()
+    const results = await api.search({
+      query: 'Texonom',
+      ancestorId: '04089c8ae3534bf79512fc495944b321',
+      filters: {
+        isDeletedOnly: false,
+        excludeTemplates: true,
+        isNavigableOnly: true,
+        requireEditPermissions: false
+      }
+    })
+    console.info(results)
+    if (!(results.total > 0)) throw new Error('Search error')
+  },
+  { timeout: 10000 }
+)
