@@ -3,7 +3,7 @@ import * as React from 'react'
 import { BaseContentBlock, Block } from '@texonom/ntypes'
 import { parsePageId } from '@texonom/nutils'
 
-import { useNotionContext } from '..'
+import { useNotionContext } from '../context'
 import { cs } from '../utils'
 import { Asset } from './asset'
 import { Text } from './text'

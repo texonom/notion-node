@@ -40,6 +40,7 @@ export interface NotionContext {
 }
 
 export interface PartialNotionContext {
+  children?: React.ReactNode
   recordMap?: ExtendedRecordMap
   components?: Partial<NotionComponents>
 
@@ -78,7 +79,7 @@ const DefaultPageLinkMemo = React.memo(DefaultPageLink)
 const DefaultEmbed = props => <AssetWrapper {...props} />
 const DefaultHeader = Header
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 export const dummyLink = ({ href, rel, target, title, ...rest }) => <span {...rest} />
 
 const dummyComponent = (name: string) => () => {
@@ -89,7 +90,7 @@ const dummyComponent = (name: string) => () => {
 
 // TODO: should we use React.memo here?
 // https://reactjs.org/docs/react-api.html#reactmemo
-const dummyOverrideFn = (_: any, defaultValueFn: () => React.ReactNode) => defaultValueFn()
+const dummyOverrideFn = (_: unknown, defaultValueFn: () => React.ReactNode) => defaultValueFn()
 
 const defaultComponents: NotionComponents = {
   Image: null, // disable custom images by default
