@@ -24,11 +24,13 @@ pnpm test # Vitest
 Version update in `package.json` is automated by `standard-version`
 
 ```zsh
+pnpm build && pnpm test
 VERSION=
 pnpm release $VERSION # Apply workspace
 pnpm turbo release -- $VERSION
 pnpm format
 git commit -am "meta: deployment commit for $VERSION"
+git tag $VERSION
 pnpm turbo pu
 ```
 
