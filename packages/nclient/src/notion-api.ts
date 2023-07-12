@@ -440,16 +440,16 @@ export class NotionAPI {
   }
 
   public async search(params: notion.SearchParams, fetchOption?: types.FetchOption) {
-    const body = {
-      type: 'BlocksInAncestor',
-      source: 'quick_find_public',
+    const body: notion.SearchParams = {
+      type: 'BlocksInSpace',
+      source: 'quick_find_filters',
       ancestorId: parsePageId(params.ancestorId),
       sort: { field: 'relevance' },
       limit: params.limit || 20,
       query: params.query,
       filters: {
         isDeletedOnly: false,
-        isNavigableOnly: false,
+        navigableBlockContentOnly: false,
         excludeTemplates: true,
         requireEditPermissions: false,
         ancestors: [],

@@ -18,6 +18,7 @@ export interface SearchParams {
     includePublicPagesWithoutExplicitAccess?: boolean
     ancestors?: string[]
     createdBy?: string[]
+    editedBy?: string[]
     inTeams?: string[]
     createdTime?: SearchTimeFilter
     lastEditedTime?: SearchTimeFilter
@@ -37,11 +38,11 @@ export interface SearchParams {
 }
 
 export interface SearchTimeFilter {
-  starting: {
+  starting?: {
     type: 'date'
     start_date: string
   }
-  ending: {
+  ending?: {
     type: 'date'
     start_date: string
   }
