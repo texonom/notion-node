@@ -43,7 +43,7 @@ test.concurrent(
       filters: {
         isDeletedOnly: false,
         excludeTemplates: true,
-        isNavigableOnly: true,
+        navigableBlockContentOnly: true,
         requireEditPermissions: false
       }
     })
