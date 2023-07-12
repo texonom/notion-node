@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.1.4 (2023-07-12)
+
+### Bug Fixes
+
+- **nclient:** search api broken issue resolved ([c14d735](https://github.com/texonom/notion-node/commit/c14d735bac2243124f7b2e283b02f56e12d6a902))
+
 ### 1.1.3 (2023-07-08)
 
 ### Bug Fixes
