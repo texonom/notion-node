@@ -13,11 +13,38 @@ export interface SearchParams {
   filters?: {
     isDeletedOnly: boolean
     excludeTemplates: boolean
-    isNavigableOnly: boolean
+    navigableBlockContentOnly: boolean
     requireEditPermissions: boolean
+    includePublicPagesWithoutExplicitAccess?: boolean
+    ancestors?: string[]
+    createdBy?: string[]
+    inTeams?: string[]
+    createdTime?: SearchTimeFilter
+    lastEditedTime?: SearchTimeFilter
   }
   limit?: number
   searchSessionId?: string
+  recentPagesForBoosting?: {
+    visitedAt: number
+    pageId: string
+  }[]
+  sort?: {
+    field: 'relevance' | 'created' | 'lastEdited'
+    direction?: 'desc' | 'acs'
+  }
+  source?: 'quick_find_filters'
+  type?: 'BlocksInSpace'
+}
+
+export interface SearchTimeFilter {
+  starting: {
+    type: 'date'
+    start_date: string
+  }
+  ending: {
+    type: 'date'
+    start_date: string
+  }
 }
 
 export interface SearchResults {
