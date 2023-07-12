@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.1.4 (2023-07-12)
+
+### Bug Fixes
+
+- **nreact:** context provider children & formula type ([8e29eda](https://github.com/texonom/notion-node/commit/8e29eda61b34f59a3277ce4d62199e6afdb07cb7))
+
 ### 1.1.3 (2023-07-08)
 
 ### Bug Fixes

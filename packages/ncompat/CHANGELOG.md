@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.1.4 (2023-07-12)
+
+### Bug Fixes
+
+- notion compat import name also changed ([5056370](https://github.com/texonom/notion-node/commit/505637077890d1b7e2c7a9caca8abe47b6ea2fdc))
+
 ### 1.1.3 (2023-07-08)
 
 ### Bug Fixes
