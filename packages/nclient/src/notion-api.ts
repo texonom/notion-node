@@ -441,7 +441,7 @@ export class NotionAPI {
 
   public async search(params: notion.SearchParams, fetchOption?: types.FetchOption) {
     const body: notion.SearchParams = {
-      type: 'BlocksInSpace',
+      type: 'BlocksInAncestor',
       source: 'quick_find_filters',
       ancestorId: parsePageId(params.ancestorId),
       sort: { field: 'relevance' },

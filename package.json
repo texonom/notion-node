@@ -4,7 +4,7 @@
   "repository": "texonom/notion-node",
   "author": "Alan Jo <sungle3737@gmail.com>",
   "license": "MIT",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "engines": {
     "node": ">=v12.22.12"
   },

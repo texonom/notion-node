@@ -24,6 +24,7 @@ pnpm test # Vitest
 Version update in `package.json` is automated by `standard-version`
 
 ```zsh
+# check terminal pwd project root
 pnpm build && pnpm test
 VERSION=
 pnpm release $VERSION # Apply workspace
