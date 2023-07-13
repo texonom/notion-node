@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.1.5 (2023-07-13)
+
+### Bug Fixes
+
+- **ntypes:** from isNavigableOnly to navigableBlockContentOnly ([e8dec0e](https://github.com/texonom/notion-node/commit/e8dec0efd26b8dd59a445ef40dd087a4723e7832))
+
 ### 1.1.4 (2023-07-12)
 
 ### 1.1.3 (2023-07-08)
