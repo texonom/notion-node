@@ -22,9 +22,7 @@
     "listEmittedFiles": false,
     "listFiles": false,
     "pretty": true,
-
     "lib": ["ESNext", "ESNext.Array", "DOM"],
-
     "baseUrl": "."
   }
 }
