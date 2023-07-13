@@ -33,8 +33,8 @@ export interface SearchParams {
     field: 'relevance' | 'created' | 'lastEdited'
     direction?: 'desc' | 'acs'
   }
-  source?: 'quick_find_filters'
-  type?: 'BlocksInSpace'
+  source?: 'quick_find_filters' | 'quick_find_public'
+  type?: 'BlocksInAncestor'
 }
 
 export interface SearchTimeFilter {

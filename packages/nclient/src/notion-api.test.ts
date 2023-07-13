@@ -47,7 +47,6 @@ test.concurrent(
         requireEditPermissions: false
       }
     })
-    console.info(results)
     if (!(results.total > 0)) throw new Error('Search error')
   },
   { timeout: 10000 }
