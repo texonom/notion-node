@@ -1,10 +1,8 @@
-<p align="center">
-  <img alt="React Notion X" src="https://raw.githubusercontent.com/texonom/notion-node/master/media/notion-ts.png" width="689">
-</p>
-
 # ncompat
 
 > A compatibility layer between the official Notion API and the unofficial Notion API
+
+[![NPM](https://img.shields.io/npm/v/@texonom/ncompat.svg)](https://www.npmjs.com/package/@texonom/ncompat) [![Build Status](https://github.com/texonom/notion-node/actions/workflows/test.yml/badge.svg)](https://github.com/texonom/notion-node/actions/workflows/test.yml) [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
 
 ## Features
 
@@ -15,7 +13,7 @@
 
 ```ts
 import { Client } from '@notionhq/client'
-import { NotionCompatAPI } from 'ncompat'
+import { NotionCompatAPI } from '@texonom/ncompat'
 
 const notion = new NotionCompatAPI(new Client({ auth: process.env.NOTION_TOKEN }))
 
@@ -144,9 +142,3 @@ The main feature missing from `ncompat` right now is collection (database) suppo
 - breadcrumb
 - template
 - unsupported
-
-## License
-
-MIT © [Travis Fischer](https://transitivebullsh.it)
-
-Support my OSS work by <a href="https://twitter.com/transitive_bs">following me on twitter <img src="https://storage.googleapis.com/saasify-assets/twitter-logo.svg" alt="twitter" height="24px" align="center"></a>
