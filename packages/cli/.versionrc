@@ -1,0 +1,43 @@
+{
+  "path": ".",
+  "types": [
+    {
+      "type": "feat",
+      "section": "Features"
+    },
+    {
+      "type": "fix",
+      "section": "Bug Fixes"
+    },
+    {
+      "type": "refactor",
+      "section": "Refactoring",
+      "hidden": true
+    },
+    {
+      "type": "docs",
+      "section": "Documentation",
+      "hidden": true
+    },
+    {
+      "type": "meta",
+      "section": "DX",
+      "hidden": true
+    },
+    {
+      "type": "perf",
+      "section": "Performance",
+      "hidden": true
+    },
+    {
+      "type": "refactor",
+      "section": "Refactoring",
+      "hidden": true
+    },
+    {
+      "type": "deps",
+      "section": "Dependency",
+      "hidden": true
+    }
+  ]
+}
