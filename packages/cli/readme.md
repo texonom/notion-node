@@ -1,13 +1,13 @@
-# nclient
+# client
 
 > Robust TypeScript client for the unofficial Notion API.
 
-[![NPM](https://img.shields.io/npm/v/@texonom/nclient.svg)](https://www.npmjs.com/package/@texonom/nclient) [![Build Status](https://github.com/texonom/notion-node/actions/workflows/test.yml/badge.svg)](https://github.com/texonom/notion-node/actions/workflows/test.yml) [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
+[![NPM](https://img.shields.io/npm/v/@texonom/cli.svg)](https://www.npmjs.com/package/@texonom/cli) [![Build Status](https://github.com/texonom/notion-node/actions/workflows/test.yml/badge.svg)](https://github.com/texonom/notion-node/actions/workflows/test.yml) [![Prettier Code Formatting](https://img.shields.io/badge/code_style-prettier-brightgreen.svg)](https://prettier.io)
 
 ## Install
 
 ```bash
-pnpm i nclient
+pnpm i client
 ```
 
 This package is compatible with server-side V8 contexts such as Node.js, Deno, and Cloudflare Workers.
@@ -15,7 +15,7 @@ This package is compatible with server-side V8 contexts such as Node.js, Deno, a
 ## Usage
 
 ```ts
-import { NotionAPI } from 'nclient'
+import { NotionAPI } from 'client'
 
 // you can optionally pass an authToken to access private notion resources
 const api = new NotionAPI()

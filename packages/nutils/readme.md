@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-npm install nutils
+pnpm i nutils
 ```
 
 This package is compatible with both Node.js and client-side web usage.

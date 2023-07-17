@@ -1,0 +1,41 @@
+{
+  "name": "@texonom/cli",
+  "displayName": "Notion Data CLI",
+  "version": "1.1.5",
+  "type": "module",
+  "description": "Robust TypeScript client for the unofficial Notion API.",
+  "repository": "texonom/notion-node",
+  "author": "Alan Jo <sungle3737@gmail.com>",
+  "license": "MIT",
+  "main": "./build/index.js",
+  "module": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "build"
+  ],
+  "engines": {
+    "node": ">=v12.22.12"
+  },
+  "bin": {
+    "texonom": "./build/main.js"
+  },
+  "scripts": {
+    "build": "tsc && tsup",
+    "watch": "tsup --watch --silent --onSuccess 'echo build successful'",
+    "test": "vitest --run",
+    "prerelease": "standard-version --skip.changelog --prerelease",
+    "release": "standard-version --release-as",
+    "pu": "pnpm publish"
+  },
+  "dependencies": {
+    "@texonom/nclient": "workspace:^",
+    "clipanion": "^3.2.1"
+  },
+  "standard-version": {
+    "skip": {
+      "commit": true,
+      "tag": true
+    }
+  }
+}
