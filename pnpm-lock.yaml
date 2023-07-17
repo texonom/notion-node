@@ -66,6 +66,15 @@ importers:
         specifier: ^0.32.0
         version: 0.32.0
 
+  packages/cli:
+    dependencies:
+      '@texonom/nclient':
+        specifier: workspace:^
+        version: link:../nclient
+      clipanion:
+        specifier: ^3.2.1
+        version: 3.2.1(typanion@3.13.0)
+
   packages/nclient:
     dependencies:
       '@texonom/ntypes':
@@ -96,6 +105,15 @@ importers:
       '@texonom/nclient':
         specifier: workspace:^
         version: link:../nclient
+
+  packages/nexport:
+    dependencies:
+      '@texonom/nclient':
+        specifier: workspace:^
+        version: link:../nclient
+      clipanion:
+        specifier: ^3.2.1
+        version: 3.2.1(typanion@3.13.0)
 
   packages/nreact:
     dependencies:
@@ -1248,6 +1266,14 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       escape-string-regexp: 5.0.0
+    dev: false
+
+  /clipanion@3.2.1(typanion@3.13.0):
+    resolution: {integrity: sha512-dYFdjLb7y1ajfxQopN05mylEpK9ZX0sO1/RfMXdfmwjlIsPkbh4p7A682x++zFPLDCo1x3p82dtljHf5cW2LKA==}
+    peerDependencies:
+      typanion: '*'
+    dependencies:
+      typanion: 3.13.0
     dev: false
 
   /clipboard-copy@4.0.1:
@@ -4803,6 +4829,10 @@ packages:
       turbo-windows-64: 1.9.3
       turbo-windows-arm64: 1.9.3
     dev: true
+
+  /typanion@3.13.0:
+    resolution: {integrity: sha512-AkZMjMIW8MGeQwBxu1bixzu/2Zk7rH6ILrI/9zBoW0sAiVaWwHjXSnmPBomfY2t7tSG6m5bIE+OYYyyuGnFVHA==}
+    dev: false
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
