@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import { Block, Decoration } from '@texonom/ntypes'
 import { getBlockTitle } from '@texonom/nutils'

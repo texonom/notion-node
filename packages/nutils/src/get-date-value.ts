@@ -1,9 +1,9 @@
-import * as types from '@texonom/ntypes'
+import { FormattedDate } from '@texonom/ntypes'
 
 /**
  * Attempts to find a valid date from a given property.
  */
-export const getDateValue = (prop: any[]): types.FormattedDate | null => {
+export const getDateValue = (prop: any[]): FormattedDate | null => {
   if (prop && Array.isArray(prop))
     if (prop[0] === 'd') return prop[1]
     else

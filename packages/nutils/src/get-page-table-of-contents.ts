@@ -1,10 +1,10 @@
-import * as types from '@texonom/ntypes'
-
 import { getTextContent } from './get-text-content'
 
+import type { ID, BlockType, PageBlock, ExtendedRecordMap } from '@texonom/ntypes'
+
 export interface TableOfContentsEntry {
-  id: types.ID
-  type: types.BlockType
+  id: ID
+  type: BlockType
   text: string
   indentLevel: number
 }
@@ -19,10 +19,7 @@ const indentLevels = {
  * Gets the metadata for a table of contents block by parsing the page's
  * H1, H2, and H3 elements.
  */
-export const getPageTableOfContents = (
-  page: types.PageBlock,
-  recordMap: types.ExtendedRecordMap
-): Array<TableOfContentsEntry> => {
+export const getPageTableOfContents = (page: PageBlock, recordMap: ExtendedRecordMap): Array<TableOfContentsEntry> => {
   const toc = (page.content ?? [])
     .map((blockId: string) => {
       const block = recordMap.block[blockId]?.value

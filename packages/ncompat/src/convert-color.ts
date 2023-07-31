@@ -1,6 +1,6 @@
-import * as notion from '@texonom/ntypes'
+import type { Color } from '@texonom/ntypes'
 
-export function convertColor(color: string): notion.Color {
+export function convertColor(color: string): Color {
   switch (color) {
     case 'green':
       return 'teal'
@@ -9,6 +9,6 @@ export function convertColor(color: string): notion.Color {
       return 'teal_background'
 
     default:
-      return color as notion.Color
+      return color as Color
   }
 }

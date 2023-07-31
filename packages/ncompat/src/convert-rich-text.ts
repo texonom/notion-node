@@ -1,14 +1,14 @@
-import * as notion from '@texonom/ntypes'
-
-import * as types from './types'
 import { convertColor } from './convert-color'
 
-export function convertRichText(richText: types.RichText): notion.Decoration[] {
+import type { SubDecoration, Decoration } from '@texonom/ntypes'
+import type { RichText, RichTextItem } from './types'
+
+export function convertRichText(richText: RichText): Decoration[] {
   return richText.map(convertRichTextItem).filter(Boolean)
 }
 
-export function convertRichTextItem(richTextItem: types.RichTextItem): notion.Decoration {
-  const subdecorations: notion.SubDecoration[] = []
+export function convertRichTextItem(richTextItem: RichTextItem): Decoration {
+  const subdecorations: SubDecoration[] = []
 
   if (richTextItem.annotations.bold) subdecorations.push(['b'])
 

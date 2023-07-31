@@ -1,11 +1,11 @@
-import * as notion from '@texonom/ntypes'
 import type { Client } from '@notionhq/client'
 import { parsePageId } from '@texonom/nutils'
 import PQueue from 'p-queue'
 
-import * as types from './types'
 import { convertPage } from './convert-page'
 
+import type { BlockMap, PageMap, ParentMap, BlockChildrenMap, Block, Page, BlockChildren } from './types'
+import type { ExtendedRecordMap } from '@texonom/ntypes'
 export class NotionCompatAPI {
   client: Client
 
@@ -13,7 +13,7 @@ export class NotionCompatAPI {
     this.client = client
   }
 
-  public async getPage(rawPageId: string): Promise<notion.ExtendedRecordMap> {
+  public async getPage(rawPageId: string): Promise<ExtendedRecordMap> {
     const pageId = parsePageId(rawPageId)
 
     const [page, block, children] = await Promise.all([
@@ -48,10 +48,10 @@ export class NotionCompatAPI {
       concurrency?: number
     } = {}
   ) {
-    const blockMap: types.BlockMap = {}
-    const pageMap: types.PageMap = {}
-    const parentMap: types.ParentMap = {}
-    const blockChildrenMap: types.BlockChildrenMap = {}
+    const blockMap: BlockMap = {}
+    const pageMap: PageMap = {}
+    const parentMap: ParentMap = {}
+    const blockChildrenMap: BlockChildrenMap = {}
     const pendingBlockIds = new Set<string>()
     const queue = new PQueue({ concurrency })
 
@@ -69,7 +69,7 @@ export class NotionCompatAPI {
             blockMap[blockId] = partialBlock
           }
 
-          const block = partialBlock as types.Block
+          const block = partialBlock as Block
           if (block.type === 'child_page') {
             if (!pageMap[blockId]) {
               const partialPage = await this.client.pages.retrieve({
@@ -78,7 +78,7 @@ export class NotionCompatAPI {
 
               pageMap[blockId] = partialPage
 
-              const page = partialPage as types.Page
+              const page = partialPage as Page
               switch (page.parent?.type) {
                 case 'page_id':
                   processBlock(page.parent.page_id, {
@@ -109,8 +109,8 @@ export class NotionCompatAPI {
           blockChildrenMap[blockId] = children.map(child => child.id)
 
           for (const child of children) {
-            const childBlock = child as types.Block
-            const mappedChildBlock = blockMap[child.id] as types.Block
+            const childBlock = child as Block
+            const mappedChildBlock = blockMap[child.id] as Block
             if (!mappedChildBlock || (!mappedChildBlock.type && childBlock.type)) {
               blockMap[child.id] = childBlock
               parentMap[child.id] = blockId
@@ -173,7 +173,7 @@ export class NotionCompatAPI {
   }
 
   async getAllBlockChildren(blockId: string) {
-    let blocks: types.BlockChildren = []
+    let blocks: BlockChildren = []
     let cursor: string
 
     do {

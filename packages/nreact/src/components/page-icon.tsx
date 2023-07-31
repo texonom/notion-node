@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import { Block, CalloutBlock, PageBlock } from '@texonom/ntypes'
 import { getBlockIcon, getBlockTitle } from '@texonom/nutils'

@@ -1,9 +1,9 @@
-import * as notion from '@texonom/ntypes'
-
-import * as types from './types'
 import { convertColor } from './convert-color'
 import { convertRichText } from './convert-rich-text'
 import { convertTime } from './convert-time'
+
+import type { BaseBlock, Block as BlockType } from '@texonom/ntypes'
+import type { PartialBlock, PageMap, BlockMap, ParentMap, Block, Page } from './types'
 
 export function convertBlock({
   block: partialBlock,
@@ -12,20 +12,20 @@ export function convertBlock({
   blockMap,
   parentMap
 }: {
-  block: types.PartialBlock
+  block: PartialBlock
   children?: string[]
-  pageMap?: types.PageMap
-  blockMap?: types.BlockMap
-  parentMap?: types.ParentMap
-}): notion.Block {
-  const compatBlock: Partial<notion.BaseBlock> = {
+  pageMap?: PageMap
+  blockMap?: BlockMap
+  parentMap?: ParentMap
+}): BlockType {
+  const compatBlock: Partial<BaseBlock> = {
     id: partialBlock.id
   }
 
   if (children && children.length) compatBlock.content = children
 
-  const block = partialBlock as types.Block
-  if (!block.type) return compatBlock as notion.Block
+  const block = partialBlock as Block
+  if (!block.type) return compatBlock as BlockType
 
   compatBlock.properties = {}
   compatBlock.format = {}
@@ -46,7 +46,7 @@ export function convertBlock({
     if (parentId) {
       compatBlock.parent_id = parentId
 
-      const parentBlock = blockMap?.[parentId] as types.Block
+      const parentBlock = blockMap?.[parentId] as Block
       if (parentBlock) {
         switch (parentBlock.type) {
           case 'child_database':
@@ -60,7 +60,7 @@ export function convertBlock({
             break
         }
       } else {
-        const parentPage = pageMap?.[parentId] as types.Page
+        const parentPage = pageMap?.[parentId] as Page
 
         if (parentPage) compatBlock.parent_table = 'block'
       }
@@ -203,7 +203,7 @@ export function convertBlock({
       compatBlock.type = 'page'
 
       if (pageMap) {
-        const page = pageMap[block.id] as types.Page
+        const page = pageMap[block.id] as Page
         if (page) {
           if (page.properties.title) compatBlock.properties.title = convertRichText((page.properties.title as any).title)
 
@@ -433,5 +433,5 @@ export function convertBlock({
       break
   }
 
-  return compatBlock as notion.Block
+  return compatBlock as BlockType
 }
