@@ -29,7 +29,6 @@ export const getBlockParentPage = (
       currentRecord = recordMap.collection[parentId]?.value
     } else {
       currentRecord = recordMap.block[parentId]?.value
-
       if ((currentRecord as Block)?.type === 'page') return currentRecord as PageBlock
     }
   }
