@@ -1,10 +1,23 @@
-import * as React from 'react'
+import React from 'react'
 
-import * as types from '@texonom/ntypes'
+import type {
+  ExtendedRecordMap,
+  Block,
+  SearchParams,
+  SearchResults,
+  CollectionView,
+  CollectionQueryResult,
+  PageBlock,
+  CollectionCardCover,
+  CollectionCardCoverSize,
+  CollectionCardCoverAspect,
+  PropertyID,
+  Collection
+} from '@texonom/ntypes'
 
-export type MapPageUrlFn = (pageId: string, recordMap?: types.ExtendedRecordMap | undefined) => string
-export type MapImageUrlFn = (url: string, block: types.Block) => string
-export type SearchNotionFn = (params: types.SearchParams) => Promise<types.SearchResults>
+export type MapPageUrlFn = (pageId: string, recordMap?: ExtendedRecordMap | undefined) => string
+export type MapImageUrlFn = (url: string, block: Block) => string
+export type SearchNotionFn = (params: SearchParams) => Promise<SearchResults>
 
 export type ComponentOverrideFn = (props: any, defaultValueFn: () => React.ReactNode) => any
 
@@ -55,27 +68,27 @@ export interface NotionComponents {
 }
 
 export interface CollectionViewProps {
-  collection: types.Collection
-  collectionView: types.CollectionView
-  collectionData: types.CollectionQueryResult
+  collection: Collection
+  collectionView: CollectionView
+  collectionData: CollectionQueryResult
   padding?: number
   width?: number
 }
 
 export interface CollectionCardProps {
-  collection: types.Collection
-  block: types.PageBlock
-  cover: types.CollectionCardCover
-  coverSize: types.CollectionCardCoverSize
-  coverAspect: types.CollectionCardCoverAspect
+  collection: Collection
+  block: PageBlock
+  cover: CollectionCardCover
+  coverSize: CollectionCardCoverSize
+  coverAspect: CollectionCardCoverAspect
   properties?: Array<{
-    property: types.PropertyID
+    property: PropertyID
     visible: boolean
   }>
   className?: string
 }
 export interface CollectionGroupProps {
-  collection: types.Collection
+  collection: Collection
   collectionViewComponent: React.ElementType
   collectionGroup: any
   hidden: boolean

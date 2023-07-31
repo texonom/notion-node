@@ -1,6 +1,5 @@
-import * as React from 'react'
+import React from 'react'
 
-import * as types from '@texonom/ntypes'
 import { getPageBreadcrumbs } from '@texonom/nutils'
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -11,8 +10,10 @@ import { cs } from '../utils'
 import { PageIcon } from './page-icon'
 import { SearchDialog } from './search-dialog'
 
+import type { Block, PageBlock, CollectionViewPageBlock } from '@texonom/ntypes'
+
 export const Header: React.FC<{
-  block: types.CollectionViewPageBlock | types.PageBlock
+  block: CollectionViewPageBlock | PageBlock
 }> = ({ block }) => {
   return (
     <header className='notion-header'>
@@ -25,7 +26,7 @@ export const Header: React.FC<{
 }
 
 export const Breadcrumbs: React.FC<{
-  block: types.Block
+  block: Block
   rootOnly?: boolean
 }> = ({ block, rootOnly = false }) => {
   const { recordMap, mapPageUrl, components } = useNotionContext()
@@ -67,7 +68,7 @@ export const Breadcrumbs: React.FC<{
 }
 
 export const Search: React.FC<{
-  block: types.Block
+  block: Block
   search?: SearchNotionFn
   title?: React.ReactNode
 }> = ({ block, search, title = 'Search' }) => {
