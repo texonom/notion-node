@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-pnpm i nclient
+pnpm i @texonom/nclient
 ```
 
 This package is compatible with server-side V8 contexts such as Node.js, Deno, and Cloudflare Workers.
