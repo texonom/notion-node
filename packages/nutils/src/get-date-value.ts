@@ -1,4 +1,4 @@
-import { FormattedDate } from '@texonom/ntypes'
+import type { FormattedDate } from '@texonom/ntypes'
 
 /**
  * Attempts to find a valid date from a given property.

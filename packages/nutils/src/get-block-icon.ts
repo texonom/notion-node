@@ -1,6 +1,6 @@
-import { Block, ExtendedRecordMap, PageBlock } from '@texonom/ntypes'
-
 import { getBlockCollectionId } from './get-block-collection-id'
+
+import type { Block, ExtendedRecordMap, PageBlock } from '@texonom/ntypes'
 
 export function getBlockIcon(block: Block, recordMap: ExtendedRecordMap) {
   if ((block as PageBlock).format?.page_icon) return (block as PageBlock).format?.page_icon
