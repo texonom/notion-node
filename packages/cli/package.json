@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@texonom/nclient": "workspace:^",
+    "@texonom/ntypes": "workspace:^",
     "clipanion": "^3.2.1"
   },
   "standard-version": {
