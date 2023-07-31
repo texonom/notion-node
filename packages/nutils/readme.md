@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-pnpm i nutils
+pnpm i @texonom/nutils
 ```
 
 This package is compatible with both Node.js and client-side web usage.
