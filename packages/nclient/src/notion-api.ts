@@ -1,4 +1,4 @@
-import { getBlockCollectionId, getPageContentBlockIds, parsePageId, uuidToId } from '@texonom/nutils'
+import { getBlockCollectionId, getPageContentBlockIds, parsePageId, uuidToId, findAncestors } from '@texonom/nutils'
 import pMap from 'p-map'
 
 import type {
@@ -81,15 +81,11 @@ export class NotionAPI {
     recordMap.signed_urls = {}
 
     if (fetchMissingBlocks)
-      // eslint-disable-next-line no-constant-condition
       while (true) {
         // fetch any missing content blocks
         const pendingBlockIds = getPageContentBlockIds(recordMap).filter(id => !recordMap.block[id])
-
         if (!pendingBlockIds.length) break
-
         const newBlocks = await this.getBlocks(pendingBlockIds, fetchOption).then(res => res.recordMap.block)
-
         recordMap.block = { ...recordMap.block, ...newBlocks }
       }
 
@@ -106,12 +102,14 @@ export class NotionAPI {
         collectionViewId: string
       }> = contentBlockIds.flatMap(blockId => {
         const block = recordMap.block[blockId].value
+        if (!block) return []
         const collectionId =
           block &&
           (block.type === 'collection_view' || block.type === 'collection_view_page') &&
           getBlockCollectionId(block, recordMap)
 
-        if (collectionId)
+        const ancesters = findAncestors(recordMap, block)
+        if (collectionId && ancesters.includes(pageId))
           return block.view_ids?.map(collectionViewId => ({
             collectionId,
             collectionViewId
