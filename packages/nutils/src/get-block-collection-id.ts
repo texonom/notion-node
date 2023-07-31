@@ -1,4 +1,4 @@
-import { Block, ExtendedRecordMap } from '@texonom/ntypes'
+import type { Block, ExtendedRecordMap } from '@texonom/ntypes'
 
 export function getBlockCollectionId(block: Block, recordMap: ExtendedRecordMap): string | null {
   const collectionId = (block as any).collection_id || (block as any).format?.collection_pointer?.id
