@@ -1,4 +1,4 @@
-import type { ExtendedRecordMap } from '@texonom/ntypes'
+import type { ExtendedRecordMap, Decoration } from '@texonom/ntypes'
 
 /**
  * Gets the IDs of all blocks contained on a page starting from a root block ID.
@@ -7,47 +7,36 @@ export const getPageContentBlockIds = (recordMap: ExtendedRecordMap, blockId?: s
   const rootBlockId = blockId || Object.keys(recordMap.block)[0]
   const contentBlockIds = new Set<string>()
 
-  function addContentBlocks(blockId: string) {
+  function addContentBlocks(blockId: string, nested = false) {
     if (contentBlockIds.has(blockId)) return
     contentBlockIds.add(blockId)
-
+    if (!nested) return
     const block = recordMap.block[blockId]?.value
     if (!block) return
-
     const { content, type, properties, format } = block
     if (properties)
-      // TODO: this needs some love, especially for resolving relation properties
-      // see this collection_view_page for an example: 8a586d253f984b85b48254da84465d23
       for (const key of Object.keys(properties)) {
         const p = properties[key]
-        p.map((d: any) => {
+        p.map((d: Decoration) => {
           const value = d?.[0]?.[1]?.[0]
           if (value?.[0] === 'p' && value[1]) addContentBlocks(value[1])
         })
-
-        // [["‣", [["p", "841918aa-f2a3-4d4c-b5ad-64b0f57c47b8"]]]]
-        const value = p?.[0]?.[1]?.[0]
-
-        if (value?.[0] === 'p' && value[1]) addContentBlocks(value[1])
+        p.map((p: Decoration) => {
+          const value = p?.[1]?.[0]
+          if (value?.[0] === 'p' && value[1]) addContentBlocks(value[1])
+        })
       }
 
     if (format) {
       const referenceId = format.transclusion_reference_pointer?.id
       if (referenceId) addContentBlocks(referenceId)
     }
-
-    if (!content || !Array.isArray(content))
-      // no child content blocks to recurse on
-      return
-
-    if (blockId !== rootBlockId)
-      if (type === 'page' || type === 'collection_view_page')
-        // ignore the content of other pages and collections
-        return
-
+    // no child content blocks to recurse on
+    if (!content || !Array.isArray(content)) return
+    // ignore the content of other pages and collections
+    if (blockId !== rootBlockId) if (type === 'page' || type === 'collection_view_page') return
     for (const blockId of content) addContentBlocks(blockId)
   }
-
-  addContentBlocks(rootBlockId)
+  addContentBlocks(rootBlockId, true)
   return Array.from(contentBlockIds)
 }
