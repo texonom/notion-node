@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-pnpm i ntypes
+pnpm i @texonom/ntypes
 ```
 
 This package only exports types and is compatible with both Node.js and browsers.

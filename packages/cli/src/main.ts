@@ -1,16 +1,15 @@
 import { Cli, Builtins } from 'clipanion'
-import { version, name, displayName } from '../package.json'
-import { NotionFolderCommand, NotionLabelCommand, NotionBranchProtectionCommand } from './notion'
+
+import { version, displayName } from '../package.json'
+import { NotionExportCommand } from './notion'
 
 const cli = new Cli({
-  binaryName: name,
+  binaryName: 'notion',
   binaryLabel: displayName,
   binaryVersion: version
 })
 
-cli.register(NotionFolderCommand)
-cli.register(NotionLabelCommand)
-cli.register(NotionBranchProtectionCommand)
+cli.register(NotionExportCommand)
 cli.register(Builtins.HelpCommand)
 cli.register(Builtins.VersionCommand)
 cli.runExit(process.argv.slice(2), Cli.defaultContext)
