@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import Katex from '@matejmazur/react-katex'
 import { EquationBlock } from '@texonom/ntypes'

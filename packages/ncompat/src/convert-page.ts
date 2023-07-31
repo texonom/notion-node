@@ -1,7 +1,7 @@
-import * as notion from '@texonom/ntypes'
-
-import * as types from './types'
 import { convertBlock } from './convert-block'
+
+import type { ExtendedRecordMap, Block as BlockType } from '@texonom/ntypes'
+import type { PageMap, BlockMap, BlockChildrenMap, ParentMap, Page, Block } from './types'
 
 export function convertPage({
   pageId,
@@ -11,11 +11,11 @@ export function convertPage({
   parentMap
 }: {
   pageId: string
-  blockMap: types.BlockMap
-  blockChildrenMap: types.BlockChildrenMap
-  pageMap: types.PageMap
-  parentMap: types.ParentMap
-}): notion.ExtendedRecordMap {
+  blockMap: BlockMap
+  blockChildrenMap: BlockChildrenMap
+  pageMap: PageMap
+  parentMap: ParentMap
+}): ExtendedRecordMap {
   const compatBlocks = Object.values(blockMap).map(block =>
     convertBlock({
       block,
@@ -75,17 +75,17 @@ export function convertPageBlock({
   parentMap
 }: {
   pageId: string
-  blockMap: types.BlockMap
-  blockChildrenMap: types.BlockChildrenMap
-  pageMap: types.PageMap
-  parentMap: types.ParentMap
-}): notion.Block | null {
+  blockMap: BlockMap
+  blockChildrenMap: BlockChildrenMap
+  pageMap: PageMap
+  parentMap: ParentMap
+}): BlockType | null {
   const partialPage = pageMap[pageId]
-  const page = partialPage as types.Page
+  const page = partialPage as Page
 
   if (page) {
     const compatPageBlock = convertBlock({
-      block: { ...page, type: 'child_page' } as unknown as types.Block,
+      block: { ...page, type: 'child_page' } as unknown as Block,
       children: blockChildrenMap[page.id],
       pageMap,
       blockMap,

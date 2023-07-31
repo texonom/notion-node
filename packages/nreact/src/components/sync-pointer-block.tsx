@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import { Block as BlockType, SyncPointerBlock as SyncPointerBlockType } from '@texonom/ntypes'
 

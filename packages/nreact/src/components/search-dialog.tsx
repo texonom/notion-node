@@ -1,6 +1,5 @@
-import * as React from 'react'
+import React from 'react'
 
-import * as types from '@texonom/ntypes'
 import throttle from 'lodash.throttle'
 import { getBlockParentPage, getBlockTitle } from '@texonom/nutils'
 
@@ -11,13 +10,14 @@ import { SearchIcon } from '../icons/search-icon'
 import { cs } from '../utils'
 import { PageTitle } from './page-title'
 
+import type { SearchParams, SearchResults, APIError } from '@texonom/ntypes'
 // TODO: modal.default.setAppElement('.notion-viewport')
 
 export class SearchDialog extends React.Component<{
   isOpen: boolean
   rootBlockId: string
   onClose: () => void
-  searchNotion: (params: types.SearchParams) => Promise<types.SearchResults>
+  searchNotion: (params: SearchParams) => Promise<SearchResults>
 }> {
   constructor(props) {
     super(props)
@@ -181,7 +181,7 @@ export class SearchDialog extends React.Component<{
     console.info('search', query, result)
 
     let searchResult: any = null // TODO
-    let searchError: types.APIError = null
+    let searchError: APIError = null
 
     if (result.error || result.errorId) {
       searchError = result

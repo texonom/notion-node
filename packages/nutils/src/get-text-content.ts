@@ -1,4 +1,4 @@
-import * as types from '@texonom/ntypes'
+import type { Decoration } from '@texonom/ntypes'
 
 /**
  * Gets the raw, unformatted text content of a block's content value.
@@ -6,7 +6,7 @@ import * as types from '@texonom/ntypes'
  * This is useful, for instance, for extracting a block's `title` without any
  * rich text formatting.
  */
-export const getTextContent = (text?: types.Decoration[]): string => {
+export const getTextContent = (text?: Decoration[]): string => {
   if (!text) return ''
   else if (Array.isArray(text))
     return text?.reduce((prev, current) => prev + (current[0] !== '⁍' && current[0] !== '‣' ? current[0] : ''), '') ?? ''

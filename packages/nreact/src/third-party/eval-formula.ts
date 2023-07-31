@@ -1,4 +1,3 @@
-import * as types from '@texonom/ntypes'
 import add from 'date-fns/add/index.js'
 import format from 'date-fns/format/index.js'
 import getDate from 'date-fns/getDate/index.js'
@@ -11,9 +10,18 @@ import intervalToDuration from 'date-fns/intervalToDuration/index.js'
 import sub from 'date-fns/sub/index.js'
 import { getDateValue, getTextContent } from '@texonom/nutils'
 
+import type {
+  PropertyMap,
+  CollectionPropertySchemaMap,
+  Formula,
+  FormulaResult,
+  FunctionFormula,
+  OperatorFormula
+} from '@texonom/ntypes'
+
 export interface EvalFormulaContext {
-  properties: types.PropertyMap
-  schema: types.CollectionPropertySchemaMap
+  properties: PropertyMap
+  schema: CollectionPropertySchemaMap
 
   endDate?: boolean
 }
@@ -31,7 +39,7 @@ export interface EvalFormulaContext {
  * @param formula - Formula to evaluate.
  * @param context - Collection context containing property schema and values.
  */
-export function evalFormula(formula: types.Formula, context: EvalFormulaContext): types.FormulaResult {
+export function evalFormula(formula: Formula, context: EvalFormulaContext): FormulaResult {
   const { endDate, ...ctx } = context
 
   // TODO: coerce return type using `formula.return_type`
@@ -108,10 +116,7 @@ export function evalFormula(formula: types.Formula, context: EvalFormulaContext)
  *
  * @private
  */
-function evalFunctionFormula(
-  formula: types.FunctionFormula | types.OperatorFormula,
-  ctx: EvalFormulaContext
-): types.FormulaResult {
+function evalFunctionFormula(formula: FunctionFormula | OperatorFormula, ctx: EvalFormulaContext): FormulaResult {
   const args = formula?.args
 
   switch (formula.name) {

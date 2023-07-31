@@ -1,4 +1,4 @@
-import * as notion from '@texonom/ntypes'
+import type { ID } from '@texonom/ntypes'
 
 export interface SignedUrlRequest {
   permissionRecord: PermissionRecord
@@ -7,7 +7,7 @@ export interface SignedUrlRequest {
 
 export interface PermissionRecord {
   table: string
-  id: notion.ID
+  id: ID
 }
 
 export interface SignedUrlResponse {

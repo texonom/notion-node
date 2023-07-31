@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import mediumZoom from '@fisch0920/medium-zoom'
 import { ExtendedRecordMap } from '@texonom/ntypes'

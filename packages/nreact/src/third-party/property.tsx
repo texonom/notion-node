@@ -1,9 +1,7 @@
-import * as React from 'react'
+import React from 'react'
 
-import * as types from '@texonom/ntypes'
 import format from 'date-fns/format/index.js'
 import formatNumber from 'format-number'
-import { FormulaResult } from '@texonom/ntypes'
 
 import { Checkbox } from '../components/checkbox'
 import { GracefulImage } from '../components/graceful-image'
@@ -13,12 +11,13 @@ import { useNotionContext } from '../context'
 import { cs } from '../utils'
 import { evalFormula } from './eval-formula'
 
+import type { CollectionPropertySchema, Decoration, Block, Collection, FormulaResult } from '@texonom/ntypes'
 export interface IPropertyProps {
   propertyId?: string
-  schema?: types.CollectionPropertySchema
-  data?: types.Decoration[]
-  block?: types.Block
-  collection?: types.Collection
+  schema?: CollectionPropertySchema
+  data?: Decoration[]
+  block?: Block
+  collection?: Collection
   inline?: boolean
   linkToTitlePage?: boolean
   pageHeader?: boolean

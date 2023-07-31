@@ -1,9 +1,18 @@
-// import { promises as fs } from 'fs'
-import * as notion from '@texonom/ntypes'
 import { getBlockCollectionId, getPageContentBlockIds, parsePageId, uuidToId } from '@texonom/nutils'
 import pMap from 'p-map'
 
-import * as types from './types'
+import type {
+  ExtendedRecordMap,
+  PageChunk,
+  BaseCollectionView,
+  CollectionViewType,
+  CollectionInstance,
+  RecordValues,
+  User,
+  SearchParams,
+  SearchResults
+} from '@texonom/ntypes'
+import type { SignedUrlRequest, FetchOption, SignedUrlResponse } from './types'
 
 /**
  * Main Notion API client.
@@ -49,15 +58,15 @@ export class NotionAPI {
       signFileUrls?: boolean
       chunkLimit?: number
       chunkNumber?: number
-      fetchOption?: types.FetchOption
+      fetchOption?: FetchOption
     } = {}
-  ): Promise<notion.ExtendedRecordMap> {
+  ): Promise<ExtendedRecordMap> {
     const page = await this.getPageRaw(pageId, {
       chunkLimit,
       chunkNumber,
       fetchOption
     })
-    const recordMap = page?.recordMap as notion.ExtendedRecordMap
+    const recordMap = page?.recordMap as ExtendedRecordMap
 
     if (!recordMap?.block) throw new Error(`Notion page not found "${uuidToId(pageId)}"`)
 
@@ -173,9 +182,9 @@ export class NotionAPI {
     contentBlockIds,
     fetchOption = {}
   }: {
-    recordMap: notion.ExtendedRecordMap
+    recordMap: ExtendedRecordMap
     contentBlockIds?: string[]
-    fetchOption?: types.FetchOption
+    fetchOption?: FetchOption
   }) {
     recordMap.signed_urls = {}
 
@@ -236,7 +245,7 @@ export class NotionAPI {
     }: {
       chunkLimit?: number
       chunkNumber?: number
-      fetchOption?: types.FetchOption
+      fetchOption?: FetchOption
     } = {}
   ) {
     const parsedPageId = parsePageId(pageId)
@@ -251,7 +260,7 @@ export class NotionAPI {
       verticalColumns: false
     }
 
-    return this.fetch<notion.PageChunk>({
+    return this.fetch<PageChunk>({
       endpoint: 'loadPageChunk',
       body,
       fetchOption
@@ -261,7 +270,7 @@ export class NotionAPI {
   public async getCollectionData(
     collectionId: string,
     collectionViewId: string,
-    collectionView: notion.BaseCollectionView,
+    collectionView: BaseCollectionView,
     {
       limit = 9999,
       searchQuery = '',
@@ -269,13 +278,13 @@ export class NotionAPI {
       loadContentCover = true,
       fetchOption
     }: {
-      type?: notion.CollectionViewType
+      type?: CollectionViewType
       limit?: number
       searchQuery?: string
       userTimeZone?: string
       userLocale?: string
       loadContentCover?: boolean
-      fetchOption?: types.FetchOption
+      fetchOption?: FetchOption
     } = {}
   ) {
     const type = collectionView?.type
@@ -404,7 +413,7 @@ export class NotionAPI {
       }
     }
 
-    return this.fetch<notion.CollectionInstance>({
+    return this.fetch<CollectionInstance>({
       endpoint: 'queryCollection',
       body: {
         collection: { id: collectionId },
@@ -415,32 +424,32 @@ export class NotionAPI {
     })
   }
 
-  public async getUsers(userIds: string[], fetchOption?: types.FetchOption) {
-    return this.fetch<notion.RecordValues<notion.User>>({
+  public async getUsers(userIds: string[], fetchOption?: FetchOption) {
+    return this.fetch<RecordValues<User>>({
       endpoint: 'getRecordValues',
       body: { requests: userIds.map(id => ({ id, table: 'notion_user' })) },
       fetchOption
     })
   }
 
-  public async getBlocks(blockIds: string[], fetchOption?: types.FetchOption) {
-    return this.fetch<notion.PageChunk>({
+  public async getBlocks(blockIds: string[], fetchOption?: FetchOption) {
+    return this.fetch<PageChunk>({
       endpoint: 'syncRecordValues',
       body: { requests: blockIds.map(blockId => ({ table: 'block', id: blockId, version: -1 })) },
       fetchOption
     })
   }
 
-  public async getSignedFileUrls(urls: types.SignedUrlRequest[], fetchOption?: types.FetchOption) {
-    return this.fetch<types.SignedUrlResponse>({
+  public async getSignedFileUrls(urls: SignedUrlRequest[], fetchOption?: FetchOption) {
+    return this.fetch<SignedUrlResponse>({
       endpoint: 'getSignedFileUrls',
       body: { urls },
       fetchOption
     })
   }
 
-  public async search(params: notion.SearchParams, fetchOption?: types.FetchOption) {
-    const body: notion.SearchParams = {
+  public async search(params: SearchParams, fetchOption?: FetchOption) {
+    const body: SearchParams = {
       type: 'BlocksInAncestor',
       source: 'quick_find_filters',
       ancestorId: parsePageId(params.ancestorId),
@@ -461,7 +470,7 @@ export class NotionAPI {
       }
     }
 
-    return this.fetch<notion.SearchResults>({
+    return this.fetch<SearchResults>({
       endpoint: 'search',
       body,
       fetchOption
@@ -476,7 +485,7 @@ export class NotionAPI {
   }: {
     endpoint: string
     body: object
-    fetchOption?: types.FetchOption
+    fetchOption?: FetchOption
     headers?: HeadersInit
   }): Promise<T> {
     const headers: HeadersInit = {

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import throttle from 'lodash.throttle'
 import { TableOfContentsEntry, uuidToId } from '@texonom/nutils'

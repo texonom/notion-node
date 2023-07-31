@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import { Img, ImgProps } from 'react-image'
 

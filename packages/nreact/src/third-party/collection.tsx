@@ -1,6 +1,5 @@
-import * as React from 'react'
+import React from 'react'
 
-import * as types from '@texonom/ntypes'
 import { getBlockCollectionId, getBlockParentPage, getTextContent } from '@texonom/nutils'
 import { useLocalStorage, useWindowSize } from 'react-use'
 
@@ -12,10 +11,17 @@ import { CollectionRow } from './collection-row'
 import { CollectionView } from './collection-view'
 import { PropertyImplMemo } from './property'
 
+import type {
+  PageBlock,
+  CollectionViewBlock,
+  CollectionViewPageBlock,
+  CollectionView as CollectionViewType
+} from '@texonom/ntypes'
+
 const isServer = typeof window === 'undefined'
 
 export const Collection: React.FC<{
-  block: types.CollectionViewBlock | types.CollectionViewPageBlock | types.PageBlock
+  block: CollectionViewBlock | CollectionViewPageBlock | PageBlock
   className?: string
   ctx: NotionContext
 }> = ({ block, className, ctx }) => {
@@ -45,7 +51,7 @@ export const Collection: React.FC<{
     return (
       <NotionContextProvider {...context}>
         <div className='notion-collection-page-properties'>
-          <CollectionRow block={block as types.PageBlock} pageHeader={true} className={className} />
+          <CollectionRow block={block as PageBlock} pageHeader={true} className={className} />
         </div>
       </NotionContextProvider>
     )
@@ -59,7 +65,7 @@ export const Collection: React.FC<{
 }
 
 const CollectionViewBlock: React.FC<{
-  block: types.CollectionViewBlock | types.CollectionViewPageBlock
+  block: CollectionViewBlock | CollectionViewPageBlock
   className?: string
 }> = ({ block, className }) => {
   const { recordMap, showCollectionViewDropdown } = useNotionContext()
@@ -211,7 +217,7 @@ const CollectionViewTabs: React.FC<{
 }
 
 const CollectionViewColumnDesc: React.FC<{
-  collectionView: types.CollectionView
+  collectionView: CollectionViewType
   className?: string
   children?: React.ReactNode
 }> = ({ collectionView, className, children, ...rest }) => {

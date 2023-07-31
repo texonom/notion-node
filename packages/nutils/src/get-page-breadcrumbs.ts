@@ -1,10 +1,10 @@
-import * as types from '@texonom/ntypes'
-
 import { getBlockIcon } from './get-block-icon'
 import { getBlockParentPage } from './get-block-parent-page'
 import { getBlockTitle } from './get-block-title'
 
-export const getPageBreadcrumbs = (recordMap: types.ExtendedRecordMap, activePageId: string): Array<any> | null => {
+import type { ExtendedRecordMap } from '@texonom/ntypes'
+
+export const getPageBreadcrumbs = (recordMap: ExtendedRecordMap, activePageId: string): Array<any> | null => {
   const blockMap = recordMap.block
   const breadcrumbs = []
 

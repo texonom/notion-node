@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import { Block, Decoration, ExternalObjectInstance } from '@texonom/ntypes'
 import { parsePageId } from '@texonom/nutils'

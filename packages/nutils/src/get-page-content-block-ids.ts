@@ -1,9 +1,9 @@
-import * as types from '@texonom/ntypes'
+import type { ExtendedRecordMap } from '@texonom/ntypes'
 
 /**
  * Gets the IDs of all blocks contained on a page starting from a root block ID.
  */
-export const getPageContentBlockIds = (recordMap: types.ExtendedRecordMap, blockId?: string): string[] => {
+export const getPageContentBlockIds = (recordMap: ExtendedRecordMap, blockId?: string): string[] => {
   const rootBlockId = blockId || Object.keys(recordMap.block)[0]
   const contentBlockIds = new Set<string>()
 

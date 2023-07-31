@@ -1,24 +1,24 @@
-import * as types from '@texonom/ntypes'
-
 import { getBlockIcon } from './get-block-icon'
 import { isUrl } from './is-url'
+
+import type { Block, ExtendedRecordMap } from '@texonom/ntypes'
 
 /**
  * Gets URLs of all images contained on the given page.
  */
 export const getPageImageUrls = (
-  recordMap: types.ExtendedRecordMap,
+  recordMap: ExtendedRecordMap,
   {
     mapImageUrl
   }: {
-    mapImageUrl: (url: string, block: types.Block) => string | null
+    mapImageUrl: (url: string, block: Block) => string | null
   }
 ): string[] => {
   const blockIds = Object.keys(recordMap.block)
   const imageUrls: string[] = blockIds
     .flatMap(blockId => {
       const block = recordMap.block[blockId]?.value
-      const images: Array<{ block: types.Block; url: string }> = []
+      const images: Array<{ block: Block; url: string }> = []
 
       if (block) {
         if (block.type === 'image') {
