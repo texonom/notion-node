@@ -638,7 +638,7 @@ export const Block: React.FC<BlockProps> = props => {
       const blockPointerId = block?.format?.alias_pointer?.id
       const linkedBlock = recordMap.block[blockPointerId]?.value
       if (!linkedBlock) {
-        console.info('"alias" missing block', blockPointerId)
+        console.debug('"alias" missing block', blockPointerId)
         return null
       }
 
@@ -691,7 +691,7 @@ export const Block: React.FC<BlockProps> = props => {
 
     default:
       if (process.env.NODE_ENV !== 'production')
-        console.info('Unsupported type ' + (block as any).type, JSON.stringify(block, null, 2))
+        console.debug('Unsupported type ' + (block as any).type, JSON.stringify(block, null, 2))
 
       return <div />
   }

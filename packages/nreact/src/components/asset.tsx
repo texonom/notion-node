@@ -45,7 +45,6 @@ export const Asset: React.FC<{
   }
 
   const assetStyle: React.CSSProperties = {}
-  // console.info('asset', block)
 
   if (block.format) {
     const { block_aspect_ratio, block_height, block_width, block_full_width, block_page_width, block_preserve_scale } =
@@ -133,9 +132,7 @@ export const Asset: React.FC<{
 
     if (!style.padding) style.padding = '8px 16px'
 
-    if (!isServer)
-      // console.info('pdf', block, signedUrl)
-      content = <components.Pdf file={source} />
+    if (!isServer) content = <components.Pdf file={source} />
   } else if (
     block.type === 'embed' ||
     block.type === 'video' ||
@@ -166,7 +163,6 @@ export const Asset: React.FC<{
 
       if (src) {
         const youtubeVideoId: string | null = block.type === 'video' ? getYoutubeId(src) : null
-        // console.info({ youtubeVideoId, src, format: block.format, style })
 
         if (youtubeVideoId) {
           content = <LiteYouTubeEmbed id={youtubeVideoId} style={assetStyle} className='notion-asset-object-fit' />
@@ -211,8 +207,7 @@ export const Asset: React.FC<{
       }
     }
   } else if (block.type === 'image') {
-    // console.info('image', block)
-    //kind of a hack for now. New file.notion.so images aren't signed correctly
+    // kind of a hack for now. New file.notion.so images aren't signed correctly
     if (source.includes('file.notion.so')) source = block.properties?.source?.[0]?.[0]
 
     const src = mapImageUrl(source, block as Block)

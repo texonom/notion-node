@@ -75,13 +75,11 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
             properties: block?.properties
           })
 
-          if (isNaN(content as number)) {
-            // console.info('NaN', schema.formula)
-          }
+          if (isNaN(content as number)) console.debug('NaN', schema.formula)
 
           if (content instanceof Date) content = format(content, 'MMM d, YYY hh:mm aa')
         } catch (err) {
-          // console.info('error evaluating formula', schema.formula, err)
+          console.error('error evaluating formula', schema.formula, err)
           content = null
         }
 
@@ -107,7 +105,6 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
   const renderPersonValue = React.useMemo(
     () =>
       function PersonProperty() {
-        // console.info('person', schema, data)
         return <Text value={data} block={block} />
       },
     [block, data]
@@ -353,13 +350,11 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
         break
 
       case 'created_by':
-        // TODO
-        // console.info('created_by', schema, data)
+        content = components.propertyPersonValue(props, renderPersonValue)
         break
 
       case 'last_edited_by':
-        // TODO
-        // console.info('last_edited_by', schema, data)
+        content = components.propertyPersonValue(props, renderPersonValue)
         break
 
       case 'text':

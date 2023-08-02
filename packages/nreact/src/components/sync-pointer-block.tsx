@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { Block as BlockType, SyncPointerBlock as SyncPointerBlockType } from '@texonom/ntypes'
-
 import { NotionBlockRenderer } from '../renderer'
+
+import type { Block as BlockType, SyncPointerBlock as SyncPointerBlockType } from '@texonom/ntypes'
 
 export const SyncPointerBlock: React.FC<{
   block: BlockType

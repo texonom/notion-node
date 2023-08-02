@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { Block, Decoration, ExternalObjectInstance } from '@texonom/ntypes'
 import { parsePageId } from '@texonom/nutils'
 
 import { useNotionContext } from '../context'
@@ -8,6 +7,8 @@ import { formatDate, getHashFragmentValue } from '../utils'
 import { EOI } from './eoi'
 import { GracefulImage } from './graceful-image'
 import { PageTitle } from './page-title'
+
+import type { Block, Decoration, ExternalObjectInstance } from '@texonom/ntypes'
 
 /**
  * Renders a single piece of Notion text, including basic rich text formatting.
@@ -28,12 +29,8 @@ export const Text: React.FC<{
 
   return (
     <React.Fragment>
-      {value?.map(([text, decorations], index) => {
-        // TODO: sometimes notion shows a max of N items to prevent overflow
-        // if (trim && index > 18) {
-        //   return null
-        // }
-
+      {value?.map((deco, index) => {
+        const [text, decorations] = deco
         if (!decorations)
           if (text === ',') return <span key={index} style={{ padding: '0.5em' }} />
           else return <React.Fragment key={index}>{text}</React.Fragment>
@@ -45,12 +42,9 @@ export const Text: React.FC<{
               const blockId = decorator[1]
               const linkedBlock = recordMap.block[blockId]?.value
               if (!linkedBlock) {
-                console.info('"p" missing block', blockId)
+                console.debug('"p" missing block', blockId)
                 return null
               }
-
-              // console.info('p', blockId)
-
               return (
                 <components.PageLink className='notion-link' href={mapPageUrl(blockId)}>
                   <PageTitle block={linkedBlock} />
@@ -68,7 +62,7 @@ export const Text: React.FC<{
                   const user = recordMap.notion_user[id]?.value
 
                   if (!user) {
-                    console.info('"‣" missing user', id)
+                    console.debug('"‣" missing user', id)
                     return null
                   }
 
@@ -81,7 +75,7 @@ export const Text: React.FC<{
                   const linkedBlock = recordMap.block[id]?.value
 
                   if (!linkedBlock) {
-                    console.info('"‣" missing block', linkType, id)
+                    console.debug('"‣" missing block', linkType, id)
                     return null
                   }
 
@@ -126,7 +120,7 @@ export const Text: React.FC<{
 
             case 'a': {
               const v = decorator[1]
-              const pathname = v.substr(1)
+              const pathname = v.substring(1)
               const id = parsePageId(pathname, { uuid: true })
 
               if ((v[0] === '/' || v.includes(rootDomain)) && id) {
@@ -149,17 +143,14 @@ export const Text: React.FC<{
               }
             }
 
+            // Date
             case 'd': {
               const v = decorator[1]
               const type = v?.type
-
               if (type === 'date') {
-                // Example: Jul 31, 2010
                 const startDate = v.start_date
-
                 return formatDate(startDate)
               } else if (type === 'daterange') {
-                // Example: Jul 31, 2010 → Jul 31, 2020
                 const startDate = v.start_date
                 const endDate = v.end_date
 
@@ -169,29 +160,26 @@ export const Text: React.FC<{
               }
             }
 
+            // User
             case 'u': {
               const userId = decorator[1]
               const user = recordMap.notion_user[userId]?.value
-
               if (!user) {
-                console.info('missing user', userId)
+                console.debug('missing user', userId)
                 return null
               }
-
               const name = [user.given_name, user.family_name].filter(Boolean).join(' ')
-
               return <GracefulImage className='notion-user' src={mapImageUrl(user.profile_photo, block)} alt={name} />
             }
 
             case 'eoi': {
               const blockId = decorator[1]
               const externalObjectInstance = recordMap.block[blockId]?.value as ExternalObjectInstance
-
               return <EOI block={externalObjectInstance} inline={true} />
             }
 
             default:
-              if (process.env.NODE_ENV !== 'production') console.info('unsupported text format', decorator)
+              if (process.env.NODE_ENV !== 'production') console.debug('unsupported text format', decorator)
 
               return element
           }

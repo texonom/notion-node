@@ -77,8 +77,6 @@ export function evalFormula(formula: Formula, context: EvalFormulaContext): Form
           else return !!text
 
         case 'date': {
-          // console.info('date', text, value)
-
           const v = getDateValue(value)
           if (v)
             if (endDate && v.end_date) {
@@ -104,7 +102,6 @@ export function evalFormula(formula: Formula, context: EvalFormulaContext): Form
       return evalFunctionFormula(formula, ctx)
 
     default:
-      // console.info(formula)
       throw new Error(`invalid or unsupported formula "${(formula as any)?.type}`)
   }
 }
@@ -373,7 +370,6 @@ function evalFunctionFormula(formula: FunctionFormula | OperatorFormula, ctx: Ev
       return getYear(evalFormula(args[0], ctx) as Date)
 
     default:
-      // console.info(formula)
       throw new Error(`invalid or unsupported function formula "${(formula as any)?.type}`)
   }
 }

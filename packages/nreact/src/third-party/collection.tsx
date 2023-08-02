@@ -36,7 +36,6 @@ export const Collection: React.FC<{
    * To circumvent this issue, we're passing the context value directly to
    * `Collection` so all children have the correct context values.
    */
-  // console.info('Collection', Object.keys(recordMap.block).length)
 
   const context: NotionContext = React.useMemo(
     () => ({
@@ -87,7 +86,7 @@ const CollectionViewBlock: React.FC<{
 
   const onChangeView = React.useCallback(
     (collectionViewId: string) => {
-      console.info('change collection view', collectionViewId)
+      console.debug('change collection view', collectionViewId)
 
       setCollectionState({
         ...collectionState,
@@ -137,11 +136,6 @@ const CollectionViewBlock: React.FC<{
       padding
     }
   }, [windowWidth, parentPage, collectionView?.type, isMounted])
-
-  // console.info({
-  //   width,
-  //   padding
-  // })
 
   if (!(collection && collectionView && collectionData)) {
     console.warn('skipping missing collection view for block', block.id, {

@@ -33,7 +33,7 @@ export const EOI: React.FC<{
 
     default:
       if (process.env.NODE_ENV !== 'production')
-        console.info(`Unsupported external_object_instance domain "${domain}"`, JSON.stringify(block, null, 2))
+        console.debug(`Unsupported external_object_instance domain "${domain}"`, JSON.stringify(block, null, 2))
 
       return null
   }
