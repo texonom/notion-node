@@ -74,6 +74,12 @@ importers:
       '@texonom/nclient':
         specifier: workspace:^
         version: link:../nclient
+      '@texonom/ntypes':
+        specifier: workspace:^
+        version: link:../ntypes
+      '@texonom/nutils':
+        specifier: workspace:^
+        version: link:../nutils
       clipanion:
         specifier: ^3.2.1
         version: 3.2.1(typanion@3.13.0)
@@ -108,15 +114,6 @@ importers:
       '@texonom/nclient':
         specifier: workspace:^
         version: link:../nclient
-
-  packages/nexport:
-    dependencies:
-      '@texonom/nclient':
-        specifier: workspace:^
-        version: link:../nclient
-      clipanion:
-        specifier: ^3.2.1
-        version: 3.2.1(typanion@3.13.0)
 
   packages/nreact:
     dependencies:
