@@ -11,29 +11,22 @@ export function convertRichTextItem(richTextItem: RichTextItem): Decoration {
   const subdecorations: SubDecoration[] = []
 
   if (richTextItem.annotations.bold) subdecorations.push(['b'])
-
   if (richTextItem.annotations.italic) subdecorations.push(['i'])
-
   if (richTextItem.annotations.strikethrough) subdecorations.push(['s'])
-
   if (richTextItem.annotations.underline) subdecorations.push(['_'])
-
   if (richTextItem.annotations.code) subdecorations.push(['c'])
-
   if (richTextItem.annotations.color !== 'default') subdecorations.push(['h', convertColor(richTextItem.annotations.color)])
 
   const details = richTextItem[richTextItem.type]
   if (details) if (details.link) subdecorations.push(['a', details.link.url])
 
   switch (richTextItem.type) {
-    case 'text': {
+    case 'text':
       if (subdecorations.length) return [richTextItem.text.content, subdecorations]
       else return [richTextItem.text.content]
-    }
 
     case 'equation':
       if (richTextItem.equation?.expression) subdecorations.unshift(['e', richTextItem.equation.expression])
-
       return ['⁍', subdecorations]
 
     case 'mention': {
