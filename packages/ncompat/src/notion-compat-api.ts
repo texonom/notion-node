@@ -177,7 +177,7 @@ export class NotionCompatAPI {
     let cursor: string
 
     do {
-      console.info('blocks.children.list', { blockId, cursor })
+      console.debug('blocks.children.list', { blockId, cursor })
       const res = await this.client.blocks.children.list({
         block_id: blockId,
         start_cursor: cursor

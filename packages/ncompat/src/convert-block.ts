@@ -45,14 +45,12 @@ export function convertBlock({
 
     if (parentId) {
       compatBlock.parent_id = parentId
-
       const parentBlock = blockMap?.[parentId] as Block
       if (parentBlock) {
         switch (parentBlock.type) {
           case 'child_database':
             compatBlock.parent_table = 'table'
             break
-
           case 'child_page':
           // fallthrough
           default:
@@ -61,7 +59,6 @@ export function convertBlock({
         }
       } else {
         const parentPage = pageMap?.[parentId] as Page
-
         if (parentPage) compatBlock.parent_table = 'block'
       }
     }
@@ -142,7 +139,6 @@ export function convertBlock({
 
     case 'code':
       if (block.code.language) compatBlock.properties.language = [[block.code.language]]
-
       break
 
     case 'callout':
