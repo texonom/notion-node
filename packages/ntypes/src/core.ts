@@ -72,7 +72,7 @@ export type LinkFormat = ['a', string]
 export type ExternalObjectInstanceFormat = ['eoi', string]
 export type ColorFormat = ['h', Color]
 export type UserFormat = ['u', string]
-export type PageFormat = ['p', string]
+export type PageFormat = ['p', string] | ['p', string, string]
 export type InlineEquationFormat = ['e', string]
 export type DiscussionFormat = ['m', string]
 export type ExternalLinkFormat = ['‣', [string, string]]
@@ -105,6 +105,19 @@ export type SubDecoration =
   | ExternalObjectInstanceFormat
 
 export type BaseDecoration = [string]
+export type MentionDecoration = ['‣', SubDecoration[]]
 export type AdditionalDecoration = [string, SubDecoration[]]
 
-export type Decoration = BaseDecoration | AdditionalDecoration
+export type Decoration = BaseDecoration | AdditionalDecoration | MentionDecoration
+
+export const isLinkFormat = (format: SubDecoration): format is LinkFormat => format[0] === 'a'
+export const isExternalLinkFormat = (format: SubDecoration): format is ExternalLinkFormat => format[0] === '‣'
+export const isDateFormat = (format: SubDecoration): format is DateFormat => format[0] === 'd'
+export const isColorFormat = (format: SubDecoration): format is ColorFormat => format[0] === 'h'
+export const isPageFormat = (format: SubDecoration): format is PageFormat => format[0] === 'p'
+export const isUserFormat = (format: SubDecoration): format is UserFormat => format[0] === 'u'
+
+export const isBaseDecoration = (deco: Decoration): deco is BaseDecoration => deco.length === 1
+export const isMentionDecoration = (deco: Decoration): deco is MentionDecoration => deco[0] === '‣'
+export const isAdditionalDecoration = (deco: Decoration): deco is AdditionalDecoration =>
+  !isMentionDecoration(deco) && deco.length === 2

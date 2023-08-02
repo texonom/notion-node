@@ -5,6 +5,7 @@ import { RecordMap } from './maps'
 
 export interface RecordValues<T> {
   results: T[]
+  recordMapWithRoles?: RecordMap
 }
 
 export interface SearchParams {
