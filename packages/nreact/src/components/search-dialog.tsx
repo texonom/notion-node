@@ -178,7 +178,7 @@ export class SearchDialog extends React.Component<{
       ancestorId: rootBlockId
     })
 
-    console.info('search', query, result)
+    console.debug('search', query, result)
 
     let searchResult: any = null // TODO
     let searchError: APIError = null
