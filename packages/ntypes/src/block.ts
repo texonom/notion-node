@@ -146,6 +146,7 @@ export interface BaseContentBlock extends BaseBlock {
 export interface BasePageBlock extends BaseBlock {
   properties?: {
     title: Decoration[]
+    [property: string]: Decoration[]
   }
   format: {
     page_full_width?: boolean
