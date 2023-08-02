@@ -21,8 +21,8 @@ export const getPageContentBlockIds = (recordMap: ExtendedRecordMap, blockId?: s
           const value = d?.[0]?.[1]?.[0]
           if (value?.[0] === 'p' && value[1]) addContentBlocks(value[1])
         })
-        p.map((p: Decoration) => {
-          const value = p?.[1]?.[0]
+        p.map((d: Decoration) => {
+          const value = d?.[1]?.[0]
           if (value?.[0] === 'p' && value[1]) addContentBlocks(value[1])
         })
       }
@@ -39,4 +39,29 @@ export const getPageContentBlockIds = (recordMap: ExtendedRecordMap, blockId?: s
   }
   addContentBlocks(rootBlockId, true)
   return Array.from(contentBlockIds)
+}
+
+/**
+ * Gets the IDs of all blocks contained on a page starting from a root block ID.
+ */
+export const getPageContentUserIds = (recordMap: ExtendedRecordMap, blockId?: string): string[] => {
+  const rootBlockId = blockId || Object.keys(recordMap.block)[0]
+  const contentUserIDs = new Set<string>()
+  const block = recordMap.block[rootBlockId]?.value
+
+  if (block?.created_by_id) contentUserIDs.add(block?.created_by_id)
+  if (block?.last_edited_by_id) contentUserIDs.add(block?.last_edited_by_id)
+
+  // Property
+  const { properties } = block
+  if (properties)
+    for (const key of Object.keys(properties)) {
+      const p = properties[key]
+      p.map((d: Decoration) => {
+        const value = d?.[1]?.[0]
+        if (value?.[0] === 'u' && value[1]) contentUserIDs.add(value[1])
+      })
+    }
+
+  return Array.from(contentUserIDs)
 }
