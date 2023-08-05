@@ -1,4 +1,11 @@
-import { getBlockCollectionId, getPageContentBlockIds, parsePageId, uuidToId, findAncestors } from '@texonom/nutils'
+import {
+  getBlockCollectionId,
+  getPageContentBlockIds,
+  getPageContentUserIds,
+  parsePageId,
+  uuidToId,
+  findAncestors
+} from '@texonom/nutils'
 import pMap from 'p-map'
 
 import type {
@@ -45,16 +52,12 @@ export class NotionAPI {
     pageId: string,
     {
       concurrency = 3,
-      fetchMissingBlocks = true,
-      fetchCollections = true,
       signFileUrls = true,
       chunkLimit = 100,
       chunkNumber = 0,
       fetchOption
     }: {
       concurrency?: number
-      fetchMissingBlocks?: boolean
-      fetchCollections?: boolean
       signFileUrls?: boolean
       chunkLimit?: number
       chunkNumber?: number
@@ -80,91 +83,78 @@ export class NotionAPI {
     recordMap.collection_query = {}
     recordMap.signed_urls = {}
 
-    if (fetchMissingBlocks)
-      while (true) {
-        // fetch any missing content blocks
-        const pendingBlockIds = getPageContentBlockIds(recordMap).filter(id => !recordMap.block[id])
-        if (!pendingBlockIds.length) break
-        const newBlocks = await this.getBlocks(pendingBlockIds, fetchOption).then(res => res.recordMap.block)
-        recordMap.block = { ...recordMap.block, ...newBlocks }
-      }
+    // Fetch Users
+    const promises = []
+    const pendingUserIDs = getPageContentUserIds(recordMap).filter(id => !recordMap.notion_user[id])
+    promises.push(this.getUsers(pendingUserIDs, fetchOption).then(res => res?.recordMapWithRoles?.notion_user))
 
-    const contentBlockIds = getPageContentBlockIds(recordMap)
+    // Fetch any missing content blocks
+    const pendingBlocks = getPageContentBlockIds(recordMap).filter(id => !recordMap.block[id])
+    promises.push(this.getBlocks(pendingBlocks, fetchOption).then(res => res.recordMap.block))
+
+    // Append them
+    const [newUsers, newBlocks] = await Promise.all(promises)
+    recordMap.notion_user = { ...recordMap.notion_user, ...newUsers }
+    recordMap.block = { ...recordMap.block, ...newBlocks }
 
     // Optionally fetch all data for embedded collections and their associated views.
     // NOTE: We're eagerly fetching *all* data for each collection and all of its views.
     // This is really convenient in order to ensure that all data needed for a given
     // Notion page is readily available for use cases involving server-side rendering
     // and edge caching.
-    if (fetchCollections) {
-      const allCollectionInstances: Array<{
-        collectionId: string
-        collectionViewId: string
-      }> = contentBlockIds.flatMap(blockId => {
-        const block = recordMap.block[blockId].value
-        if (!block) return []
-        const collectionId =
-          block &&
-          (block.type === 'collection_view' || block.type === 'collection_view_page') &&
-          getBlockCollectionId(block, recordMap)
 
-        const ancesters = findAncestors(recordMap, block)
-        if (collectionId && ancesters.includes(pageId))
-          return block.view_ids?.map(collectionViewId => ({
-            collectionId,
-            collectionViewId
-          }))
-        else return []
-      })
+    const contentBlockIds = getPageContentBlockIds(recordMap)
+    const allCollectionInstances: Array<{
+      collectionId: string
+      collectionViewId: string
+    }> = contentBlockIds.flatMap(blockId => {
+      const block = recordMap.block[blockId].value
+      if (!block) return []
+      const collectionId =
+        block &&
+        (block.type === 'collection_view' || block.type === 'collection_view_page') &&
+        getBlockCollectionId(block, recordMap)
 
-      // fetch data for all collection view instances
-      await pMap(
-        allCollectionInstances,
-        async collectionInstance => {
-          const { collectionId, collectionViewId } = collectionInstance
-          const collectionView = recordMap.collection_view[collectionViewId]?.value
+      const ancesters = findAncestors(recordMap, block)
+      if (collectionId && ancesters.includes(pageId))
+        return block.view_ids?.map(collectionViewId => ({
+          collectionId,
+          collectionViewId
+        }))
+      else return []
+    })
 
-          try {
-            const collectionData = await this.getCollectionData(collectionId, collectionViewId, collectionView, {
-              fetchOption
-            })
+    // fetch data for all collection view instances
+    await pMap(
+      allCollectionInstances,
+      async collectionInstance => {
+        const { collectionId, collectionViewId } = collectionInstance
+        const collectionView = recordMap.collection_view[collectionViewId]?.value
 
-            recordMap.block = {
-              ...recordMap.block,
-              ...collectionData.recordMap.block
-            }
+        try {
+          const collectionData = await this.getCollectionData(collectionId, collectionViewId, collectionView, {
+            fetchOption
+          })
 
-            recordMap.collection = {
-              ...recordMap.collection,
-              ...collectionData.recordMap.collection
-            }
-
-            recordMap.collection_view = {
-              ...recordMap.collection_view,
-              ...collectionData.recordMap.collection_view
-            }
-
-            recordMap.notion_user = {
-              ...recordMap.notion_user,
-              ...collectionData.recordMap.notion_user
-            }
-
-            recordMap.collection_query![collectionId] = {
-              ...recordMap.collection_query![collectionId],
-              [collectionViewId]: (collectionData.result as any)?.reducerResults
-            }
-          } catch (err) {
-            // It's possible for public pages to link to private collections, in which case
-            // Notion returns a 400 error
-            console.warn('NotionAPI collectionQuery error', pageId, err.message)
-            console.error(err)
+          recordMap.block = { ...recordMap.block, ...collectionData.recordMap.block }
+          recordMap.collection = { ...recordMap.collection, ...collectionData.recordMap.collection }
+          recordMap.collection_view = { ...recordMap.collection_view, ...collectionData.recordMap.collection_view }
+          recordMap.notion_user = { ...recordMap.notion_user, ...collectionData.recordMap.notion_user }
+          recordMap.collection_query![collectionId] = {
+            ...recordMap.collection_query![collectionId],
+            [collectionViewId]: (collectionData.result as any)?.reducerResults
           }
-        },
-        {
-          concurrency
+        } catch (err) {
+          // It's possible for public pages to link to private collections, in which case
+          // Notion returns a 400 error
+          console.warn('NotionAPI collectionQuery error', pageId, err.message)
+          console.error(err)
         }
-      )
-    }
+      },
+      {
+        concurrency
+      }
+    )
 
     // Optionally fetch signed URLs for any embedded files.
     // NOTE: Similar to collection data, we default to eagerly fetching signed URL info
