@@ -23,7 +23,7 @@ export const getPageContentBlockIds = (recordMap: ExtendedRecordMap, blockId?: s
         })
         p.map((d: Decoration) => {
           const value = d?.[1]?.[0]
-          if (value?.[0] === 'p' && value[1]) addContentBlocks(value[1])
+          if ((value?.[0] === 'p' || value?.[0] === 'eoi') && value[1]) addContentBlocks(value[1])
         })
       }
 
