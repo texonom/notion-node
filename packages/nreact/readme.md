@@ -7,3 +7,13 @@
 ## Docs
 
 See the [full docs](https://github.com/texonom/notion-node).
+
+## Source code
+
+### `block.tsx`
+
+for block type switch case
+
+### `text.tsx`
+
+for decoration switch case

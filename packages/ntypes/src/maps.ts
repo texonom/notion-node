@@ -31,6 +31,7 @@ export interface RecordMap {
   collection?: CollectionMap
   collection_view?: CollectionViewMap
   notion_user?: UserMap
+  space?: any
 }
 
 // NOTE: This is not a native Notion type, but rather a convenience type that
@@ -40,7 +41,7 @@ export interface ExtendedRecordMap extends RecordMap {
   collection_view: CollectionViewMap
   notion_user: UserMap
 
-  // added for convenience
+  // added for convenience (collection children results)
   collection_query: {
     [collectionId: string]: {
       [collectionViewId: string]: CollectionQueryResult
@@ -59,13 +60,18 @@ export interface ExtendedRecordMap extends RecordMap {
 export interface PageChunk {
   recordMap: RecordMap
   cursor: {
-    stack: any[]
+    stack: unknown[]
   }
 }
 
 export interface CollectionInstance {
   recordMap: RecordMap
   result: CollectionQueryResult
+}
+
+export interface ReducerResponse<T extends {}> {
+  recordMap: RecordMap
+  result: { reducerResults: T }
 }
 
 export interface CollectionQueryResult {
@@ -92,7 +98,7 @@ export interface CollectionQueryResult {
 
 export interface AggregationResult {
   type: PropertyType
-  value: any
+  value: unknown
 }
 
 // Misc
