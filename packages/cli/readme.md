@@ -9,3 +9,12 @@
 ```bash
 pnpm i @texonom/cli
 ```
+
+## Usages
+
+### Export
+
+```zsh
+## export block, collection, collection_view and notion_user for each folder
+notion export --raw
+```
