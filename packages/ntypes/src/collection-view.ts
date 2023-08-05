@@ -18,11 +18,11 @@ export interface BaseCollectionView {
   alive: boolean
   parent_id: ID
   parent_table: string
+  collection_id: ID
+  page_sort: ID[]
 
-  query?: any
-
+  query?: unknown
   query2: {
-    // TODO
     filter?: any
     aggregations?: object[]
     group_by: PropertyID
@@ -39,7 +39,6 @@ export interface TableCollectionView extends BaseCollectionView {
       width: number
     }>
   }
-  page_sort: ID[]
 }
 
 export interface GalleryCollectionView extends BaseCollectionView {
@@ -110,6 +109,7 @@ export interface BoardCollectionView extends BaseCollectionView {
 export interface CalendarCollectionView extends BaseCollectionView {
   type: 'calendar'
 
+  view_ids: ID[]
   // TODO
 }
 
