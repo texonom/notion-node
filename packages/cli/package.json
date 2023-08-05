@@ -32,7 +32,8 @@
     "@texonom/nclient": "workspace:^",
     "@texonom/ntypes": "workspace:^",
     "@texonom/nutils": "workspace:^",
-    "clipanion": "^3.2.1"
+    "clipanion": "^3.2.1",
+    "prettier": "^3.0.1"
   },
   "standard-version": {
     "skip": {
