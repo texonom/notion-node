@@ -10,6 +10,7 @@ import { getBlockTitle, getCanonicalPageId, parsePageId } from '@texonom/nutils'
 import type { ExtendedRecordMap, Decoration, PageBlock } from '@texonom/ntypes'
 
 export abstract class NotionCommand extends Command {
+  // for private page or eoi like github inline block
   token = Option.String('-t,--token', {
     description: 'Notion Access Token'
   })
@@ -26,9 +27,6 @@ export class NotionExportCommand extends NotionCommand {
   page = Option.String('-p,--page', {
     required: true,
     description: 'Target page'
-  })
-  domain = Option.String('-d,--domain', 'https://texonom.com', {
-    description: 'Export domain for url'
   })
   recursive = Option.Boolean('-r,--recursive', {
     description: 'Recursively export children'
@@ -49,11 +47,10 @@ export class NotionExportCommand extends NotionCommand {
     const recordMap = await notion.getPage(id)
     const root = recordMap.block[id].value
     const path = `/${getCanonicalPageId(id, recordMap)}`
-    if (this.recursive) return
 
     // Save
     await mkdir(this.folder, { recursive: true })
-    let target = this.raw ? JSON.stringify(root) : recordMaptoMarkdown(id, recordMap, this.domain)
+    let target = this.raw ? JSON.stringify(this.recursive ? root : recordMap) : recordMaptoMarkdown(id, recordMap)
     const ext = this.raw ? 'json' : 'md'
     if (this.raw) target = await prettier.format(target, { parser: 'json' })
 
@@ -63,7 +60,7 @@ export class NotionExportCommand extends NotionCommand {
 
 export function exportRecordMap() {}
 
-export function recordMaptoMarkdown(id: string, recordMap: ExtendedRecordMap, domain: string) {
+export function recordMaptoMarkdown(id: string, recordMap: ExtendedRecordMap) {
   const page = recordMap.block[id].value as PageBlock
 
   // Title
@@ -79,7 +76,7 @@ export function recordMaptoMarkdown(id: string, recordMap: ExtendedRecordMap, do
     let value = String()
     switch (propType) {
       case 'text':
-        value = decorationsToMarkdown(page.properties[property], recordMap, domain)
+        value = decorationsToMarkdown(page.properties[property], recordMap)
         break
       default:
         value = ''
@@ -94,16 +91,16 @@ export function recordMaptoMarkdown(id: string, recordMap: ExtendedRecordMap, do
     const title = childBlock?.properties?.title
     switch (childBlock.type) {
       case 'header':
-        md += `\n# ${decorationsToMarkdown(title, recordMap, domain)}`
+        md += `\n# ${decorationsToMarkdown(title, recordMap)}`
         break
       case 'sub_header':
-        md += `\n## ${decorationsToMarkdown(title, recordMap, domain)}`
+        md += `\n## ${decorationsToMarkdown(title, recordMap)}`
         break
       case 'sub_sub_header':
-        md += `\n### ${decorationsToMarkdown(title, recordMap, domain)}`
+        md += `\n### ${decorationsToMarkdown(title, recordMap)}`
         break
       case 'text':
-        md += `\n${decorationsToMarkdown(title, recordMap, domain)}`
+        md += `\n${decorationsToMarkdown(title, recordMap)}`
         break
       case 'bulleted_list':
         md += '\n- '
@@ -121,7 +118,7 @@ export function recordMaptoMarkdown(id: string, recordMap: ExtendedRecordMap, do
         md += '\n> '
         break
       case 'code':
-        md += `\n\`\`\`type${decorationsToMarkdown(title, recordMap, domain)}\`\`\``
+        md += `\n\`\`\`type${decorationsToMarkdown(title, recordMap)}\`\`\``
         break
       case 'equation':
         md += '\n$$'
@@ -133,7 +130,7 @@ export function recordMaptoMarkdown(id: string, recordMap: ExtendedRecordMap, do
       // Collection
       case 'collection_view': {
         const collection = recordMap.collection[childBlock.collection_id].value
-        md += `\n${decorationsToMarkdown(collection.name, recordMap, domain)}`
+        md += `\n${decorationsToMarkdown(collection.name, recordMap)}`
         break
       }
       // Media
@@ -166,7 +163,7 @@ export function recordMaptoMarkdown(id: string, recordMap: ExtendedRecordMap, do
   return md
 }
 
-export function decorationsToMarkdown(decos: Decoration[], recordMap: ExtendedRecordMap, domain) {
+export function decorationsToMarkdown(decos: Decoration[], recordMap: ExtendedRecordMap) {
   if (!decos) return String()
   return decos.reduce((md, deco) => {
     const [text, subdecos] = deco
@@ -184,7 +181,7 @@ export function decorationsToMarkdown(decos: Decoration[], recordMap: ExtendedRe
                 return md
               }
               const title = getBlockTitle(linkedBlock, recordMap)
-              const url = `${domain}/${getCanonicalPageId(blockId, recordMap)}`
+              const url = getBlockLink(blockId, recordMap)
               return md + `[${title}](${url})`
             }
             case 'a': {
@@ -198,3 +195,6 @@ export function decorationsToMarkdown(decos: Decoration[], recordMap: ExtendedRe
       )
   }, String())
 }
+
+const getBlockLink = (blockId: string, recordMap: ExtendedRecordMap, domain = 'https://texonom.com') =>
+  `${domain}/${getCanonicalPageId(blockId, recordMap)}`
