@@ -1,8 +1,9 @@
-import { Block } from './block'
-import { Collection } from './collection'
-import { CollectionView, CollectionViewType } from './collection-view'
-import { Decoration, ID, PropertyType, Role } from './core'
-import { User } from './user'
+import type { Block } from './block'
+import type { Collection } from './collection'
+import type { CollectionView, CollectionViewType } from './collection-view'
+import type { Decoration, ID, PropertyType, Role } from './core'
+import type { User } from './user'
+import type { Space } from './space'
 
 // Aggregate map types
 // ----------------------------------------------------------------------------
@@ -17,6 +18,7 @@ export interface NotionMap<T> {
 export type BlockMap = NotionMap<Block>
 export type UserMap = NotionMap<User>
 export type CollectionMap = NotionMap<Collection>
+export type SpaceMap = NotionMap<Space>
 export type CollectionViewMap = NotionMap<CollectionView>
 
 export interface PropertyMap {
@@ -31,7 +33,7 @@ export interface RecordMap {
   collection?: CollectionMap
   collection_view?: CollectionViewMap
   notion_user?: UserMap
-  space?: any
+  space?: SpaceMap
 }
 
 // NOTE: This is not a native Notion type, but rather a convenience type that
