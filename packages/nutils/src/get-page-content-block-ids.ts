@@ -3,7 +3,7 @@ import type { ExtendedRecordMap, Decoration } from '@texonom/ntypes'
 /**
  * Gets the IDs of all blocks contained on a page starting from a root block ID.
  */
-export const getPageContentBlockIds = (recordMap: ExtendedRecordMap, blockId?: string): string[] => {
+export const getPageContentBlockIds = (recordMap: ExtendedRecordMap, blockId?: string, locust = false): string[] => {
   const rootBlockId = blockId || Object.keys(recordMap.block)[0]
   const contentBlockIds = new Set<string>()
 
@@ -34,7 +34,7 @@ export const getPageContentBlockIds = (recordMap: ExtendedRecordMap, blockId?: s
     // no child content blocks to recurse on
     if (!content || !Array.isArray(content)) return
     // ignore the content of other pages and collections
-    if (blockId !== rootBlockId) if (type === 'page' || type === 'collection_view_page') return
+    if (blockId !== rootBlockId && !locust) if (type === 'page' || type === 'collection_view_page') return
     for (const blockId of content) addContentBlocks(blockId)
   }
   addContentBlocks(rootBlockId)
