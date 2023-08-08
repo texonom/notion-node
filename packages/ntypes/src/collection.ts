@@ -43,3 +43,7 @@ export interface Collection {
     hide_linked_collection_name?: boolean
   }
 }
+
+export function isCollection(obj: unknown): obj is Collection {
+  return Boolean((obj as Collection)?.schema)
+}

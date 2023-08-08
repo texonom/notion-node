@@ -17,9 +17,11 @@ import type {
   CollectionQueryResult,
   RecordValues,
   User,
+  Space,
   SearchParams,
   SearchResults
 } from '@texonom/ntypes'
+
 import type { SignedUrlRequest, FetchOption, SignedUrlResponse } from './types'
 
 /**
@@ -91,6 +93,7 @@ export class NotionAPI {
     // Fetch Users
     if (fetchFullInfo) {
       const promises = []
+      // Fetch any missing users
       const pendingUserIDs = getPageContentUserIds(recordMap).filter(id => !recordMap.notion_user[id])
       promises.push(this.getUsers(pendingUserIDs, fetchOption).then(res => res?.recordMapWithRoles?.notion_user))
 
@@ -98,10 +101,16 @@ export class NotionAPI {
       const pendingBlocks = getPageContentBlockIds(recordMap).filter(id => !recordMap.block[id])
       promises.push(this.getBlocks(pendingBlocks, fetchOption).then(res => res.recordMap.block))
 
+      // Fetch any missing content blocks
+      const rootBlock = Object.values(recordMap.block)[0].value
+      const pendingSpaces = rootBlock.parent_table === 'space' ? [rootBlock.parent_id] : []
+      promises.push(this.getSpaces(pendingSpaces, fetchOption).then(res => res.recordMapWithRoles?.space))
+
       // Append them
-      const [newUsers, newBlocks] = await Promise.all(promises)
+      const [newUsers, newBlocks, newSpaces] = await Promise.all(promises)
       recordMap.notion_user = { ...recordMap.notion_user, ...newUsers }
       recordMap.block = { ...recordMap.block, ...newBlocks }
+      recordMap.space = { ...recordMap.space, ...newSpaces }
     }
 
     // Optionally fetch all data for embedded collections and their associated views.
@@ -116,7 +125,7 @@ export class NotionAPI {
         collectionId: string
         collectionViewId: string
       }> = contentBlockIds.flatMap(blockId => {
-        const block = recordMap.block[blockId].value
+        const block = recordMap.block[blockId]?.value
         if (!block) return []
         const collectionId =
           block &&
@@ -425,6 +434,14 @@ export class NotionAPI {
     return this.fetch<RecordValues<User>>({
       endpoint: 'getRecordValues',
       body: { requests: userIds.map(id => ({ id, table: 'notion_user' })) },
+      fetchOption
+    })
+  }
+
+  public async getSpaces(spaceIds: string[], fetchOption?: FetchOption) {
+    return this.fetch<RecordValues<Space>>({
+      endpoint: 'getRecordValues',
+      body: { requests: spaceIds.map(id => ({ id, table: 'space' })) },
       fetchOption
     })
   }
