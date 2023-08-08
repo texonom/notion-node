@@ -112,6 +112,7 @@ export interface BaseBlock {
   created_by_id: ID
   last_edited_by_table: string
   last_edited_by_id: ID
+  is_template?: boolean
 }
 
 export interface BaseTextBlock extends BaseBlock {
