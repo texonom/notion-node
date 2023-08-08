@@ -3,7 +3,7 @@
   "displayName": "Notion CLI",
   "version": "1.2.0-alpha.0",
   "type": "module",
-  "description": "Robust TypeScript client for the unofficial Notion API.",
+  "description": "Texonom CLI which has ability to export data from Notion.so",
   "repository": "texonom/notion-node",
   "author": "Alan Jo <sungle3737@gmail.com>",
   "license": "MIT",
