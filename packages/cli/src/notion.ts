@@ -5,9 +5,18 @@ import prettier from 'prettier'
 
 import { Command, Option } from 'clipanion'
 import { NotionAPI } from '@texonom/nclient'
-import { getBlockTitle, getCanonicalPageId, parsePageId, formatDate, getTextContent } from '@texonom/nutils'
+import {
+  getBlockTitle,
+  getCanonicalPageId,
+  parsePageId,
+  formatDate,
+  getTextContent,
+  getBlockParent,
+  defaultMapImageUrl
+} from '@texonom/nutils'
+import { isCollection, isSpace } from '@texonom/ntypes'
 
-import type { ExtendedRecordMap, Decoration, PageBlock } from '@texonom/ntypes'
+import type { ExtendedRecordMap, Decoration, PageBlock, Block } from '@texonom/ntypes'
 
 export abstract class NotionCommand extends Command {
   // for private page or eoi like github inline block
@@ -61,184 +70,309 @@ export class NotionExportCommand extends NotionCommand {
     }
   }
 
-  async exportMd(id: string, folder: string) {
+  async fetchRecordmap(id: string) {
     const recordMap = await this.notion.getPage(id)
-    const target = await this.pageToMarkdown(id, recordMap, folder)
-    const path = join(folder, `${getCanonicalPageId(id, recordMap)}`)
-    return writeFile(`${path}.md`, target)
+    return recordMap
   }
 
-  async pageToMarkdown(id: string, recordMap: ExtendedRecordMap, folder) {
+  async loadRecordmap(folder: string): Promise<ExtendedRecordMap> {
+    return folder as unknown as ExtendedRecordMap
+  }
+
+  async exportMd(id: string, folder: string) {
+    try {
+      const recordMap = await this.notion.getPage(id)
+      if (!['page', 'collection_view_page'].includes(recordMap.block[id].value.type)) throw new Error('Not a page')
+      const target = await this.pageToMarkdown(id, recordMap, folder)
+      const path = join(folder, `${getCanonicalPageId(id, recordMap)}`)
+      return writeFile(`${path}.md`, target)
+    } catch (e) {
+      console.error(id, e)
+    }
+  }
+
+  async pageToMarkdown(id: string, recordMap: ExtendedRecordMap, folder: string) {
     const page = recordMap.block[id].value as PageBlock
 
-    // Title
+    // Metadata
     let md = `---\n`
+    md += `Title: ${decorationsToMarkdown(page.properties?.title ? page.properties.title : [['Untitled']], recordMap)}\n`
+    const parent = getBlockParent(page, recordMap)
+    if (isSpace(parent)) md += `Parent: ${parent.name}\n`
+    else if (isCollection(parent)) md += `Parent: ${getTextContent(parent.name)}\n`
+    else if (parent) md += `Parent: ${getBlockTitle(parent, recordMap)}\n`
 
-    // Property
-    const parent =
-      recordMap.collection[page.parent_id].value ??
-      recordMap.block[page.parent_id].value ??
-      recordMap.space[page.parent_id].value
-    const properties = Object.keys(parent.schema)
-
-    for (const property of properties) {
-      const propName = parent.schema[property].name
-      const propType = parent.schema[property].type
-      let value = String()
-      switch (propType) {
-        case 'text':
-          value = decorationsToMarkdown(page.properties[property], recordMap)
-          break
-        case 'title':
-          value = decorationsToMarkdown(page.properties[property], recordMap)
-          break
-        case 'created_by':
-          value = recordMap[page.created_by_id] ? recordMap[page.created_by_id].value.name : 'Unknown'
-          break
-        case 'last_edited_by':
-          value = recordMap[page.last_edited_by_id] ? recordMap[page.last_edited_by_id].value.name : 'Unknown'
-          break
-        case 'created_time':
-          value = formatDate(page.created_time)
-          break
-        case 'last_edited_time':
-          value = formatDate(page.last_edited_time)
-          break
-        default:
-          value = ''
+    // Collection Attributes
+    if (isCollection(parent)) {
+      const properties = parent?.schema ? Object.keys(parent.schema) : []
+      properties.splice(properties.indexOf('title'), 1)
+      for (const property of properties) {
+        const propName = parent.schema[property].name
+        const propType = parent.schema[property].type
+        let value = String()
+        switch (propType) {
+          case 'text':
+            value = page?.properties?.[property] ? decorationsToMarkdown(page.properties[property], recordMap) : ''
+            break
+          case 'created_by':
+            value = recordMap[page.created_by_id] ? recordMap[page.created_by_id].value.name : 'Unknown'
+            break
+          case 'last_edited_by':
+            value = recordMap[page.last_edited_by_id] ? recordMap[page.last_edited_by_id].value.name : 'Unknown'
+            break
+          case 'created_time':
+            value = formatDate(page.created_time)
+            break
+          case 'last_edited_time':
+            value = formatDate(page.last_edited_time)
+            break
+          default:
+            value = ''
+        }
+        md += `${propName}: ${value}\n`
       }
-      md += `${propName}: ${value}\n`
     }
-    md += `Parent: ${page.parent_table === 'collection' ? getTextContent(parent.name) : getBlockTitle(parent, recordMap)}\n`
     md += '---\n'
 
-    // Content
-    for (const child of page.content) {
-      const childBlock = recordMap.block[child].value
+    return md + (await this.childrenToMd(page, recordMap, '\n', folder, page))
+  }
+
+  async childrenToMd(parentBlock: Block, recordMap: ExtendedRecordMap, prefix: string, folder: string, page: Block) {
+    let md = String()
+    let numbering = 1
+    for (const child of parentBlock.content ? parentBlock.content : []) {
+      let childBlock = recordMap.block[child]?.value
+      if (!childBlock) {
+        console.debug(`Missing block ${child} from ${getBlockTitle(page, recordMap)}`)
+        continue
+      }
+
       const title = childBlock?.properties?.title
       switch (childBlock.type) {
         case 'header':
-          md += `\n# ${decorationsToMarkdown(title, recordMap)}`
+          md += `${prefix}# ${decorationsToMarkdown(title, recordMap)}`
           break
         case 'sub_header':
-          md += `\n## ${decorationsToMarkdown(title, recordMap)}`
+          md += `${prefix}## ${decorationsToMarkdown(title, recordMap)}`
           break
         case 'sub_sub_header':
-          md += `\n### ${decorationsToMarkdown(title, recordMap)}`
+          md += `${prefix}### ${decorationsToMarkdown(title, recordMap)}`
           break
         case 'text':
-          md += `\n${decorationsToMarkdown(title, recordMap)}`
+          md += `${prefix}${decorationsToMarkdown(title, recordMap)}`
           break
         case 'bulleted_list':
-          md += '\n- '
+          md += `${prefix}- ${decorationsToMarkdown(title, recordMap)}`
           break
         case 'numbered_list':
-          md += '\n1. '
+          md += `${prefix}${numbering++}. ${decorationsToMarkdown(title, recordMap)}`
           break
         case 'to_do':
-          md += '\n- [ ] '
+          md += `${prefix}- [ ] ${decorationsToMarkdown(title, recordMap)}`
           break
         case 'toggle':
-          md += '\n<details><summary>'
+          md += `${prefix}<details><summary>${decorationsToMarkdown(title, recordMap)}</summary>\n`
           break
         case 'quote':
-          md += '\n> '
+          md += decorationsToMarkdown(title, recordMap, `\n${prefix.trim()}> `) + '\n'
           break
         case 'code':
-          md += `\n\`\`\`type${decorationsToMarkdown(title, recordMap)}\`\`\``
+          md += `${prefix}\`\`\`type${decorationsToMarkdown(title, recordMap)}\`\`\``
           break
         case 'equation':
-          md += '\n$$'
+          md += `${prefix}$$${decorationsToMarkdown(title, recordMap)}$$`
           break
-        case 'callout':
-          md += '\n:::note'
+        case 'callout': {
+          md += decorationsToMarkdown(title, recordMap, `\n${prefix.trim()}> `) + '\n'
           break
+        }
+        case 'bookmark': {
+          const nesting = `\n${prefix.trim()}> `
+          md += `${nesting}[${getTextContent(
+            childBlock.properties?.title ? childBlock.properties.title : [['Untitled']]
+          )}](${getTextContent(childBlock.properties.link)})\n`
+          break
+        }
         case 'external_object_instance':
-          md += `\n`
+          md += `${prefix}`
           break
 
         // Collection
+        case 'collection_view_page':
         case 'collection_view': {
-          const collection = recordMap.collection[childBlock.collection_id].value
-          md += `\n${decorationsToMarkdown(collection.name, recordMap)}`
+          const collection = recordMap.collection[childBlock.collection_id]?.value
+          if (!collection) {
+            console.debug(`Missing collection ${child} from ${getBlockTitle(page, recordMap)}`)
+            continue
+          }
+          md += `${prefix}${decorationsToMarkdown(collection.name, recordMap)}`
 
           if (this.recursive) {
-            const views = childBlock.view_ids.map(id => recordMap.collection_view[id].value)
+            const views = childBlock.view_ids
+              .map(id => {
+                if (!recordMap.collection_view[id]) console.debug(`Missing view ${id} from ${collection.name}`)
+                return recordMap.collection_view[id]?.value
+              })
+              .filter(Boolean)
             const children = Object.keys(
-              views.reduce((page, view) => {
-                const results = recordMap.collection_query[collection.id][view.id].collection_group_results.blockIds
-                for (const result of results) page[result] = true
-                return page
+              views.reduce((blockMap, view) => {
+                const results = recordMap.collection_query[collection.id][view.id].collection_group_results?.blockIds
+                if (results) for (const result of results) blockMap[result] = true
+                else console.debug(`Missing results from ${collection.name} ${view.name}`)
+                return blockMap
               }, {})
             )
-            const parentFolder = join(folder, `${getCanonicalPageId(childBlock.id, recordMap)}`)
+            const parentFolder = join(
+              folder,
+              `${getCanonicalPageId(page.id, recordMap)}`,
+              `${getCanonicalPageId(childBlock.id, recordMap)}`
+            )
             await mkdir(parentFolder, { recursive: true })
-            for (const childPage of children) this.exportMd(childPage, parentFolder)
+            for (const childPage of children) await this.exportMd(childPage, parentFolder)
           }
           break
         }
+
         // Media
-        case 'image':
-          md += '\n![]('
+        case 'image': {
+          const caption = childBlock.properties.caption ? getTextContent(childBlock.properties.caption) : ''
+          md += `${prefix}![${caption}](${defaultMapImageUrl(childBlock.format.display_source, childBlock)})`
           break
+        }
+
+        case 'alias': {
+          childBlock = recordMap.block[childBlock.format.alias_pointer.id]?.value
+          if (!childBlock) {
+            console.debug(`Missing alias ${child} from ${getBlockTitle(page, recordMap)}`)
+            continue
+          }
+          md += `${prefix}[${getBlockTitle(childBlock, recordMap)}](${getBlockLink(childBlock.id, recordMap)})${prefix}`
+          break
+        }
+
+        case 'page': {
+          md += `${prefix}[${getBlockTitle(childBlock, recordMap)}](${getBlockLink(childBlock.id, recordMap)})${prefix}`
+          if (this.recursive) {
+            const parentFolder = join(folder, `${getCanonicalPageId(page.id, recordMap)}`)
+            await mkdir(parentFolder, { recursive: true })
+            await this.exportMd(childBlock.id, parentFolder)
+          }
+          break
+        }
         case 'video':
-          md += '\n<video src="'
-          break
-        case 'bookmark':
-          md += `\n[${getTextContent(childBlock.properties.title)}](${getTextContent(childBlock.properties.link)})`
+          md += `${prefix}<video src="${childBlock.format.display_source} />`
           break
 
         // Embed
         case 'file':
-          md += '\n[File]('
+          md += `${prefix}[File](${childBlock.format.display_source})`
           break
         case 'pdf':
-          md += '\n[PDF]('
+          md += `${prefix}<iframe src="${childBlock.format.display_source}"/>`
           break
 
         // Else
         case 'divider':
-          md += '\n---'
+          md += `${prefix}---`
+          break
+        case 'column_list':
+          break
+        case 'column':
           break
         default:
-          md += '\n'
+          md += `${prefix}`
       }
+
+      // Finalize
+      if (childBlock.content && childBlock.type !== 'page' && childBlock.type !== 'collection_view_page') {
+        const nestedPrefix = ['toggle', `transclusion_container`, `transclusion_reference`, 'column_list'].includes(
+          childBlock.type
+        )
+          ? prefix
+          : `\n${prefix.trim()}> `
+        md += await this.childrenToMd(childBlock, recordMap, nestedPrefix, folder, page)
+        if (childBlock.type === 'column') md += '\n'
+      }
+      if (childBlock.type === 'toggle') md += `${prefix}</details>`
     }
     return md
   }
 }
 
-export function decorationsToMarkdown(decos: Decoration[], recordMap: ExtendedRecordMap) {
+export function decorationsToMarkdown(decos: Decoration[], recordMap: ExtendedRecordMap, prefix = '') {
   if (!decos) return String()
-  return decos.reduce((md, deco) => {
+  const text = decos.reduce((md, deco) => {
+    let wrapper = String()
     const [text, subdecos] = deco
-    if (!subdecos) return md + text
-    else
-      return (
-        md +
-        subdecos.reduce((md, subdeco) => {
-          switch (subdeco[0]) {
-            case 'p': {
-              const blockId = subdeco[1]
-              const linkedBlock = recordMap.block[blockId]?.value
-              if (!linkedBlock) {
-                console.debug('"p" missing block', blockId)
-                return md
-              }
-              const title = getBlockTitle(linkedBlock, recordMap)
-              const url = getBlockLink(blockId, recordMap)
-              return md + `[${title}](${url})`
+    if (!subdecos) {
+      return md + text
+    } else {
+      const textonly = subdecos.reduce((textonly, subdeco) => {
+        switch (subdeco[0]) {
+          case 'p': {
+            const blockId = subdeco[1]
+            const linkedBlock = recordMap.block[blockId]?.value
+            if (!linkedBlock) {
+              console.debug('"p" missing block', blockId)
+              break
             }
-            case 'a': {
-              const url = subdeco[1]
-              return md + `[${text}](${url})`
-            }
-            default:
-              return md
+            const title = getBlockTitle(linkedBlock, recordMap)
+            const url = getBlockLink(blockId, recordMap)
+            textonly = `[${title}](${url})`
+            break
           }
-        }, String())
-      )
+          case 'a': {
+            const url = subdeco[1]
+            textonly = `[${text}](${url})`
+            break
+          }
+          case 'i':
+            wrapper += '*'
+            break
+          case 'b':
+            wrapper += '**'
+            break
+          case 'h':
+            // Disable for now == syntax does not supported well
+            wrapper += ''
+            break
+          case 'c':
+            wrapper += '`'
+            break
+          case 's':
+            wrapper += '~~'
+            break
+          case 'eoi': {
+            try {
+              const objectid = subdeco[1]
+              const object = recordMap.block[objectid]?.value
+              const url = object.format.uri
+              const title = object.format.attributes.filter(attr => attr.id === 'title')[0].values[0]
+              textonly = `[${title}](${url})`
+              break
+            } catch (e) {
+              console.error(e, deco)
+              break
+            }
+          }
+          case 'u': {
+            const user = recordMap.notion_user[subdeco[1]]?.value
+            if (!user) break
+            textonly = `[@${user.name}](mailto:${user.email})`
+            break
+          }
+        }
+        return textonly
+      }, text)
+      let decorated: string
+      if (subdecos.find(subdeco => subdeco[0] === '_')) decorated = `<u>${textonly}</u>`
+      decorated = wrapper + textonly + wrapper.split('').reverse().join('')
+      return md + decorated
+    }
   }, String())
+  const lines = text.split('\n')
+  const prefixed = lines.map(line => prefix + line)
+  return prefixed.join('')
 }
 
 const getBlockLink = (blockId: string, recordMap: ExtendedRecordMap, domain = 'https://texonom.com') =>
