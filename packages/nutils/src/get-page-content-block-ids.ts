@@ -7,10 +7,10 @@ export const getPageContentBlockIds = (recordMap: ExtendedRecordMap, blockId?: s
   const rootBlockId = blockId || Object.keys(recordMap.block)[0]
   const contentBlockIds = new Set<string>()
 
-  function addContentBlocks(blockId: string, nested = false) {
+  function addContentBlocks(blockId: string) {
     if (contentBlockIds.has(blockId)) return
     contentBlockIds.add(blockId)
-    if (!nested) return
+
     const block = recordMap.block[blockId]?.value
     if (!block) return
     const { content, type, properties, format } = block
@@ -37,7 +37,7 @@ export const getPageContentBlockIds = (recordMap: ExtendedRecordMap, blockId?: s
     if (blockId !== rootBlockId) if (type === 'page' || type === 'collection_view_page') return
     for (const blockId of content) addContentBlocks(blockId)
   }
-  addContentBlocks(rootBlockId, true)
+  addContentBlocks(rootBlockId)
   return Array.from(contentBlockIds)
 }
 
