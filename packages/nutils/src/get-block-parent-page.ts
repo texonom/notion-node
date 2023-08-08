@@ -1,4 +1,4 @@
-import type { Block, ExtendedRecordMap, PageBlock, Collection } from '@texonom/ntypes'
+import type { Block, ExtendedRecordMap, PageBlock, Collection, Space } from '@texonom/ntypes'
 
 /**
  * Returns the parent page block containing a given page.
@@ -32,6 +32,36 @@ export const getBlockParentPage = (
       if ((currentRecord as Block)?.type === 'page') return currentRecord as PageBlock
     }
   }
+  return null
+}
 
+export const getBlockParent = (
+  block: Block,
+  recordMap: ExtendedRecordMap,
+  {
+    inclusive = false
+  }: {
+    inclusive?: boolean
+  } = {}
+): PageBlock | Collection | Space => {
+  let currentRecord: Block | Collection | Space = block
+
+  while (currentRecord != null) {
+    if (inclusive && (currentRecord as Block)?.type === 'page') return currentRecord as PageBlock
+
+    const parentId: string = currentRecord.parent_id
+    const parentTable = currentRecord.parent_table
+
+    if (!parentId) break
+
+    if (parentTable === 'collection') {
+      return recordMap.collection[parentId]?.value
+    } else if (parentTable === 'space') {
+      return recordMap.space[parentId]?.value
+    } else {
+      currentRecord = recordMap.block[parentId]?.value
+      if ((currentRecord as Block)?.type === 'page') return currentRecord as PageBlock
+    }
+  }
   return null
 }

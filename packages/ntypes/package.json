@@ -7,6 +7,7 @@
   "author": "Alan Jo <sungle3737@gmail.com>",
   "license": "MIT",
   "types": "./build/index.d.ts",
+  "main": "./build/index.js",
   "sideEffects": false,
   "files": [
     "build"

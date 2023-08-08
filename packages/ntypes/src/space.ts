@@ -35,3 +35,7 @@ export interface Space {
   }
   subscription_tier: string
 }
+
+export function isSpace(obj: unknown): obj is Space {
+  return Boolean((obj as Space)?.pages)
+}
