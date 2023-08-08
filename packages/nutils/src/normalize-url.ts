@@ -7,7 +7,7 @@ export const normalizeUrl = mem((url?: string) => {
   try {
     if (url.startsWith('https://www.notion.so/image/')) {
       const u = new URL(url)
-      const subUrl = decodeURIComponent(u.pathname.substr('/image/'.length))
+      const subUrl = decodeURIComponent(u.pathname.substring('/image/'.length))
       const normalizedSubUrl = normalizeUrl(subUrl)
       u.pathname = `/image/${encodeURIComponent(normalizedSubUrl)}`
       url = u.toString()

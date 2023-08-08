@@ -1,14 +1,14 @@
 import React from 'react'
 
-import { ExtendedRecordMap } from '@texonom/ntypes'
+import { defaultMapImageUrl, defaultMapPageUrl } from '@texonom/nutils'
 
 import { AssetWrapper } from './components/asset-wrapper'
 import { Checkbox as DefaultCheckbox } from './components/checkbox'
 import { Header } from './components/header'
 import { wrapNextImage, wrapNextLink } from './next'
 import { MapImageUrlFn, MapPageUrlFn, NotionComponents, SearchNotionFn } from './types'
-import { defaultMapImageUrl, defaultMapPageUrl } from './utils'
 
+import type { ExtendedRecordMap } from '@texonom/ntypes'
 export interface NotionContext {
   recordMap: ExtendedRecordMap
   components: NotionComponents

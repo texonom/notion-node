@@ -1,8 +1,6 @@
 import { BlockMap } from '@texonom/ntypes'
 
 export { isUrl, formatDate, formatNotionDateTime } from '@texonom/nutils'
-export * from './map-image-url'
-export * from './map-page-url'
 
 export const cs = (...classes: Array<string | undefined | false>) => classes.filter(a => !!a).join(' ')
 
