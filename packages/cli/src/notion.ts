@@ -205,23 +205,32 @@ export class NotionExportCommand extends NotionCommand {
             console.debug(`Missing collection ${child} from ${getBlockTitle(page, recordMap)}`)
             continue
           }
-          md += `${prefix}${decorationsToMarkdown(collection.name, recordMap)}`
 
+          // Generate Table
+          md += `${prefix}### ${decorationsToMarkdown(collection.name, recordMap)}`
+          md += `${prefix} | Title |\n|:-:|`
+          const views = childBlock.view_ids
+            .map(id => {
+              if (!recordMap.collection_view[id]) console.debug(`Missing view ${id} from ${collection.name}`)
+              return recordMap.collection_view[id]?.value
+            })
+            .filter(Boolean)
+          const children = Object.keys(
+            views.reduce((blockMap, view) => {
+              const results = recordMap.collection_query[collection.id][view.id].collection_group_results?.blockIds
+              if (results) for (const result of results) blockMap[result] = true
+              else console.debug(`Missing results from ${collection.name} ${view.name}`)
+              return blockMap
+            }, {})
+          )
+          for (const childPage of children)
+            md += `${prefix}|[${getBlockTitle(recordMap.block[childPage].value, recordMap)}](${getBlockLink(
+              childPage,
+              recordMap
+            )})|`
+
+          // Make children page
           if (this.recursive) {
-            const views = childBlock.view_ids
-              .map(id => {
-                if (!recordMap.collection_view[id]) console.debug(`Missing view ${id} from ${collection.name}`)
-                return recordMap.collection_view[id]?.value
-              })
-              .filter(Boolean)
-            const children = Object.keys(
-              views.reduce((blockMap, view) => {
-                const results = recordMap.collection_query[collection.id][view.id].collection_group_results?.blockIds
-                if (results) for (const result of results) blockMap[result] = true
-                else console.debug(`Missing results from ${collection.name} ${view.name}`)
-                return blockMap
-              }, {})
-            )
             const parentFolder = join(
               folder,
               `${getCanonicalPageId(page.id, recordMap)}`,
@@ -342,10 +351,17 @@ export function decorationsToMarkdown(decos: Decoration[], recordMap: ExtendedRe
           case 's':
             wrapper += '~~'
             break
+          case 'e':
+            wrapper += '$'
+            break
           case 'eoi': {
             try {
               const objectid = subdeco[1]
               const object = recordMap.block[objectid]?.value
+              if (!object) {
+                console.debug('"eoi" missing block', objectid)
+                break
+              }
               const url = object.format.uri
               const title = object.format.attributes.filter(attr => attr.id === 'title')[0].values[0]
               textonly = `[${title}](${url})`
