@@ -1,4 +1,4 @@
-import { ExtendedRecordMap } from '@texonom/ntypes'
+import type { ExtendedRecordMap } from '@texonom/ntypes'
 
 export function mergeRecordMaps(recordMapA: ExtendedRecordMap, recordMapB: ExtendedRecordMap): ExtendedRecordMap {
   const mergedRecordMap: ExtendedRecordMap = {
