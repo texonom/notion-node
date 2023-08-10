@@ -61,6 +61,6 @@ module.exports = {
     'no-constant-condition': 'off',
     'no-unused-vars': 'warn',
     curly: ['error', 'multi', 'consistent'],
-    'no-console': ['error', { allow: ['warn', 'error', 'debug', 'info', 'groupCollapsed', 'groupEnd'] }]
+    'no-console': ['error', { allow: ['warn', 'error', 'debug', 'info', 'groupCollapsed', 'groupEnd', 'time', 'timeEnd'] }]
   }
 }

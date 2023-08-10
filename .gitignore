@@ -28,3 +28,4 @@ npm-debug.log*
 # turbo
 turbo-build.log
 .turbo
+data
