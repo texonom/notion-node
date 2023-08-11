@@ -132,7 +132,7 @@ export class NotionExportCommand extends NotionCommand {
       this.notion.getPage.bind(this.notion),
       this.notion.getBlocks.bind(this.notion),
       this.notion.fetchCollections.bind(this.notion),
-      this.recordMap
+      { startRecordMap: this.recordMap, collectionConcurrency: 100, concurrency: 100, fetchOption: { timeout: 10000 } }
     )
     this.pageMap = pageMap
     this.recordMap = recordMap
