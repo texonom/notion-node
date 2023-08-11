@@ -178,7 +178,7 @@ export class NotionAPI {
       signed_urls: {}
     }
     await pMap(
-      allCollectionInstances.slice(allCollectionInstances.length - 300, allCollectionInstances.length),
+      allCollectionInstances.slice(allCollectionInstances.length - 200, allCollectionInstances.length),
       async collectionInstance => {
         const { collectionId, collectionViewId, collectionViewBlockId } = collectionInstance
         const collectionView = recordMap.collection_view[collectionViewId]?.value
@@ -212,6 +212,10 @@ export class NotionAPI {
             if (viewBlockData.recordMap) {
               recordMap.collection_view = { ...recordMap.collection_view, ...viewBlockData.recordMap.collection_view }
               resultMap.collection_view = { ...resultMap.collection_view, ...viewBlockData.recordMap.collection_view }
+              recordMap.collection = { ...recordMap.collection, ...viewBlockData.recordMap.collection }
+              resultMap.collection = { ...resultMap.collection, ...viewBlockData.recordMap.collection }
+              recordMap.block = { ...recordMap.block, ...viewBlockData.recordMap.block }
+              resultMap.block = { ...resultMap.block, ...viewBlockData.recordMap.block }
             }
           }
         } catch (err) {

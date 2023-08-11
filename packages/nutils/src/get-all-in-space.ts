@@ -78,7 +78,7 @@ export async function getAllInSpace(
     console.info('collection query length ' + Object.keys(recordMap.collection_query).length)
 
     console.info('new block length ', Object.keys(tempRecordMap.block).length)
-    console.info(`memory usage` + process.memoryUsage().rss / 1024 / 1024 + 'MB')
+    console.info(`memory usage ${process.memoryUsage().rss / 1024 / 1024}MB`)
   }
   console.timeEnd('fetch total')
 
