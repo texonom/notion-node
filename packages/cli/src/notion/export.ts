@@ -25,7 +25,7 @@ import { isCollection, isSpace } from '@texonom/ntypes'
 import { NotionCommand } from '.'
 
 import type { PageTree } from '@texonom/nutils'
-import type { ExtendedRecordMap, Decoration, PageBlock, Block, PageMap } from '@texonom/ntypes'
+import type { ExtendedRecordMap, Decoration, PageBlock, Block, PageMap, CollectionViewBlock } from '@texonom/ntypes'
 
 let writeFile = promisify(fs.writeFile)
 
@@ -303,17 +303,51 @@ export class NotionExportCommand extends NotionCommand {
     return space
   }
 
+  async getCollection(collectionViewBlock: CollectionViewBlock, recordMap: ExtendedRecordMap, message = '') {
+    const collectionId = collectionViewBlock.collection_id
+    let collection = recordMap.collection[collectionViewBlock.collection_id]?.value
+    if (!collection && this.recordMap) {
+      collection = this.recordMap.collection[collectionId]?.value
+      if (collection) {
+        recordMap.collection[collectionId] = this.recordMap.collection?.[collectionId]
+        for (const viewId of collectionViewBlock.view_ids)
+          recordMap.collection_view[viewId] = this.recordMap.collection_view?.[viewId]
+      }
+    }
+    try {
+      if (!collection && this.token) {
+        const notion = new NotionAPI({ authToken: this.token })
+        const response = await notion.getPageRaw(collectionViewBlock.id)
+        collection = response.recordMap.collection[collectionId]?.value
+        if (collection) {
+          recordMap.collection_view = { ...recordMap.collection_view, ...response.recordMap.collection_view }
+          recordMap.collection = { ...recordMap.collection, ...response.recordMap.collection }
+          recordMap.block = { ...recordMap.block, ...response.recordMap.block }
+          this.recordMap.collection_view = { ...this.recordMap.collection_view, ...response.recordMap.collection_view }
+          this.recordMap.collection = { ...this.recordMap.collection, ...response.recordMap.collection }
+          this.recordMap.block = { ...this.recordMap.block, ...response.recordMap.block }
+        }
+      }
+    } catch {
+      if (!collection) console.debug(`${message} Missing collection block ${collectionViewBlock.id}`)
+    }
+    await this.getCollectionView(collectionId, collectionViewBlock.view_ids[0], recordMap, message)
+    return collection
+  }
+
   async getCollectionView(collectionId: string, viewId: string, recordMap: ExtendedRecordMap, message = '') {
     let results = recordMap.collection_query?.[collectionId]?.[viewId]?.collection_group_results
     if (!results && this.recordMap) {
       results = this.recordMap.collection_query?.[collectionId]?.[viewId]?.collection_group_results
-      recordMap.collection_query![collectionId] = {
-        ...recordMap.collection_query![collectionId],
-        [viewId]: this.recordMap.collection_query?.[collectionId]?.[viewId]
-      }
-      recordMap.collection![collectionId] = {
-        ...recordMap.collection![collectionId],
-        [viewId]: this.recordMap.collection?.[collectionId]?.[viewId]
+      if (results) {
+        recordMap.collection_query![collectionId] = {
+          ...recordMap.collection_query![collectionId],
+          [viewId]: this.recordMap.collection_query?.[collectionId]?.[viewId]
+        }
+        recordMap.collection![collectionId] = {
+          ...recordMap.collection![collectionId],
+          [viewId]: this.recordMap.collection?.[collectionId]?.[viewId]
+        }
       }
     }
     try {
@@ -435,10 +469,12 @@ export class NotionExportCommand extends NotionCommand {
         // Collection
         case 'collection_view_page':
         case 'collection_view': {
-          const collection = recordMap.collection[childBlock.collection_id]?.value
-          if (!collection)
-            // console.debug(`Missing collection ${childBlock.collection_id} from ${getBlockTitle(page, recordMap)}`)
-            continue
+          const collection = await this.getCollection(
+            childBlock as CollectionViewBlock,
+            recordMap,
+            `${childBlock.id} from ${getPageTitle(recordMap)}`
+          )
+          if (!collection) continue
 
           // Generate Table
           md += `${prefix}### ${await this.decorationsToMarkdown(collection.name, recordMap)}`
