@@ -57,7 +57,7 @@ export const getBlockParent = (
     if (parentTable === 'collection') {
       return recordMap.collection[parentId]?.value
     } else if (parentTable === 'space') {
-      return recordMap.space[parentId]?.value
+      return recordMap.space?.[parentId]?.value
     } else {
       currentRecord = recordMap.block[parentId]?.value
       if ((currentRecord as Block)?.type === 'page') return currentRecord as PageBlock

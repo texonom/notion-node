@@ -1,36 +1,42 @@
 import { join } from 'path'
-import { writeFile, mkdir } from 'fs/promises'
+import { mkdir, readFile } from 'fs/promises'
+import JSONStream from 'JSONStream'
+import fs from 'graceful-fs'
+import { promisify } from 'util'
+import stream from 'stream'
 
 import prettier from 'prettier'
 
-import { Command, Option } from 'clipanion'
+import { Option } from 'clipanion'
 import { NotionAPI } from '@texonom/nclient'
 import {
   getBlockTitle,
+  getPageTitle,
   getCanonicalPageId,
   parsePageId,
   formatDate,
   getTextContent,
   getBlockParent,
-  defaultMapImageUrl
+  defaultMapImageUrl,
+  getAllInSpace
 } from '@texonom/nutils'
 import { isCollection, isSpace } from '@texonom/ntypes'
 
-import type { ExtendedRecordMap, Decoration, PageBlock, Block } from '@texonom/ntypes'
+import { NotionCommand } from '.'
 
-export abstract class NotionCommand extends Command {
-  // for private page or eoi like github inline block
-  token = Option.String('-t,--token', {
-    description: 'Notion Access Token'
-  })
-  async execute() {}
-}
+import type { PageTree } from '@texonom/nutils'
+import type { ExtendedRecordMap, Decoration, PageBlock, Block, PageMap } from '@texonom/ntypes'
+
+const writeFile = promisify(fs.writeFile)
 
 export class NotionExportCommand extends NotionCommand {
   static paths = [['export']]
   notion: NotionAPI
+  recordMap: ExtendedRecordMap
+  pageTree: PageTree
+  pageMap: PageMap
+  promises: Promise<unknown>[] = []
 
-  // Options
   folder = Option.String('-o,--output', 'data', {
     description: 'Export folder'
   })
@@ -41,8 +47,17 @@ export class NotionExportCommand extends NotionCommand {
   recursive = Option.Boolean('-r,--recursive', {
     description: 'Recursively export children'
   })
+  prefetch = Option.Boolean('-f, --prefetch', {
+    description: 'Prefetch all space for faster export (recommended for exporting all pages in a space)'
+  })
+  load = Option.Boolean('-l, --load', {
+    description: 'Load datas from exported folder --folder'
+  })
   raw = Option.Boolean('--raw', {
     description: 'Export raw recordMap JSON data \n Markdown format do not preserve all information'
+  })
+  dataset = Option.Boolean('-d, --dataset', {
+    description: 'Export as dataset for LLM learning'
   })
   list: string[]
   constructor() {
@@ -53,39 +68,93 @@ export class NotionExportCommand extends NotionCommand {
   async execute() {
     await super.execute()
     const id = parsePageId(this.page)
-    this.notion = new NotionAPI({ authToken: this.token })
+    this.notion = new NotionAPI()
+
+    // Prefetch
+    if (this.prefetch)
+      if (this.load) {
+        console.time('load prefetch file')
+        const promises = []
+        promises.push(readFile(join(this.folder, 'recordMap', 'block.json'), 'utf8').then(JSON.parse))
+        promises.push(readFile(join(this.folder, 'recordMap', 'collection.json'), 'utf8').then(JSON.parse))
+        promises.push(readFile(join(this.folder, 'recordMap', 'notion_user.json'), 'utf8').then(JSON.parse))
+        promises.push(readFile(join(this.folder, 'recordMap', 'space.json'), 'utf8').then(JSON.parse))
+        promises.push(readFile(join(this.folder, 'recordMap', 'collection_view.json'), 'utf8').then(JSON.parse))
+        promises.push(readFile(join(this.folder, 'recordMap', 'collection_query.json'), 'utf8').then(JSON.parse))
+        promises.push(readFile(join(this.folder, 'recordMap', 'signed_urls.json'), 'utf8').then(JSON.parse))
+        promises.push(readFile(join(this.folder, 'pageTree.json'), 'utf8').then(JSON.parse))
+
+        const [block, collection, notion_user, space, collection_view, collection_query, signed_urls, pageTree] =
+          await Promise.all(promises)
+
+        const pageMap = {}
+        const inputStream = fs.createReadStream(join(this.folder, 'pageMap.json'))
+        const parseStream = JSONStream.parse('*')
+        inputStream.pipe(parseStream)
+        parseStream.on('data', (recordMap: ExtendedRecordMap) => {
+          const key = Object.keys(recordMap.block)[0]
+          pageMap[key] = recordMap
+        })
+        await new Promise(res => stream.finished(parseStream, err => res(err)))
+        this.pageMap = pageMap
+        this.pageTree = pageTree
+        this.recordMap = { block, collection, notion_user, space, collection_query, collection_view, signed_urls }
+        console.timeEnd('load prefetch file')
+      } else {
+        const { recordMap, pageTree, pageMap } = await getAllInSpace(
+          id,
+          this.notion.getPage.bind(this.notion),
+          this.notion.getBlocks.bind(this.notion),
+          this.notion.fetchCollections.bind(this.notion)
+        )
+        this.pageMap = pageMap
+        this.recordMap = recordMap
+        this.pageTree = pageTree
+      }
 
     // Save
     await mkdir(this.folder, { recursive: true })
-    if (this.raw) {
-      const recordMap = await this.notion.getPage(id)
-      const root = recordMap.block[id].value
-      const filename = `${getCanonicalPageId(id, recordMap)}`
-      let target = JSON.stringify(this.recursive ? root : recordMap)
-      const ext = 'json'
-      if (this.raw) target = await prettier.format(target, { parser: 'json' })
-      await writeFile(`${join(this.folder, filename)}.${ext}`, target)
-    } else {
-      this.exportMd(id, this.folder)
-    }
-  }
+    if (this.raw)
+      if (this.recursive) {
+        if (!this.prefetch) throw new Error('Recursive Raw export requires prefetch option')
+        const ext = 'json'
+        console.time('write file')
+        const promises = []
+        await mkdir(join(this.folder, 'recordMap'), { recursive: true })
+        for (const table in this.recordMap)
+          promises.push(writeFile(`${join(this.folder, 'recordMap', table)}.${ext}`, JSON.stringify(this.recordMap[table])))
 
-  async fetchRecordmap(id: string) {
-    const recordMap = await this.notion.getPage(id)
-    return recordMap
-  }
+        const outputStream = fs.createWriteStream(`${join(this.folder, 'pageMap')}.${ext}`)
+        const transformStream = JSONStream.stringifyObject()
+        transformStream.pipe(outputStream)
+        // @ts-ignore
+        for (const key in this.pageMap) transformStream.write([key, this.pageMap[key]])
+        transformStream.end()
 
-  async loadRecordmap(folder: string): Promise<ExtendedRecordMap> {
-    return folder as unknown as ExtendedRecordMap
+        promises.push(writeFile(`${join(this.folder, 'pageTree')}.${ext}`, JSON.stringify(this.pageTree)))
+
+        await Promise.all(promises)
+        console.timeEnd('write file')
+      } else {
+        const recordMap = await this.notion.getPage(id)
+        const filename = `${getCanonicalPageId(id, recordMap)}`
+        let target = JSON.stringify(recordMap)
+        const ext = 'json'
+        target = await prettier.format(target, { parser: 'json' })
+        await writeFile(`${join(this.folder, filename)}.${ext}`, target)
+      }
+    else this.exportMd(id, this.folder)
+    await Promise.all(this.promises)
   }
 
   async exportMd(id: string, folder: string) {
     try {
-      const recordMap = await this.notion.getPage(id)
+      let recordMap = this.prefetch ? this.pageMap[id] : await this.notion.getPage(id)
+      if (!recordMap) recordMap = await this.notion.getPage(id)
       if (!['page', 'collection_view_page'].includes(recordMap.block[id].value.type)) throw new Error('Not a page')
       const target = await this.pageToMarkdown(id, recordMap, folder)
       const path = join(folder, `${getCanonicalPageId(id, recordMap)}`)
-      return writeFile(`${path}.md`, target)
+      this.promises.push(writeFile(`${path}.md`, target))
     } catch (e) {
       console.error(id, e)
     }
@@ -142,6 +211,11 @@ export class NotionExportCommand extends NotionCommand {
     let numbering = 1
     for (const child of parentBlock.content ? parentBlock.content : []) {
       let childBlock = recordMap.block[child]?.value
+      if (!childBlock && this.prefetch) {
+        const newMap = await this.notion.getPage(Object.keys(recordMap.block)[0])
+        for (const table in newMap) recordMap[table] = newMap[table]
+        childBlock = recordMap.block[child]?.value
+      }
       if (!childBlock) {
         console.debug(`Missing block ${child} from ${getBlockTitle(page, recordMap)}`)
         continue
@@ -171,7 +245,7 @@ export class NotionExportCommand extends NotionCommand {
           md += `${prefix}- [ ] ${decorationsToMarkdown(title, recordMap)}`
           break
         case 'toggle':
-          md += `${prefix}<details><summary>${decorationsToMarkdown(title, recordMap)}</summary>\n`
+          md += `${prefix}<details><summary>${prefix}${prefix}${decorationsToMarkdown(title, recordMap)}</summary>\n`
           break
         case 'quote':
           md += decorationsToMarkdown(title, recordMap, `\n${prefix.trim()}> `) + '\n'
@@ -193,9 +267,19 @@ export class NotionExportCommand extends NotionCommand {
           )}](${getTextContent(childBlock.properties.link)})\n`
           break
         }
-        case 'external_object_instance':
-          md += `${prefix}`
-          break
+        case 'external_object_instance': {
+          try {
+            const url = childBlock.format.original_url
+            const title = childBlock.format.attributes
+              ? childBlock.format.attributes.filter(attr => attr.id === 'title')[0].values[0]
+              : ''
+            md += `${prefix}${prefix}[${title}](${url})${prefix}`
+            break
+          } catch (e) {
+            console.error(e, childBlock.id)
+            break
+          }
+        }
 
         // Collection
         case 'collection_view_page':
@@ -208,7 +292,7 @@ export class NotionExportCommand extends NotionCommand {
 
           // Generate Table
           md += `${prefix}### ${decorationsToMarkdown(collection.name, recordMap)}`
-          md += `${prefix} | Title |\n|:-:|`
+          md += `${prefix} |Title|\n|:-:|`
           const views = childBlock.view_ids
             .map(id => {
               if (!recordMap.collection_view[id]) console.debug(`Missing view ${id} from ${collection.name}`)
@@ -223,61 +307,68 @@ export class NotionExportCommand extends NotionCommand {
               return blockMap
             }, {})
           )
-          for (const childPage of children)
-            md += `${prefix}|[${getBlockTitle(recordMap.block[childPage].value, recordMap)}](${getBlockLink(
-              childPage,
-              recordMap
-            )})|`
+          for (const childPage of children) {
+            const childBlock = recordMap.block[childPage]?.value
+            if (!childBlock) console.debug(`no ${childPage} in ${collection.name[0]}`)
+            md += `${prefix}|[${getBlockTitle(childBlock, recordMap)}](${getBlockLink(childPage, recordMap)})|`
+          }
 
           // Make children page
-          if (this.recursive) {
+          if (this.recursive && children.length) {
             const parentFolder = join(
               folder,
               `${getCanonicalPageId(page.id, recordMap)}`,
-              `${getCanonicalPageId(childBlock.id, recordMap)}`
+              `${getCanonicalPageId(collection.id, recordMap)}`
             )
             await mkdir(parentFolder, { recursive: true })
-            for (const childPage of children) await this.exportMd(childPage, parentFolder)
+            for (const childPage of children) this.promises.push(this.exportMd(childPage, parentFolder))
           }
+          break
+        }
+        case 'page': {
+          md += `${prefix}${prefix}[${getBlockTitle(childBlock, recordMap)}](${getBlockLink(
+            childBlock.id,
+            recordMap
+          )})${prefix}`
+          if (this.recursive) {
+            const parentFolder = join(folder, `${getCanonicalPageId(page.id, recordMap)}`)
+            await mkdir(parentFolder, { recursive: true })
+            this.promises.push(this.exportMd(childBlock.id, parentFolder))
+          }
+          break
+        }
+        case 'alias': {
+          const aliasBlock = recordMap.block[childBlock.format.alias_pointer.id]?.value
+          if (!aliasBlock) {
+            console.debug(
+              `Missing alias ${childBlock.format.alias_pointer.id} from ${getBlockTitle(page, recordMap)} ${page.id}`
+            )
+            continue
+          }
+          md += `${prefix}${prefix}[${getBlockTitle(aliasBlock, recordMap)}](${getBlockLink(
+            aliasBlock.id,
+            recordMap
+          )})${prefix}`
           break
         }
 
         // Media
         case 'image': {
           const caption = childBlock.properties.caption ? getTextContent(childBlock.properties.caption) : ''
-          md += `${prefix}![${caption}](${defaultMapImageUrl(childBlock.format.display_source, childBlock)})`
+          md += `${prefix}![${caption}](${defaultMapImageUrl(childBlock.format?.display_source, childBlock)})`
           break
         }
 
-        case 'alias': {
-          childBlock = recordMap.block[childBlock.format.alias_pointer.id]?.value
-          if (!childBlock) {
-            console.debug(`Missing alias ${child} from ${getBlockTitle(page, recordMap)}`)
-            continue
-          }
-          md += `${prefix}[${getBlockTitle(childBlock, recordMap)}](${getBlockLink(childBlock.id, recordMap)})${prefix}`
-          break
-        }
-
-        case 'page': {
-          md += `${prefix}[${getBlockTitle(childBlock, recordMap)}](${getBlockLink(childBlock.id, recordMap)})${prefix}`
-          if (this.recursive) {
-            const parentFolder = join(folder, `${getCanonicalPageId(page.id, recordMap)}`)
-            await mkdir(parentFolder, { recursive: true })
-            await this.exportMd(childBlock.id, parentFolder)
-          }
-          break
-        }
         case 'video':
           md += `${prefix}<video src="${childBlock.format.display_source} />`
           break
 
         // Embed
         case 'file':
-          md += `${prefix}[File](${childBlock.format.display_source})`
+          md += `${prefix}[File](${childBlock.format?.display_source})`
           break
         case 'pdf':
-          md += `${prefix}<iframe src="${childBlock.format.display_source}"/>`
+          md += `${prefix}<iframe src="${childBlock.format?.display_source}"/>`
           break
 
         // Else
@@ -322,7 +413,7 @@ export function decorationsToMarkdown(decos: Decoration[], recordMap: ExtendedRe
             const blockId = subdeco[1]
             const linkedBlock = recordMap.block[blockId]?.value
             if (!linkedBlock) {
-              console.debug('"p" missing block', blockId)
+              console.debug('"p" missing block', blockId, getPageTitle(recordMap))
               break
             }
             const title = getBlockTitle(linkedBlock, recordMap)
@@ -353,6 +444,7 @@ export function decorationsToMarkdown(decos: Decoration[], recordMap: ExtendedRe
             break
           case 'e':
             wrapper += '$'
+            textonly = subdeco[1]
             break
           case 'eoi': {
             try {
@@ -363,7 +455,9 @@ export function decorationsToMarkdown(decos: Decoration[], recordMap: ExtendedRe
                 break
               }
               const url = object.format.uri
-              const title = object.format.attributes.filter(attr => attr.id === 'title')[0].values[0]
+              const title = object.format.attributes
+                ? object.format.attributes?.filter(attr => attr.id === 'title')[0].values[0]
+                : ''
               textonly = `[${title}](${url})`
               break
             } catch (e) {
@@ -380,9 +474,9 @@ export function decorationsToMarkdown(decos: Decoration[], recordMap: ExtendedRe
         }
         return textonly
       }, text)
-      let decorated: string
+      let decorated: string = textonly
       if (subdecos.find(subdeco => subdeco[0] === '_')) decorated = `<u>${textonly}</u>`
-      decorated = wrapper + textonly + wrapper.split('').reverse().join('')
+      decorated = wrapper + decorated + wrapper.split('').reverse().join('')
       return md + decorated
     }
   }, String())

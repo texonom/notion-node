@@ -459,6 +459,13 @@ export interface ExternalObjectInstance extends BaseBlock {
   format: {
     domain: string
     original_url: string
+    external_object_id?: ID
+    related_external_object_uris_to_instance_ids?: {
+      [uri: string]: ID
+    }
+    attributes: { id: string; name: string; type: string; values: unknown[] }[]
+    bot_id: string
+    stale: boolean
   }
 }
 

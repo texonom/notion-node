@@ -77,7 +77,6 @@ export class NotionAPI {
       fetchOption
     })
     const recordMap = page?.recordMap as ExtendedRecordMap
-
     if (!recordMap?.block) throw new Error(`Notion page not found "${uuidToId(pageId)}"`)
 
     // ensure that all top-level maps exist
@@ -143,10 +142,10 @@ export class NotionAPI {
       fetchOption?: FetchOption
     } = { concurrency: 36, fetchOption: { timeout: 20000 } }
   ): Promise<ExtendedRecordMap> {
-    console.time('getCollectionData')
     const allCollectionInstances: Array<{
       collectionId: string
       collectionViewId: string
+      collectionViewBlockId: string
     }> = contentBlockIds.flatMap(blockId => {
       const block = recordMap.block[blockId]?.value
       if (!block) return []
@@ -155,20 +154,19 @@ export class NotionAPI {
         (block.type === 'collection_view' || block.type === 'collection_view_page') &&
         getBlockCollectionId(block, recordMap)
 
-      const ancesters = findAncestors(recordMap, block)
       if (collectionId)
-        if (pageId ? ancesters.includes(pageId) : true)
+        if (pageId ? findAncestors(recordMap, block).includes(pageId) : true)
           return block.view_ids?.flatMap(collectionViewId => {
             if (recordMap.collection_query[collectionId]?.[collectionViewId]) return []
             else
               return {
                 collectionId,
-                collectionViewId
+                collectionViewId,
+                collectionViewBlockId: block.id
               }
           })
       return []
     })
-    console.timeEnd('getCollectionData')
 
     // fetch data for all collection view instances
     const resultMap: ExtendedRecordMap = {
@@ -180,9 +178,9 @@ export class NotionAPI {
       signed_urls: {}
     }
     await pMap(
-      allCollectionInstances.slice(0, 300),
+      allCollectionInstances.slice(allCollectionInstances.length - 300, allCollectionInstances.length),
       async collectionInstance => {
-        const { collectionId, collectionViewId } = collectionInstance
+        const { collectionId, collectionViewId, collectionViewBlockId } = collectionInstance
         const collectionView = recordMap.collection_view[collectionViewId]?.value
 
         try {
@@ -190,21 +188,31 @@ export class NotionAPI {
             fetchOption
           })
 
-          recordMap.block = { ...recordMap.block, ...collectionData.recordMap.block }
-          recordMap.collection = { ...recordMap.collection, ...collectionData.recordMap.collection }
-          recordMap.collection_view = { ...recordMap.collection_view, ...collectionData.recordMap.collection_view }
-          recordMap.notion_user = { ...recordMap.notion_user, ...collectionData.recordMap.notion_user }
-          recordMap.collection_query![collectionId] = {
-            ...recordMap.collection_query![collectionId],
-            [collectionViewId]: collectionData.result?.reducerResults
+          if (collectionData.recordMap) {
+            recordMap.block = { ...recordMap.block, ...collectionData.recordMap.block }
+            recordMap.collection = { ...recordMap.collection, ...collectionData.recordMap.collection }
+            recordMap.collection_view = { ...recordMap.collection_view, ...collectionData.recordMap.collection_view }
+            recordMap.notion_user = { ...recordMap.notion_user, ...collectionData.recordMap.notion_user }
+            recordMap.collection_query![collectionId] = {
+              ...recordMap.collection_query![collectionId],
+              [collectionViewId]: collectionData.result?.reducerResults
+            }
+            resultMap.block = { ...resultMap.block, ...collectionData.recordMap.block }
+            resultMap.collection = { ...resultMap.collection, ...collectionData.recordMap.collection }
+            resultMap.collection_view = { ...resultMap.collection_view, ...collectionData.recordMap.collection_view }
+            resultMap.notion_user = { ...resultMap.notion_user, ...collectionData.recordMap.notion_user }
+            resultMap.collection_query![collectionId] = {
+              ...resultMap.collection_query![collectionId],
+              [collectionViewId]: collectionData.result?.reducerResults
+            }
           }
-          resultMap.block = { ...resultMap.block, ...collectionData.recordMap.block }
-          resultMap.collection = { ...resultMap.collection, ...collectionData.recordMap.collection }
-          resultMap.collection_view = { ...resultMap.collection_view, ...collectionData.recordMap.collection_view }
-          resultMap.notion_user = { ...resultMap.notion_user, ...collectionData.recordMap.notion_user }
-          resultMap.collection_query![collectionId] = {
-            ...resultMap.collection_query![collectionId],
-            [collectionViewId]: collectionData.result?.reducerResults
+
+          if (!collectionView) {
+            const viewBlockData = await this.getPageRaw(collectionViewBlockId, { fetchOption })
+            if (viewBlockData.recordMap) {
+              recordMap.collection_view = { ...recordMap.collection_view, ...viewBlockData.recordMap.collection_view }
+              resultMap.collection_view = { ...resultMap.collection_view, ...viewBlockData.recordMap.collection_view }
+            }
           }
         } catch (err) {
           // It's possible for public pages to link to private collections, in which case
