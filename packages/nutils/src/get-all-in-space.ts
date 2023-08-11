@@ -31,10 +31,11 @@ export async function getAllInSpace(
   startPageId: string,
   getPage: (pageId: string) => Promise<ExtendedRecordMap>,
   getBlocks: (blockIds: string[]) => Promise<PageChunk>,
-  fetchCollections: (contentBlockIds: string[], recordMap: ExtendedRecordMap, pageId?: string) => Promise<void>
+  fetchCollections: (contentBlockIds: string[], recordMap: ExtendedRecordMap, pageId?: string) => Promise<void>,
+  startRecordMap?: ExtendedRecordMap
 ): Promise<{ recordMap: ExtendedRecordMap; pageMap: PageMap; pageTree: PageTree }> {
   const pageMap: PageMap = {}
-  const recordMap = await getPage(startPageId)
+  const recordMap = startRecordMap ? startRecordMap : await getPage(startPageId)
 
   let tempRecordMap: ExtendedRecordMap = JSON.parse(JSON.stringify(recordMap))
 
@@ -58,7 +59,7 @@ export async function getAllInSpace(
     console.time('getBlocks')
     tempRecordMap = (await getBlocks(missing)).recordMap as ExtendedRecordMap
     console.timeEnd('getBlocks')
-    if (!tempRecordMap.block) break
+    if (!tempRecordMap?.block) break
 
     console.time('mapBlocks')
     const contentBlockIds = Object.values(recordMap.block)
@@ -77,7 +78,7 @@ export async function getAllInSpace(
     console.info('collection query length ' + Object.keys(recordMap.collection_query).length)
 
     console.info('new block length ', Object.keys(tempRecordMap.block).length)
-    console.info(process.memoryUsage().rss / 1024 / 1024 + 'MB')
+    console.info(`memory usage` + process.memoryUsage().rss / 1024 / 1024 + 'MB')
   }
   console.timeEnd('fetch total')
 
