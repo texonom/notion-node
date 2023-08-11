@@ -1,7 +1,7 @@
 import { Cli, Builtins } from 'clipanion'
 
 import { version, displayName } from '../package.json'
-import { NotionExportCommand } from './notion'
+import { NotionExportCommand } from './notion/export'
 
 const cli = new Cli({
   binaryName: 'notion',
@@ -14,4 +14,4 @@ cli.register(Builtins.HelpCommand)
 cli.register(Builtins.VersionCommand)
 cli.runExit(process.argv.slice(2), Cli.defaultContext)
 
-export * from './notion'
+export * from './notion/export'
