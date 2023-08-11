@@ -899,7 +899,7 @@ packages:
   /@types/graceful-fs@4.1.6:
     resolution: {integrity: sha512-Sig0SNORX9fdW+bQuTEovKj3uHcUL6LQKbCrrqb1X7J6/ReAbhCXRAhc+SMejhLELFj2QcyuxmUooZ4bt5ReSw==}
     dependencies:
-      '@types/node': 18.17.1
+      '@types/node': 18.17.4
     dev: true
 
   /@types/istanbul-lib-coverage@2.0.4:
@@ -921,7 +921,7 @@ packages:
   /@types/jsonstream@0.8.31:
     resolution: {integrity: sha512-32nJ7wl+q0lebxHo8iXqpmgLmkj6lYNHKp97+h8qteQ6O6IKnY+GyD/Eitqi4ul2Bbw3MScfRKtaHxt8gpC98w==}
     dependencies:
-      '@types/node': 18.17.1
+      '@types/node': 18.17.4
     dev: true
 
   /@types/lodash.throttle@4.1.7:

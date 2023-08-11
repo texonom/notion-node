@@ -10,11 +10,18 @@
 pnpm i @texonom/cli
 ```
 
-## Usages
+# Usages
 
-### Export
+## Export
 
 ```zsh
 ## export block, collection, collection_view and notion_user for each folder
 notion export --raw
+```
+
+### Example
+
+```
+pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 --raw -r -f
+pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 -r -l -t -u
 ```
