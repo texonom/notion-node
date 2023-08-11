@@ -1,6 +1,6 @@
 {
   "name": "@texonom/nclient",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "description": "Robust TypeScript client for the unofficial Notion API.",
   "repository": "texonom/notion-node",
