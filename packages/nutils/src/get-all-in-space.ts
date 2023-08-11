@@ -12,6 +12,8 @@ export type PageTree = {
   children: PageTree[]
 }
 
+type FetchOption = RequestInit & { timeout?: number }
+
 /**
  * Performs a traversal over a given Notion workspace starting from a seed page.
  *
@@ -29,13 +31,34 @@ export type PageTree = {
  */
 export async function getAllInSpace(
   startPageId: string,
-  getPage: (pageId: string) => Promise<ExtendedRecordMap>,
-  getBlocks: (blockIds: string[]) => Promise<PageChunk>,
-  fetchCollections: (contentBlockIds: string[], recordMap: ExtendedRecordMap, pageId?: string) => Promise<void>,
-  startRecordMap?: ExtendedRecordMap
+  getPage: (pageId: string, { fetchOption }?: { fetchOption?: FetchOption }) => Promise<ExtendedRecordMap>,
+  getBlocks: (blockIds: string[], fetchOption?: FetchOption) => Promise<PageChunk>,
+  fetchCollections: (
+    contentBlockIds: string[],
+    recordMap: ExtendedRecordMap,
+    pageId?: string,
+    {
+      fetchOption,
+      concurrency,
+      collectionConcurrency
+    }?: { fetchOption?: FetchOption; concurrency?: number; collectionConcurrency?: number }
+  ) => Promise<ExtendedRecordMap>,
+  {
+    startRecordMap,
+    fetchOption = { timeout: 100000 },
+    maxPage,
+    concurrency = 100,
+    collectionConcurrency = 100
+  }: {
+    startRecordMap?: ExtendedRecordMap
+    fetchOption?: FetchOption
+    concurrency?: number
+    maxPage?: number
+    collectionConcurrency?: number
+  } = {}
 ): Promise<{ recordMap: ExtendedRecordMap; pageMap: PageMap; pageTree: PageTree }> {
   const pageMap: PageMap = {}
-  const recordMap = startRecordMap ? startRecordMap : await getPage(startPageId)
+  const recordMap = startRecordMap ? startRecordMap : await getPage(startPageId, { fetchOption })
 
   let tempRecordMap: ExtendedRecordMap = JSON.parse(JSON.stringify(recordMap))
 
@@ -57,7 +80,7 @@ export async function getAllInSpace(
     console.timeEnd('getPageContentBlockIds')
 
     console.time('getBlocks')
-    tempRecordMap = (await getBlocks(missing)).recordMap as ExtendedRecordMap
+    tempRecordMap = (await getBlocks(missing, fetchOption)).recordMap as ExtendedRecordMap
     console.timeEnd('getBlocks')
     if (!tempRecordMap?.block) break
 
@@ -66,18 +89,20 @@ export async function getAllInSpace(
       .map(obj => obj.value?.id)
       .filter(Boolean)
     recordMap.block = { ...recordMap.block, ...tempRecordMap.block }
-    if (tempRecordMap.collection_view) {
-      console.info('gatcha')
-      recordMap.collection_view = { ...recordMap.collection_view, ...tempRecordMap.collection_view }
-    }
     console.timeEnd('mapBlocks')
 
     console.time('fetchCollections')
-    await fetchCollections(contentBlockIds, recordMap)
+    await fetchCollections(contentBlockIds, recordMap, undefined, { fetchOption, concurrency, collectionConcurrency })
     console.timeEnd('fetchCollections')
     console.info('collection query length ' + Object.keys(recordMap.collection_query).length)
 
     console.info('new block length ', Object.keys(tempRecordMap.block).length)
+    const pageLength = Object.values(recordMap.block)
+      .map(obj => obj.value?.type)
+      .filter(type => type === 'page').length
+    console.info('page length ', pageLength)
+    if (Number.isInteger(maxPage) && pageLength >= maxPage) break
+
     console.info(`memory usage ${process.memoryUsage().rss / 1024 / 1024}MB`)
   }
   console.timeEnd('fetch total')
@@ -173,7 +198,7 @@ export function recursivePageTree(recordMap: ExtendedRecordMap, pageTree: PageTr
 export async function getPageSync(
   pageId: string,
   recordMap: ExtendedRecordMap,
-  getBlocks: (blockIds: string[]) => Promise<PageChunk>
+  getBlocks: (blockIds: string[], fetchOption?: FetchOption) => Promise<PageChunk>
 ): Promise<ExtendedRecordMap> {
   let contentBlockIds = getPageContentBlockIds(recordMap, pageId)
   let blockMap: BlockMap = { [pageId]: { value: recordMap.block[pageId].value, role: 'reader' } }

@@ -136,11 +136,13 @@ export class NotionAPI {
     pageId?: string,
     {
       concurrency,
-      fetchOption
+      fetchOption,
+      collectionConcurrency
     }: {
       concurrency: number
+      collectionConcurrency?: number
       fetchOption?: FetchOption
-    } = { concurrency: 36, fetchOption: { timeout: 20000 } }
+    } = { concurrency: 36, fetchOption: { timeout: 20000 }, collectionConcurrency: 300 }
   ): Promise<ExtendedRecordMap> {
     const allCollectionInstances: Array<{
       collectionId: string
@@ -178,7 +180,7 @@ export class NotionAPI {
       signed_urls: {}
     }
     await pMap(
-      allCollectionInstances.slice(allCollectionInstances.length - 200, allCollectionInstances.length),
+      allCollectionInstances.slice(allCollectionInstances.length - collectionConcurrency, allCollectionInstances.length),
       async collectionInstance => {
         const { collectionId, collectionViewId, collectionViewBlockId } = collectionInstance
         const collectionView = recordMap.collection_view[collectionViewId]?.value
