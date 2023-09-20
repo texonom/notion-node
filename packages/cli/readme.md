@@ -21,7 +21,9 @@ notion export --raw
 
 ### Example
 
-```
+```sh
 pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 --raw -r -f
-pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 -r -l -t -u
+
+# need token for missed blocks & spaces & users & collections
+pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 -r -l -t $TOKEN -u
 ```
