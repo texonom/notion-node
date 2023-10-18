@@ -44,6 +44,7 @@ export const Collection: React.FC<{
     [ctx]
   )
 
+  // Render collection component
   if (block.type === 'page') {
     if (block.parent_table !== 'collection') return null
 
@@ -54,7 +55,9 @@ export const Collection: React.FC<{
         </div>
       </NotionContextProvider>
     )
-  } else {
+  }
+  // Render Collection view Block
+  else {
     return (
       <NotionContextProvider {...context}>
         <CollectionViewBlock block={block} className={className} />

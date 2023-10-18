@@ -1,6 +1,8 @@
 import format from 'date-fns/format/index.js'
 
-export function getCollectionGroups(collection: any, collectionView: any, collectionData: any, ...rest) {
+import type { CollectionView, Collection } from '@texonom/ntypes'
+
+export function getCollectionGroups(collection: Collection, collectionView: CollectionView, collectionData: any, ...rest) {
   const elems = collectionView?.format?.collection_groups || []
   return elems?.map(({ property, hidden, value: { value, type } }) => {
     const isUncategorizedValue = typeof value === 'undefined'
