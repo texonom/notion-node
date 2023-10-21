@@ -24,7 +24,7 @@ interface PropertyIconProps {
   type: PropertyType
 }
 
-const iconMap = {
+export const iconMap = {
   title: TitleIcon,
   text: TextIcon,
   number: NumberIcon,
