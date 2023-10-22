@@ -186,7 +186,7 @@ export const Text: React.FC<{
                       className='notion-user'
                       src={mapImageUrl(user.profile_photo, block)}
                       alt={name}
-                      style={{ display: 'inline' }}
+                      style={{ display: 'inline', marginRight: '0.3em', marginBottom: '0.3em' }}
                     />
                     {name}
                   </components.Link>
