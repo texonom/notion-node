@@ -21,7 +21,7 @@ import type { Block, Decoration, ExternalObjectInstance } from '@texonom/ntypes'
 export const Text: React.FC<{
   value: Decoration[]
   block: Block
-  linkProps?: any
+  linkProps?: { [key: string]: unknown }
   linkProtocol?: string
   inline?: boolean // TODO: currently unused
 }> = ({ value, block, linkProps, linkProtocol }) => {
