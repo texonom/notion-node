@@ -1,7 +1,10 @@
 # Texonom Notion
 
 This repository is fork of [React Notion X](https://github.com/NotionX/react-notion-x).
-Refactored with [Turboplate](https://github.com/seonglae/turboplate). This monorepo workspace is for [Texonom](https://texonom.com) Project
+Refactored with [Turboplate](https://github.com/seonglae/turboplate). This monorepo workspace is for [Texonom](https://texonom.com) Project.
+Property rendering and Search API are maintained in this project.
+
+![Property](image/property.png)
 
 # Modules
 
@@ -35,6 +38,7 @@ pnpm format
 git commit -am "meta: deployment commit for $VERSION"
 git tag $VERSION
 pnpm turbo pu
+git push && git push --tags
 ```
 
 ## Prerelease
