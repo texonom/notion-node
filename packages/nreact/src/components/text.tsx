@@ -68,8 +68,19 @@ export const Text: React.FC<{
                     }
 
                     const name = [user.given_name, user.family_name].filter(Boolean).join(' ')
+                    const email = user.email
 
-                    return <GracefulImage className='notion-user' src={mapImageUrl(user.profile_photo, block)} alt={name} />
+                    return (
+                      <components.Link className='notion-link' href={`mailto:${email}`} {...linkProps}>
+                        <GracefulImage
+                          className='notion-user'
+                          src={mapImageUrl(user.profile_photo, block)}
+                          alt={name}
+                          style={{ display: 'inline' }}
+                        />
+                        {name}
+                      </components.Link>
+                    )
                   }
 
                   default: {
