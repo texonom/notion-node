@@ -46,7 +46,8 @@ export const iconMap = {
 }
 
 export const PropertyIcon: React.FC<PropertyIconProps> = ({ type, ...rest }) => {
-  const icon = iconMap[type] as any
+  const icon = iconMap[type] as (...args: unknown[]) => React.JSX.Element
+
   if (!icon) return null
 
   return icon(rest)
