@@ -61,12 +61,10 @@ export const Text: React.FC<{
                 switch (linkType) {
                   case 'u': {
                     const user = recordMap.notion_user[id]?.value
-
                     if (!user) {
                       console.debug('"‣" missing user', id)
                       return null
                     }
-
                     const name = [user.given_name, user.family_name].filter(Boolean).join(' ')
                     const email = user.email
 
@@ -180,8 +178,19 @@ export const Text: React.FC<{
                   console.debug('missing user', userId)
                   return null
                 }
-                const name = [user.given_name, user.family_name].filter(Boolean).join(' ')
-                return <GracefulImage className='notion-user' src={mapImageUrl(user.profile_photo, block)} alt={name} />
+                const name = user.name
+                const email = user.email
+                return (
+                  <components.Link className='notion-link' href={`mailto:${email}`} {...linkProps}>
+                    <GracefulImage
+                      className='notion-user'
+                      src={mapImageUrl(user.profile_photo, block)}
+                      alt={name}
+                      style={{ display: 'inline' }}
+                    />
+                    {name}
+                  </components.Link>
+                )
               }
 
               case 'eoi': {

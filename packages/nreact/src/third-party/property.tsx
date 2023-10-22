@@ -37,7 +37,7 @@ export const Property: React.FC<IPropertyProps> = props => {
 }
 
 export const PropertyImpl: React.FC<IPropertyProps> = props => {
-  const { components, mapImageUrl, mapPageUrl, recordMap } = useNotionContext()
+  const { components, mapImageUrl, mapPageUrl } = useNotionContext()
   const { schema, data, block, collection, inline = false, linkToTitlePage = true } = props
 
   const renderTextValue = React.useMemo(
@@ -106,12 +106,9 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
     () =>
       function PersonProperty() {
         return (
-          <>
-            <span style={{ marginRight: '0.5em' }}>
-              <Text block={block} value={[['‣', [['u', block.created_by_id]]]]} />
-            </span>
-            <Text block={block} value={[[recordMap.notion_user[block.created_by_id]?.value?.name]]} />
-          </>
+          <span style={{ marginRight: '0.5em' }}>
+            <Text block={block} value={[['‣', [['u', block.created_by_id]]]]} />
+          </span>
         )
       },
     [block, data]
