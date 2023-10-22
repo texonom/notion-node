@@ -40,14 +40,6 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
   const { components, mapImageUrl, mapPageUrl } = useNotionContext()
   const { schema, data, block, collection, inline = false, linkToTitlePage = true } = props
 
-  const renderTextValue = React.useMemo(
-    () =>
-      function TextProperty() {
-        return <Text value={data} block={block} />
-      },
-    [block, data]
-  )
-
   const renderDateValue = React.useMemo(
     () =>
       function DateProperty() {
@@ -88,6 +80,14 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
     [block?.properties, collection?.schema, schema]
   )
 
+  const renderTextValue = React.useMemo(
+    () =>
+      function TextProperty() {
+        return <Text value={data} block={block} />
+      },
+    [block, data]
+  )
+
   const renderTitleValue = React.useMemo(
     () =>
       function FormulaTitle() {
@@ -111,7 +111,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
           </span>
         )
       },
-    [block, data]
+    [block]
   )
 
   const renderFileValue = React.useMemo(
@@ -246,7 +246,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
       function CreatedTimeProperty() {
         return <Text block={block} value={[[formatDate(block?.created_time, { month: 'short' })]]} />
       },
-    [block?.created_time]
+    [block]
   )
 
   const renderLastEditedTimeValue = React.useMemo(
@@ -254,7 +254,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
       function EditedTimeProperty() {
         return <Text block={block} value={[[formatDate(block?.last_edited_time, { month: 'short' })]]} />
       },
-    [block?.last_edited_time]
+    [block]
   )
 
   if (!schema) return null
@@ -374,11 +374,14 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
         break
     }
 
+  const isTitle = schema.type === 'title'
   return (
     <span className={`notion-property notion-property-${schema.type}`}>
+      ({isTitle} ? null (
       <div style={{ marginRight: '1em', display: 'inline' }}>
         <Text block={block} value={[[schema.name, [['h', 'gray']]]]} />
       </div>
+      ))
       {content}
     </span>
   )

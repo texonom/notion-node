@@ -152,17 +152,6 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
         ...ctx.components,
         // Disable <a> tabs in all child components so we don't create invalid DOM
         // trees with stacked <a> tags.
-        Link: props => {
-          return (
-            <form action={props.href} target='_blank'>
-              <input
-                type='submit'
-                value={props?.children?.props?.children ?? props.href}
-                className='nested-form-link notion-link'
-              />
-            </form>
-          )
-        },
         PageLink: dummyLink
       }}>
       {isLinkCollectionToUrlProperty && url ? (
