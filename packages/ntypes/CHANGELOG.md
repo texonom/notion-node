@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.2.9 (2023-10-22)
+
+### Features
+
+- **cli:** `@texonom/cli` added for export from gh-setter ([78decc4](https://github.com/texonom/notion-node/commit/78decc45c1cec9e159f6d93b81d2635e3666ac4b))
+- export raw recursive prefetch load for notion ([39a1210](https://github.com/texonom/notion-node/commit/39a1210407ff222c70c846cc088990b3bf7d9307))
+- space and collection type guard with ntypes ([c1a2df3](https://github.com/texonom/notion-node/commit/c1a2df3f89f8995e257f0489d7316f72e988f82a))
+
+### Bug Fixes
+
+- **cli:** build error by change main build folder ([393b1c2](https://github.com/texonom/notion-node/commit/393b1c24712f98a3b3befd3a3e3d2ac2f16f4d63))
+- **ntypes:** from isNavigableOnly to navigableBlockContentOnly ([e8dec0e](https://github.com/texonom/notion-node/commit/e8dec0efd26b8dd59a445ef40dd087a4723e7832))
+- **ntypes:** update recent apis with MentionDecoration ([5102394](https://github.com/texonom/notion-node/commit/51023946780c679052ecdcd67597be6027ba75c4))
+
 ### 1.2.8 (2023-10-22)
 
 ### Features
