@@ -51,3 +51,14 @@ test.concurrent(
   },
   { timeout: 10000 }
 )
+
+test.concurrent(
+  `Get block`,
+  async () => {
+    const id = '3f9e0d86-c643-4672-aa0c-78d63fa80598'
+    const api = new NotionAPI()
+    const res = await api.getBlocks([id])
+    console.info(res.recordMap.block[id])
+  },
+  { timeout: 10000 }
+)
