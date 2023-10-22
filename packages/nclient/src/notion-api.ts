@@ -505,6 +505,14 @@ export class NotionAPI {
     })
   }
 
+  public async syncRecords(records: { id: string; table: string }[], fetchOption?: FetchOption) {
+    return this.fetch<PageChunk>({
+      endpoint: 'syncRecordValues',
+      body: { requests: records.map(({ id, table }) => ({ table, id, version: -1 })) },
+      fetchOption
+    })
+  }
+
   public async getSignedFileUrls(urls: SignedUrlRequest[], fetchOption?: FetchOption) {
     return this.fetch<SignedUrlResponse>({
       endpoint: 'getSignedFileUrls',
