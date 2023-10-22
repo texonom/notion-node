@@ -8,7 +8,7 @@ import { GracefulImage } from '../components/graceful-image'
 import { PageTitle } from '../components/page-title'
 import { Text } from '../components/text'
 import { useNotionContext } from '../context'
-import { cs } from '../utils'
+import { cs, formatDate } from '../utils'
 import { evalFormula } from './eval-formula'
 
 import type { CollectionPropertySchema, Decoration, Block, Collection, FormulaResult } from '@texonom/ntypes'
@@ -37,7 +37,7 @@ export const Property: React.FC<IPropertyProps> = props => {
 }
 
 export const PropertyImpl: React.FC<IPropertyProps> = props => {
-  const { components, mapImageUrl, mapPageUrl } = useNotionContext()
+  const { components, mapImageUrl, mapPageUrl, recordMap } = useNotionContext()
   const { schema, data, block, collection, inline = false, linkToTitlePage = true } = props
 
   const renderTextValue = React.useMemo(
@@ -105,7 +105,14 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
   const renderPersonValue = React.useMemo(
     () =>
       function PersonProperty() {
-        return <Text value={data} block={block} />
+        return (
+          <>
+            <span style={{ marginRight: '0.5em' }}>
+              <Text block={block} value={[['‣', [['u', block.created_by_id]]]]} />
+            </span>
+            <Text block={block} value={[[recordMap.notion_user[block.created_by_id]?.value?.name]]} />
+          </>
+        )
       },
     [block, data]
   )
@@ -240,15 +247,15 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
   const renderCreatedTimeValue = React.useMemo(
     () =>
       function CreatedTimeProperty() {
-        return format(new Date(block?.created_time), 'MMM d, YYY hh:mm aa')
+        return <Text block={block} value={[[formatDate(block?.created_time, { month: 'short' })]]} />
       },
     [block?.created_time]
   )
 
   const renderLastEditedTimeValue = React.useMemo(
     () =>
-      function LastEditedTimeProperty() {
-        return format(new Date(block?.last_edited_time), 'MMM d, YYY hh:mm aa')
+      function EditedTimeProperty() {
+        return <Text block={block} value={[[formatDate(block?.last_edited_time, { month: 'short' })]]} />
       },
     [block?.last_edited_time]
   )
@@ -370,7 +377,14 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
         break
     }
 
-  return <span className={`notion-property notion-property-${schema.type}`}>{content}</span>
+  return (
+    <span className={`notion-property notion-property-${schema.type}`}>
+      <div style={{ marginRight: '1em', display: 'inline' }}>
+        <Text block={block} value={[[schema.name, [['h', 'gray']]]]} />
+      </div>
+      {content}
+    </span>
+  )
 }
 
 export const PropertyImplMemo = React.memo(PropertyImpl)
