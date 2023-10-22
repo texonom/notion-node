@@ -106,7 +106,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
     () =>
       function PersonProperty() {
         return (
-          <span style={{ marginRight: '0.5em' }}>
+          <span>
             <Text block={block} value={[['‣', [['u', block.created_by_id]]]]} />
           </span>
         )
