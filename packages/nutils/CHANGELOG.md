@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.2.10 (2023-10-22)
+
+### Features
+
+- **cli:** `@texonom/cli` added for export from gh-setter ([78decc4](https://github.com/texonom/notion-node/commit/78decc45c1cec9e159f6d93b81d2635e3666ac4b))
+- **cli:** add export collection commend dynamic ([c7cf1d5](https://github.com/texonom/notion-node/commit/c7cf1d51aa0444508ed54b606074f73003b83e1b))
+- **cli:** fetch and pagecount etc for export ([ac0a9b2](https://github.com/texonom/notion-node/commit/ac0a9b26378069ea76144d0388c26a813b55854e))
+- **cli:** get block collection user space with validate ([bc9a09e](https://github.com/texonom/notion-node/commit/bc9a09e1a510f329df3c918f595fe32ebb8d16d1))
+- eoi block fetching using auth token ([5142d41](https://github.com/texonom/notion-node/commit/5142d413e754dbaa0fe2ffc622ab29445a50a620))
+- export raw recursive prefetch load for notion ([39a1210](https://github.com/texonom/notion-node/commit/39a1210407ff222c70c846cc088990b3bf7d9307))
+- **nreact:** unite formatDate & default property rendering ([7c7322e](https://github.com/texonom/notion-node/commit/7c7322e98409e8fd62e5cd4bfc45b6133adfee5f))
+- **nutils:** find ancestors function for page ([14a4232](https://github.com/texonom/notion-node/commit/14a42324137f99fb1e5b819dd43e9eab666d2708))
+- **nutils:** getPageContentUserIds and optimization ([0ee3ac3](https://github.com/texonom/notion-node/commit/0ee3ac3431881ef1eb47741972535b4a44e9b9e5))
+- space and collection type guard with ntypes ([c1a2df3](https://github.com/texonom/notion-node/commit/c1a2df3f89f8995e257f0489d7316f72e988f82a))
+
+### Bug Fixes
+
+- **cli:** build error by change main build folder ([393b1c2](https://github.com/texonom/notion-node/commit/393b1c24712f98a3b3befd3a3e3d2ac2f16f4d63))
+- **nutils:** getPageContentBlockIds multi ref error ([debd573](https://github.com/texonom/notion-node/commit/debd5734e0049beb4ff84a2198f82d6d1485c592))
+
 ### 1.2.9 (2023-10-22)
 
 ### Features

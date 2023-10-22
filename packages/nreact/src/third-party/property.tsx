@@ -377,12 +377,11 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
   const isTitle = schema.type === 'title'
   return (
     <span className={`notion-property notion-property-${schema.type}`}>
-      ({isTitle} ? null (
+      {isTitle} ? {null} : (
       <div style={{ marginRight: '1em', display: 'inline' }}>
-        <Text block={block} value={[[schema.name, [['h', 'gray']]]]} />
+        <Text block={block} value={[[schema.name, [['h', 'gray']]]]} />{' '}
       </div>
-      ))
-      {content}
+      ){content}
     </span>
   )
 }
