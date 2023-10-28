@@ -19,7 +19,7 @@
     "pu": "pnpm publish"
   },
   "engines": {
-    "node": ">=v12.22.12"
+    "node": ">=20.9.0"
   },
   "standard-version": {
     "skip": {
