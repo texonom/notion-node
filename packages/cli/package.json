@@ -44,7 +44,7 @@
     }
   },
   "devDependencies": {
-    "@types/graceful-fs": "^4.1.8",
-    "@types/jsonstream": "^0.8.32"
+    "@types/graceful-fs": "^4.1.9",
+    "@types/jsonstream": "^0.8.33"
   }
 }

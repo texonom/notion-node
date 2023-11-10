@@ -39,9 +39,9 @@
     "react-use": "^17.4.0"
   },
   "devDependencies": {
-    "@types/lodash.throttle": "^4.1.8",
-    "@types/node": "^20.8.10",
-    "@types/react": "^18.2.34",
+    "@types/lodash.throttle": "^4.1.9",
+    "@types/node": "^20.9.0",
+    "@types/react": "^18.2.37",
     "clipboard-copy": "^4.0.1",
     "date-fns": "^2.30.0",
     "format-number": "^3.0.0",
