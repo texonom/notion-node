@@ -2,8 +2,6 @@ import { BlockMap } from '@texonom/ntypes'
 
 export { isUrl, formatDate, formatNotionDateTime } from '@texonom/nutils'
 
-export const cs = (...classes: Array<string | undefined | false>) => classes.filter(a => !!a).join(' ')
-
 const groupBlockContent = (blockMap: BlockMap): string[][] => {
   const output: string[][] = []
 

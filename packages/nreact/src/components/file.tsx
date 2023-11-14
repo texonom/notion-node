@@ -4,7 +4,6 @@ import { FileBlock } from '@texonom/ntypes'
 
 import { useNotionContext } from '../context'
 import { FileIcon } from '../icons/file-icon'
-import { cs } from '../utils'
 import { Text } from './text'
 
 export const File: React.FC<{
@@ -15,7 +14,7 @@ export const File: React.FC<{
   const source = recordMap.signed_urls[block.id] || block.properties?.source?.[0]?.[0]
 
   return (
-    <div className={cs('notion-file', className)}>
+    <div className={`notion-file ${className || ''}`}>
       <components.Link className='notion-file-link' href={source} target='_blank' rel='noopener noreferrer'>
         <FileIcon className='notion-file-icon' />
 

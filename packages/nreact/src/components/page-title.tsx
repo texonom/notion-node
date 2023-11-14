@@ -4,7 +4,6 @@ import { Block, Decoration } from '@texonom/ntypes'
 import { getBlockTitle } from '@texonom/nutils'
 
 import { useNotionContext } from '../context'
-import { cs } from '../utils'
 import { PageIcon } from './page-icon'
 import { Text } from './text'
 
@@ -24,7 +23,7 @@ export const PageTitleImpl: React.FC<{
     const titleDecoration: Decoration[] = [[title]]
 
     return (
-      <span className={cs('notion-page-title', className)} {...rest}>
+      <span className={`notion-page-title ${className || ''}`} {...rest}>
         <PageIcon block={block} defaultIcon={defaultIcon} className='notion-page-title-icon' />
 
         <span className='notion-page-title-text'>
@@ -37,7 +36,7 @@ export const PageTitleImpl: React.FC<{
   if (!block.properties?.title) return null
 
   return (
-    <span className={cs('notion-page-title', className)} {...rest}>
+    <span className={`notion-page-title ${className || ''}`} {...rest}>
       <PageIcon block={block} defaultIcon={defaultIcon} className='notion-page-title-icon' />
 
       <span className='notion-page-title-text'>

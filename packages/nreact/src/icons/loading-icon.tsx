@@ -1,11 +1,10 @@
 import React from 'react'
 
-import { cs } from '../utils'
 
 export const LoadingIcon = props => {
   const { className, ...rest } = props
   return (
-    <svg className={cs('notion-icon', className)} {...rest} viewBox='0 0 24 24'>
+    <svg className={`notion-icon ${className || ''}`} {...rest} viewBox='0 0 24 24'>
       <defs>
         <linearGradient x1='28.1542969%' y1='63.7402344%' x2='74.6289062%' y2='17.7832031%' id='linearGradient-1'>
           <stop stopColor='rgba(164, 164, 164, 1)' offset='0%' />

@@ -6,7 +6,6 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import { useNotionContext } from '../context'
 import { SearchIcon } from '../icons/search-icon'
 import { SearchNotionFn } from '../types'
-import { cs } from '../utils'
 import { PageIcon } from './page-icon'
 import { SearchDialog } from './search-dialog'
 
@@ -53,7 +52,7 @@ export const Breadcrumbs: React.FC<{
 
         return (
           <React.Fragment key={breadcrumb.pageId}>
-            <componentMap.pageLink className={cs('breadcrumb', breadcrumb.active && 'active')} {...pageLinkProps}>
+            <componentMap.pageLink className={`breadcrumb ${breadcrumb.active && 'active'}`} {...pageLinkProps}>
               {breadcrumb.icon && <PageIcon className='icon' block={breadcrumb.block} />}
 
               {breadcrumb.title && <span className='title'>{breadcrumb.title}</span>}
@@ -106,7 +105,7 @@ export const Search: React.FC<{
   return (
     <>
       {hasSearch && (
-        <div role='button' className={cs('breadcrumb', 'button', 'notion-search-button')} onClick={onOpenSearch}>
+        <div role='button' className={`breadcrumb button notion-search-button`} onClick={onOpenSearch}>
           <SearchIcon className='searchIcon' />
 
           {title && <span className='title'>{title}</span>}

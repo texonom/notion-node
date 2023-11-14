@@ -4,7 +4,6 @@ import { PageBlock } from '@texonom/ntypes'
 
 import { useNotionContext } from '../context'
 import { CollectionViewProps } from '../types'
-import { cs } from '../utils'
 import { CollectionCard } from './collection-card'
 import { CollectionGroup } from './collection-group'
 import { getCollectionGroups } from './collection-utils'
@@ -42,7 +41,7 @@ function Gallery({ blockIds, collectionView, collection }) {
   return (
     <div className='notion-gallery'>
       <div className='notion-gallery-view'>
-        <div className={cs('notion-gallery-grid', `notion-gallery-grid-size-${gallery_cover_size}`)}>
+        <div className={`notion-gallery-grid ${`notion-gallery-grid-size-${gallery_cover_size}`}`}>
           {blockIds?.map(blockId => {
             const block = recordMap.block[blockId]?.value as PageBlock
             if (!block) return null

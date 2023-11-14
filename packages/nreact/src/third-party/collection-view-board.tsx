@@ -5,7 +5,6 @@ import { PageBlock } from '@texonom/ntypes'
 import { useNotionContext } from '../context'
 import { EmptyIcon } from '../icons/empty-icon'
 import { CollectionViewProps } from '../types'
-import { cs } from '../utils'
 import { CollectionCard } from './collection-card'
 import { CollectionGroup } from './collection-group'
 import { getCollectionGroups } from './collection-utils'
@@ -58,7 +57,7 @@ function Board({ collectionView, collectionData, collection, padding }) {
 
   return (
     <div className='notion-board'>
-      <div className={cs('notion-board-view', `notion-board-view-size-${board_cover_size}`)} style={boardStyle}>
+      <div className={`notion-board-view ${`notion-board-view-size-${board_cover_size}`}`} style={boardStyle}>
         <div className='notion-board-header'>
           <div className='notion-board-header-inner'>
             {boardGroups.map((p, index) => {

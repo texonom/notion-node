@@ -4,7 +4,7 @@ import { Block } from '@texonom/ntypes'
 
 import { useNotionContext } from '../context'
 import SvgTypeGitHub from '../icons/type-github'
-import { cs, formatNotionDateTime } from '../utils'
+import { formatNotionDateTime } from '../utils'
 
 // External Object Instance
 export const EOI: React.FC<{
@@ -43,7 +43,9 @@ export const EOI: React.FC<{
       target='_blank'
       rel='noopener noreferrer'
       href={original_url}
-      className={cs('notion-external', inline ? 'notion-external-mention' : 'notion-external-block notion-row', className)}>
+      className={`notion-external ${inline ? 'notion-external-mention' : 'notion-external-block notion-row'} ${
+        className || ''
+      }`}>
       {externalImage && <div className='notion-external-image'>{externalImage}</div>}
 
       <div className='notion-external-description'>
