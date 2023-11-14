@@ -31,6 +31,7 @@ import type {
   AudioBlock,
   FileBlock,
   EquationBlock,
+  CollectionViewPageBlock,
   CodeBlock,
   TableBlock
 } from '@texonom/ntypes'
@@ -102,7 +103,8 @@ export const Block: React.FC<BlockProps> = props => {
   // ugly hack to make viewing raw collection views work properly
   // e.g., 6d886ca87ab94c21a16e3b82b43a57fb
   if (level === 0 && block.type === 'collection_view') {
-    ;(block as any).type = 'collection_view_page'
+    const view_block = block as unknown as CollectionViewPageBlock
+    view_block.type = 'collection_view_page'
   }
 
   const blockId = hideBlockId ? 'notion-block' : `notion-block-${uuidToId(block.id)}`
@@ -691,10 +693,8 @@ export const Block: React.FC<BlockProps> = props => {
 
     default:
       if (process.env.NODE_ENV !== 'production')
-        console.debug('Unsupported type ' + (block as any).type, JSON.stringify(block, null, 2))
+        console.debug('Unsupported type ' + (block as BlockType).type, JSON.stringify(block, null, 2))
 
       return <div />
   }
-
-  return null
 }
