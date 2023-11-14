@@ -24,14 +24,14 @@ export const LazyImage: React.FC<{
     : null
 
   const onLoad = React.useCallback(
-    (e: any) => {
-      if (zoomable && (e.target.src || e.target.srcset)) if (zoomRef.current) (zoomRef.current as any).attach(e.target)
+    (e: React.BaseSyntheticEvent<React.SyntheticEvent, HTMLImageElement, HTMLImageElement>) => {
+      if (zoomable && (e.target.src || e.target.srcset)) if (zoomRef.current) zoomRef.current.attach(e.target)
     },
     [zoomRef, zoomable]
   )
 
   const attachZoom = React.useCallback(
-    (image: any) => {
+    (image: unknown) => {
       if (zoomRef.current && image) (zoomRef.current as any).attach(image)
     },
     [zoomRef]
