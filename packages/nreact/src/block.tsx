@@ -637,7 +637,7 @@ export const Block: React.FC<BlockProps> = props => {
       }
 
       return (
-        <components.PageLink className={`notion-page-link ${blockPointerId}} href={mapPageUrl(blockPointerId}`}>
+        <components.PageLink className={`notion-page-link ${blockPointerId}}`} href={mapPageUrl(blockPointerId)}>
           <PageTitle block={linkedBlock} />
         </components.PageLink>
       )

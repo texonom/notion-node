@@ -12,7 +12,8 @@ import type {
   CollectionCardCoverSize,
   CollectionCardCoverAspect,
   PropertyID,
-  Collection
+  Collection,
+  CodeBlock
 } from '@texonom/ntypes'
 
 export type MapPageUrlFn = (pageId: string, recordMap?: ExtendedRecordMap | undefined) => string
@@ -23,19 +24,19 @@ export type ComponentOverrideFn = (props: any, defaultValueFn: () => React.React
 
 export interface NotionComponents {
   // TODO: better typing for arbitrary react components
-  Image: any
-  Link: any
-  PageLink: any
+  Image: React.ComponentType<{ [prop: string]: unknown }>
+  Link: React.ComponentType<{ [prop: string]: unknown }>
+  PageLink: React.ComponentType<{ [prop: string]: unknown }>
   Checkbox: React.FC<{ isChecked: boolean; blockId: string }>
 
   // blocks
-  Code: any
-  Equation: any
-  Callout?: any
+  Code: React.ComponentType<{ block: CodeBlock }>
+  Equation: React.ComponentType<{ [prop: string]: unknown }>
+  Callout?: React.ComponentType<{ [prop: string]: unknown }>
 
   // collection
-  Collection: any
-  Property?: any
+  Collection: React.ComponentType<{ [prop: string]: unknown }>
+  Property?: React.ComponentType<{ [prop: string]: unknown }>
 
   propertyTextValue: ComponentOverrideFn
   propertySelectValue: ComponentOverrideFn
@@ -54,17 +55,17 @@ export interface NotionComponents {
   propertyDateValue: ComponentOverrideFn
 
   // assets
-  Pdf: any
-  Tweet: any
-  Modal: any
-  Embed: any
+  Pdf: React.ComponentType<{ [prop: string]: unknown }>
+  Tweet: React.ComponentType<{ [prop: string]: unknown }>
+  Modal: React.ComponentType<{ [prop: string]: unknown }>
+  Embed: React.ComponentType<{ [prop: string]: unknown }>
 
   // page navigation
-  Header: any
+  Header: React.ComponentType<{ [prop: string]: unknown }>
 
   // optional next.js-specific overrides
-  nextImage?: any
-  nextLink?: any
+  nextImage?: React.ComponentType<{ [prop: string]: unknown }>
+  nextLink?: React.ComponentType<{ [prop: string]: unknown }>
 }
 
 export interface CollectionViewProps {
