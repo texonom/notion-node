@@ -6,7 +6,6 @@ import { getTextContent } from '@texonom/nutils'
 import { LazyImage } from '../components/lazy-image'
 import { NotionContextProvider, dummyLink, useNotionContext } from '../context'
 import { CollectionCardProps } from '../types'
-import { cs } from '../utils'
 import { Property } from './property'
 
 export const CollectionCard: React.FC<CollectionCardProps> = ({
@@ -156,14 +155,14 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
       }}>
       {isLinkCollectionToUrlProperty && url ? (
         <components.Link
-          className={cs('notion-collection-card', `notion-collection-card-size-${coverSize}`, className)}
+          className={`notion-collection-card ${`notion-collection-card-size-${coverSize}`} ${className || ''}`}
           href={url}
           {...rest}>
           {innerCard}
         </components.Link>
       ) : (
         <components.PageLink
-          className={cs('notion-collection-card', `notion-collection-card-size-${coverSize}`, className)}
+          className={`notion-collection-card ${`notion-collection-card-size-${coverSize}`} ${className || ''}`}
           href={mapPageUrl(block.id)}
           {...rest}>
           {innerCard}

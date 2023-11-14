@@ -2,7 +2,6 @@ import React from 'react'
 
 import { useNotionContext } from '../context'
 import { CollectionViewProps } from '../types'
-import { cs } from '../utils'
 import { CollectionColumnTitle } from './collection-column-title'
 import { CollectionGroup } from './collection-group'
 import { getCollectionGroups } from './collection-utils'
@@ -124,7 +123,7 @@ function Table({ blockIds = [], collection, collectionView, width, padding }) {
                     return (
                       <div
                         key={p.property}
-                        className={cs('notion-table-cell', `notion-table-cell-${schema.type}`)}
+                        className={`notion-table-cell ${`notion-table-cell-${schema.type}`}`}
                         style={style}>
                         <Property
                           schema={schema}

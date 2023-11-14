@@ -5,7 +5,7 @@ import { getBlockIcon, getBlockTitle } from '@texonom/nutils'
 
 import { useNotionContext } from '../context'
 import { DefaultPageIcon } from '../icons/default-page-icon'
-import { cs, isUrl } from '../utils'
+import { isUrl } from '../utils'
 import { LazyImage } from './lazy-image'
 
 const isIconBlock = (value: Block): value is PageBlock | CalloutBlock => {
@@ -26,7 +26,7 @@ export const PageIconImpl: React.FC<{
 }> = ({ block, className, inline = true, hideDefaultIcon = false, defaultIcon }) => {
   const { mapImageUrl, recordMap, darkMode } = useNotionContext()
   let isImage = false
-  let content: any = null
+  let content: React.ReactNode = null
 
   if (isIconBlock(block)) {
     const icon = getBlockIcon(block, recordMap)?.trim() || defaultIcon
@@ -36,20 +36,20 @@ export const PageIconImpl: React.FC<{
       const url = mapImageUrl(icon, block)
       isImage = true
 
-      content = <LazyImage src={url} alt={title || 'page icon'} className={cs(className, 'notion-page-icon')} />
+      content = <LazyImage src={url} alt={title || 'page icon'} className={`${className || ''} notion-page-icon`} />
     } else if (icon && icon.startsWith('/icons/')) {
       const url = 'https://www.notion.so' + icon + '?mode=' + (darkMode ? 'dark' : 'light')
 
-      content = <LazyImage src={url} alt={title || 'page icon'} className={cs(className, 'notion-page-icon')} />
+      content = <LazyImage src={url} alt={title || 'page icon'} className={`${className || ''} notion-page-icon`} />
     } else if (!icon) {
       if (!hideDefaultIcon) {
         isImage = true
-        content = <DefaultPageIcon className={cs(className, 'notion-page-icon')} alt={title ? title : 'page icon'} />
+        content = <DefaultPageIcon className={`${className || ''} notion-page-icon`} alt={title ? title : 'page icon'} />
       }
     } else {
       isImage = false
       content = (
-        <span className={cs(className, 'notion-page-icon')} role='img' aria-label={icon}>
+        <span className={`${className || ''} notion-page-icon`} role='img' aria-label={icon}>
           {icon}
         </span>
       )
@@ -60,10 +60,10 @@ export const PageIconImpl: React.FC<{
 
   return (
     <div
-      className={cs(
-        inline ? 'notion-page-icon-inline' : 'notion-page-icon-hero',
-        isImage ? 'notion-page-icon-image' : 'notion-page-icon-span'
-      )}>
+      className={`
+        ${inline ? 'notion-page-icon-inline' : 'notion-page-icon-hero'}
+        ${isImage ? 'notion-page-icon-image' : 'notion-page-icon-span'}
+      `}>
       {content}
     </div>
   )

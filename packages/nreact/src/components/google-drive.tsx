@@ -3,7 +3,6 @@ import React from 'react'
 import { GoogleDriveBlock } from '@texonom/ntypes'
 
 import { useNotionContext } from '../context'
-import { cs } from '../utils'
 import { GracefulImage } from './graceful-image'
 
 export const GoogleDrive: React.FC<{
@@ -23,7 +22,7 @@ export const GoogleDrive: React.FC<{
   }
 
   return (
-    <div className={cs('notion-google-drive', className)}>
+    <div className={`notion-google-drive ${className || ''}`}>
       <components.Link className='notion-google-drive-link' href={properties.url} target='_blank' rel='noopener noreferrer'>
         <div className='notion-google-drive-preview'>
           <GracefulImage

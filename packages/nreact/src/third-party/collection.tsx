@@ -6,7 +6,6 @@ import { useLocalStorage, useWindowSize } from 'react-use'
 import { PageIcon } from '../components/page-icon'
 import { NotionContext, NotionContextProvider, useNotionContext } from '../context'
 import { CollectionViewIcon } from '../icons/collection-view-icon'
-import { cs } from '../utils'
 import { CollectionRow } from './collection-row'
 import { CollectionView } from './collection-view'
 import { PropertyImplMemo } from './property'
@@ -176,7 +175,7 @@ const CollectionViewBlock: React.FC<{
           </div>
         )}
       </div>
-      <div className={cs('notion-collection', className)}>
+      <div className={`notion-collection ${className || ''}`}>
         <CollectionView
           collection={collection}
           collectionView={collectionView}
@@ -202,10 +201,8 @@ const CollectionViewTabs: React.FC<{
         <button
           onClick={() => onChangeView(viewId)}
           key={viewId}
-          className={cs(
-            'notion-collection-view-tabs-content-item',
-            collectionViewId === viewId && 'notion-collection-view-tabs-content-item-active'
-          )}>
+          className={`notion-collection-view-tabs-content-item
+            ${collectionViewId === viewId && 'notion-collection-view-tabs-content-item-active'}`}>
           <CollectionViewColumnDesc collectionView={recordMap.collection_view[viewId]?.value} />
         </button>
       ))}
@@ -222,7 +219,7 @@ const CollectionViewColumnDesc: React.FC<{
   const name = collectionView.name || `${type[0].toUpperCase()}${type.slice(1)} view`
 
   return (
-    <div className={cs('notion-collection-view-type', className)} {...rest}>
+    <div className={`notion-collection-view-type ${className || ''}`} {...rest}>
       <CollectionViewIcon className='notion-collection-view-type-icon' type={type} />
 
       <span className='notion-collection-view-type-title'>{name}</span>

@@ -7,7 +7,6 @@ import { NotionContextConsumer, NotionContextProvider } from '../context'
 import { ClearIcon } from '../icons/clear-icon'
 import { LoadingIcon } from '../icons/loading-icon'
 import { SearchIcon } from '../icons/search-icon'
-import { cs } from '../utils'
 import { PageTitle } from './page-title'
 
 import type { SearchParams, SearchResults, APIError } from '@texonom/ntypes'
@@ -85,7 +84,7 @@ export class SearchDialog extends React.Component<{
                           {searchResult.results.map(result => (
                             <components.PageLink
                               key={result.id}
-                              className={cs('result', 'notion-page-link')}
+                              className={`result notion-page-link`}
                               href={mapPageUrl(result.page.id, searchResult.recordMap)}>
                               <PageTitle block={result.page} defaultIcon={defaultPageIcon} />
 

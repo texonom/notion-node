@@ -3,7 +3,6 @@ import React from 'react'
 import { PageBlock } from '@texonom/ntypes'
 
 import { useNotionContext } from '../context'
-import { cs } from '../utils'
 import { CollectionColumnTitle } from './collection-column-title'
 import { Property } from './property'
 
@@ -45,7 +44,7 @@ export const CollectionRow: React.FC<{
   }
 
   return (
-    <div className={cs('notion-collection-row', className)}>
+    <div className={`notion-collection-row ${className || ''}`}>
       <div className='notion-collection-row-body'>
         {propertyIds.map(propertyId => {
           const schema = schemas[propertyId]

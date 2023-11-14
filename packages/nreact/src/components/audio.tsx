@@ -3,7 +3,6 @@ import React from 'react'
 import { AudioBlock } from '@texonom/ntypes'
 
 import { useNotionContext } from '../context'
-import { cs } from '../utils'
 
 export const Audio: React.FC<{
   block: AudioBlock
@@ -13,7 +12,7 @@ export const Audio: React.FC<{
   const source = recordMap.signed_urls[block.id] || block.properties?.source?.[0]?.[0]
 
   return (
-    <div className={cs('notion-audio', className)}>
+    <div className={`notion-audio ${className || ''}`}>
       <audio controls preload='none' src={source} />
     </div>
   )

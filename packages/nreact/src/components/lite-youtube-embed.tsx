@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { cs } from '../utils'
-
 const qs = (params: Record<string, string>) => {
   return Object.keys(params)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
@@ -83,12 +81,10 @@ export const LiteYouTubeEmbed: React.FC<{
       <div
         onClick={onLoadIframe}
         onPointerOver={warmConnections}
-        className={cs(
-          'notion-yt-lite',
-          isIframeLoaded && 'notion-yt-loaded',
-          iframeInitialized && 'notion-yt-initialized',
-          className
-        )}
+        className={`notion-yt-lite
+          ${isIframeLoaded && 'notion-yt-loaded'}
+          ${iframeInitialized && 'notion-yt-initialized'}
+          ${className || ''}`}
         style={style}>
         <img src={posterUrl} className='notion-yt-thumbnail' loading={lazyImage ? 'lazy' : undefined} alt={alt} />
 
