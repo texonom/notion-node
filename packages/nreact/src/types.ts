@@ -31,11 +31,11 @@ export interface NotionComponents {
 
   // blocks
   Code: React.ComponentType<{ block: CodeBlock }>
-  Equation: React.ComponentType<{ [prop: string]: unknown }>
+  Equation: any
   Callout?: React.ComponentType<{ [prop: string]: unknown }>
 
   // collection
-  Collection: React.ComponentType<{ [prop: string]: unknown }>
+  Collection: any
   Property?: React.ComponentType<{ [prop: string]: unknown }>
 
   propertyTextValue: ComponentOverrideFn
@@ -64,8 +64,8 @@ export interface NotionComponents {
   Header: React.ComponentType<{ [prop: string]: unknown }>
 
   // optional next.js-specific overrides
-  nextImage?: React.ComponentType<{ [prop: string]: unknown }>
-  nextLink?: React.ComponentType<{ [prop: string]: unknown }>
+  nextImage?: any
+  nextLink?: any
 }
 
 export interface CollectionViewProps {
