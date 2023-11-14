@@ -17,7 +17,6 @@ import 'prismjs/components/prism-typescript.min.js'
 import { Text } from '../components/text'
 import { useNotionContext } from '../context'
 import CopyIcon from '../icons/copy'
-import { cs } from '../utils'
 
 export const Code: React.FC<{
   block: CodeBlock
@@ -63,7 +62,7 @@ export const Code: React.FC<{
 
   return (
     <>
-      <pre className={cs('notion-code', className)}>
+      <pre className={`notion-code ${className || ''}`}>
         <div className='notion-code-copy'>
           {copyButton}
 

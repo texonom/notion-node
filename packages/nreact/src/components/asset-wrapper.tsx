@@ -4,7 +4,6 @@ import { BaseContentBlock, Block } from '@texonom/ntypes'
 import { parsePageId } from '@texonom/nutils'
 
 import { useNotionContext } from '../context'
-import { cs } from '../utils'
 import { Asset } from './asset'
 import { Text } from './text'
 
@@ -30,12 +29,10 @@ export const AssetWrapper: React.FC<{
 
   const figure = (
     <figure
-      className={cs(
-        'notion-asset-wrapper',
-        `notion-asset-wrapper-${block.type}`,
-        value.format?.block_full_width && 'notion-asset-wrapper-full',
-        blockId
-      )}>
+      className={`notion-asset-wrapper
+        notion-asset-wrapper-${block.type}
+        ${value.format?.block_full_width ? 'notion-asset-wrapper-full' : ''}
+        ${blockId}`}>
       <Asset block={value} zoomable={zoom && !isURL}>
         {value?.properties?.caption && !isURL && (
           <figcaption className='notion-asset-caption'>

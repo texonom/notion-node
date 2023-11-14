@@ -3,8 +3,6 @@ import React from 'react'
 import throttle from 'lodash.throttle'
 import { TableOfContentsEntry, uuidToId } from '@texonom/nutils'
 
-import { cs } from '../utils'
-
 export const PageAside: React.FC<{
   toc: Array<TableOfContentsEntry>
   activeSection: string | null
@@ -69,7 +67,7 @@ export const PageAside: React.FC<{
   if (!hasAside) return null
 
   return (
-    <aside className={cs('notion-aside', className)}>
+    <aside className={`notion-aside ${className || ''}`}>
       {hasToc && (
         <div className='notion-aside-table-of-contents'>
           <div className='notion-aside-table-of-contents-header'>Table of Contents</div>
@@ -82,11 +80,9 @@ export const PageAside: React.FC<{
                 <a
                   key={id}
                   href={`#${id}`}
-                  className={cs(
-                    'notion-table-of-contents-item',
-                    `notion-table-of-contents-item-indent-level-${tocItem.indentLevel}`,
-                    activeSection === id && 'notion-table-of-contents-active-item'
-                  )}>
+                  className={`notion-table-of-contents-item
+                    notion-table-of-contents-item-indent-level-${tocItem.indentLevel}
+                    ${activeSection === id && 'notion-table-of-contents-active-item'}`}>
                   <span
                     className='notion-table-of-contents-item-body'
                     style={{

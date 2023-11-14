@@ -8,7 +8,7 @@ import { GracefulImage } from '../components/graceful-image'
 import { PageTitle } from '../components/page-title'
 import { Text } from '../components/text'
 import { useNotionContext } from '../context'
-import { cs, formatDate } from '../utils'
+import { formatDate } from '../utils'
 import { evalFormula } from './eval-formula'
 
 import type { CollectionPropertySchema, Decoration, Block, Collection, FormulaResult } from '@texonom/ntypes'
@@ -93,7 +93,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
       function FormulaTitle() {
         if (block && linkToTitlePage)
           return (
-            <components.PageLink className={cs('notion-page-link')} href={mapPageUrl(block.id)}>
+            <components.PageLink className={'notion-page-link'} href={mapPageUrl(block.id)}>
               <PageTitle block={block} />
             </components.PageLink>
           )
@@ -308,7 +308,7 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
               color
             },
             () => (
-              <div key={index} className={cs(`notion-property-${schema.type}-item`, color && `notion-item-${color}`)}>
+              <div key={index} className={`notion-property-${schema.type}-item ${color && `notion-item-${color}`}`}>
                 {value}
               </div>
             )
