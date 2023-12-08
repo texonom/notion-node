@@ -27,7 +27,7 @@
   "dependencies": {
     "@texonom/ntypes": "workspace:^",
     "@texonom/nutils": "workspace:^",
-    "p-map": "^5.5.0"
+    "p-map": "^7.0.0"
   },
   "standard-version": {
     "skip": {
