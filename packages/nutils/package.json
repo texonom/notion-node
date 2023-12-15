@@ -35,7 +35,7 @@
     "mem": "^9.0.2",
     "normalize-url": "^8.0.0",
     "@texonom/ntypes": "workspace:^",
-    "p-queue": "^7.4.1"
+    "p-queue": "^8.0.1"
   },
   "standard-version": {
     "skip": {
