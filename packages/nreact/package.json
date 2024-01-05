@@ -32,7 +32,7 @@
     "@texonom/nutils": "workspace:^",
     "prismjs": "^1.29.0",
     "react-fast-compare": "^3.2.2",
-    "react-hotkeys-hook": "^4.4.1",
+    "react-hotkeys-hook": "^4.4.3",
     "react-image": "^4.1.0",
     "react-modal": "^3.16.1",
     "react-pdf": "^7.6.0",
@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@types/lodash.throttle": "^4.1.9",
-    "@types/node": "^20.10.5",
+    "@types/node": "^20.10.6",
     "@types/react": "^18.2.46",
     "clipboard-copy": "^4.0.1",
     "date-fns": "^2.30.0",
