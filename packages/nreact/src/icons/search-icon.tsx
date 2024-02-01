@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 export const SearchIcon = props => {
   const { className, ...rest } = props
   return (

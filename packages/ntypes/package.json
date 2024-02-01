@@ -1,6 +1,6 @@
 {
   "name": "@texonom/ntypes",
-  "version": "1.2.11",
+  "version": "1.2.12",
   "type": "module",
   "description": "TypeScript types for core Notion data structures.",
   "repository": "texonom/notion-node",

@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 export const ClearIcon = props => {
   const { className, ...rest } = props
   return (
