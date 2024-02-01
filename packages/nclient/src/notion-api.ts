@@ -262,7 +262,7 @@ export class NotionAPI {
         const source = block.type === 'page' ? block.format?.page_cover : block.properties?.source?.[0]?.[0]
 
         if (source) {
-          if (!source.includes('secure.notion-static.com')) return []
+          if (!source.includes('secure.notion-static.com') && !source.includes('prod-files-secure')) return []
 
           return {
             permissionRecord: {
@@ -420,8 +420,8 @@ export class NotionAPI {
           const queryLabel = isUncategorizedValue
             ? 'uncategorized'
             : isDateValue
-            ? value.range?.start_date || value.range?.end_date
-            : value?.value || value
+              ? value.range?.start_date || value.range?.end_date
+              : value?.value || value
 
           const queryValue = !isUncategorizedValue && (isDateValue || value?.value || value)
 

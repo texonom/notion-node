@@ -33,8 +33,8 @@ export const getPageImageUrls = (
             })
         }
 
-        if ((block.format as any)?.page_cover) {
-          const source = (block.format as any).page_cover
+        if (block.format?.page_cover) {
+          const source = block.format.page_cover
 
           images.push({
             block,
@@ -42,8 +42,8 @@ export const getPageImageUrls = (
           })
         }
 
-        if ((block.format as any)?.bookmark_cover) {
-          const source = (block.format as any).bookmark_cover
+        if (block.format?.bookmark_cover) {
+          const source = block.format.bookmark_cover
 
           images.push({
             block,
@@ -51,8 +51,8 @@ export const getPageImageUrls = (
           })
         }
 
-        if ((block.format as any)?.bookmark_icon) {
-          const source = (block.format as any).bookmark_icon
+        if (block.format?.bookmark_icon) {
+          const source = block.format.bookmark_icon
 
           images.push({
             block,
