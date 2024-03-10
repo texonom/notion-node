@@ -68,7 +68,6 @@ export const Block: React.FC<BlockProps> = props => {
   const {
     components,
     fullPage,
-    darkMode,
     recordMap,
     mapPageUrl,
     mapImageUrl,
@@ -148,7 +147,7 @@ export const Block: React.FC<BlockProps> = props => {
           const hasPageCover = pageCover || page_cover
 
           return (
-            <div className={`notion notion-app ${darkMode ? 'dark' : 'light'} ${blockId} ${className || ''}`}>
+            <div className={`notion notion-app ${blockId} ${className || ''}`}>
               <div className='notion-viewport' />
 
               <div className='notion-frame'>
@@ -223,7 +222,6 @@ export const Block: React.FC<BlockProps> = props => {
           return (
             <main
               className={`notion
-                ${darkMode ? 'dark' : 'light'},
                 notion-page
                 ${page_full_width && 'notion-full-width'}
                 ${page_small_text && 'notion-small-text'}
