@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.3.0 (2024-03-10)
+
+### Features
+
+- **cli:** `@texonom/cli` added for export from gh-setter ([78decc4](https://github.com/texonom/notion-node/commit/78decc45c1cec9e159f6d93b81d2635e3666ac4b))
+- **cli:** add export collection commend dynamic ([c7cf1d5](https://github.com/texonom/notion-node/commit/c7cf1d51aa0444508ed54b606074f73003b83e1b))
+- **cli:** fetch and pagecount etc for export ([ac0a9b2](https://github.com/texonom/notion-node/commit/ac0a9b26378069ea76144d0388c26a813b55854e))
+- export raw recursive prefetch load for notion ([39a1210](https://github.com/texonom/notion-node/commit/39a1210407ff222c70c846cc088990b3bf7d9307))
+- **nclient:** syncRecord cross table like official notion ([85f3207](https://github.com/texonom/notion-node/commit/85f32077174a238b2666ba9c6afe40b73b38469d))
+- space and collection type guard with ntypes ([c1a2df3](https://github.com/texonom/notion-node/commit/c1a2df3f89f8995e257f0489d7316f72e988f82a))
+
+### Bug Fixes
+
+- **cli:** build error by change main build folder ([393b1c2](https://github.com/texonom/notion-node/commit/393b1c24712f98a3b3befd3a3e3d2ac2f16f4d63))
+- **nclient:** search api broken issue resolved ([c14d735](https://github.com/texonom/notion-node/commit/c14d735bac2243124f7b2e283b02f56e12d6a902))
+- **ntypes:** from isNavigableOnly to navigableBlockContentOnly ([e8dec0e](https://github.com/texonom/notion-node/commit/e8dec0efd26b8dd59a445ef40dd087a4723e7832))
+- signed video url for file.notion.so supporting ([d000a79](https://github.com/texonom/notion-node/commit/d000a79e6e13caf58aab3dea1519ce24ede4d561))
+
 ### 1.2.12 (2024-02-01)
 
 ### Features
