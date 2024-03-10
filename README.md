@@ -49,7 +49,6 @@ VERSION=alpha or beta or rc
 pnpm prerelease $VERSION # Apply workspace
 pnpm turbo prerelease -- $VERSION
 git commit -am "meta: deployment commit for $VERSION"
-git tag $VERSION
 pnpm turbo pu
 ```
 
