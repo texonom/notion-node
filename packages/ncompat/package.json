@@ -14,7 +14,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=20.11.0"
+    "node": ">=20.12.1"
   },
   "scripts": {
     "build": "tsc && tsup",
