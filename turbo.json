@@ -1,5 +1,4 @@
 {
-  "baseBranch": "origin/main",
   "pipeline": {
     "build": {},
     "@texonom/nclient#build": { "dependsOn": ["@texonom/ntypes#build", "@texonom/nutils#build"] },
