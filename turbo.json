@@ -1,5 +1,4 @@
 {
-  "packageManager": "pnpm@9.2.0",
   "pipeline": {
     "build": {},
     "@texonom/nclient#build": { "dependsOn": ["@texonom/ntypes#build", "@texonom/nutils#build"] },
