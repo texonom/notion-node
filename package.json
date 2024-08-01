@@ -8,6 +8,7 @@
   "engines": {
     "node": ">=20.11.0"
   },
+  "packageManager": "pnpm@9.3.0",
   "scripts": {
     "prepare": "husky install",
     "link": "turbo link",
