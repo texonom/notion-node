@@ -1,5 +1,5 @@
 {
-  "pipeline": {
+  "tasks": {
     "build": {},
     "@texonom/nclient#build": { "dependsOn": ["@texonom/ntypes#build", "@texonom/nutils#build"] },
     "@texonom/ncompat#build": { "dependsOn": ["@texonom/ntypes#build", "@texonom/nutils#build"] },
