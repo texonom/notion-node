@@ -4,7 +4,7 @@
   "type": "module",
   "description": "TypeScript types for core Notion data structures.",
   "repository": "texonom/notion-node",
-  "author": "Alan Jo <sungle3737@gmail.com>",
+  "author": "Seonglae Cho <sungle3737@gmail.com>",
   "license": "MIT",
   "types": "./build/index.d.ts",
   "main": "./build/index.js",

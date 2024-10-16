@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Robust TypeScript client for the unofficial Notion API.",
   "repository": "texonom/notion-node",
-  "author": "Alan Jo <sungle3737@gmail.com>",
+  "author": "Seonglae Cho <sungle3737@gmail.com>",
   "license": "MIT",
   "main": "./build/index.js",
   "module": "./build/index.js",
