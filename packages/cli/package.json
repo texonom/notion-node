@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Texonom CLI which has ability to export data from Notion.so",
   "repository": "texonom/notion-node",
-  "author": "Alan Jo <sungle3737@gmail.com>",
+  "author": "Seonglae Cho <sungle3737@gmail.com>",
   "license": "MIT",
   "main": "./build/src/main.js",
   "module": "./build/src/main.js",

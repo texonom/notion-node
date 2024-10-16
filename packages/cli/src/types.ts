@@ -1,1 +1,1 @@
-export type PageExport = {}
+export type PageExport = object

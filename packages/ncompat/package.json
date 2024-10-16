@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Compatibility layer between the official Notion API and unofficial private API.",
   "repository": "texonom/notion-node",
-  "author": "Alan Jo <sungle3737@gmail.com>",
+  "author": "Seonglae Cho <sungle3737@gmail.com>",
   "license": "MIT",
   "main": "./build/index.js",
   "module": "./build/index.js",
