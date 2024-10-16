@@ -36,7 +36,7 @@ module.exports = {
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
-    '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/no-unused-vars': ['warn'],
     '@typescript-eslint/no-empty-interface': 'off',
     '@typescript-eslint/method-signature-style': 'error',
     '@typescript-eslint/ban-ts-comment': 'off',

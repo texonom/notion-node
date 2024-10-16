@@ -71,7 +71,7 @@ export interface CollectionInstance {
   result: CollectionQueryResult
 }
 
-export interface ReducerResponse<T extends {}> {
+export interface ReducerResponse<T extends object> {
   recordMap: RecordMap
   result: { reducerResults: T }
 }
