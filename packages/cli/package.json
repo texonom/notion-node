@@ -1,7 +1,7 @@
 {
   "name": "@texonom/cli",
   "displayName": "Notion CLI",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "type": "module",
   "description": "Texonom CLI which has ability to export data from Notion.so",
   "repository": "texonom/notion-node",
