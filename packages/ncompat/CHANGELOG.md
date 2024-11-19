@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.3.1 (2024-11-19)
+
+### Bug Fixes
+
+- alan jo to seonglae cho ([16bf81d](https://github.com/texonom/notion-node/commit/16bf81d3b2fe0efee18cae54534c5907e073c490))
+- notion compat import name also changed ([5056370](https://github.com/texonom/notion-node/commit/505637077890d1b7e2c7a9caca8abe47b6ea2fdc))
+
 ## 1.3.0 (2024-03-10)
 
 ### Bug Fixes
