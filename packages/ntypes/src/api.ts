@@ -11,8 +11,8 @@ export interface RecordValues<T> {
 export interface SearchParams {
   ancestorId: string
   query: string
-  excludedBlockIds: string[]
-  searchExperimentOverrides: object
+  excludedBlockIds?: string[]
+  searchExperimentOverrides?: object
   filters?: {
     isDeletedOnly: boolean
     excludeTemplates: boolean
