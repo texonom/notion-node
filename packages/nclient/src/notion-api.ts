@@ -534,6 +534,7 @@ export class NotionAPI {
         navigableBlockContentOnly: false,
         excludeTemplates: true,
         requireEditPermissions: false,
+        includePublicPagesWithoutExplicitAccess: true,
         ancestors: [],
         createdBy: [],
         editedBy: [],

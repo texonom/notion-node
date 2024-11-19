@@ -48,6 +48,7 @@ test.concurrent(
       }
     })
     if (!(results.total > 0)) throw new Error('Search error')
+    expect(results.recordMap.block).toBeTypeOf('object')
   },
   { timeout: 10000 }
 )
@@ -58,7 +59,7 @@ test.concurrent(
     const id = '3f9e0d86-c643-4672-aa0c-78d63fa80598'
     const api = new NotionAPI()
     const res = await api.getBlocks([id])
-    console.info(res.recordMap.block[id])
+    expect(res.recordMap.block[id].role).toBe('none')
   },
   { timeout: 10000 }
 )
