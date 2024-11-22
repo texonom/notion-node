@@ -3,6 +3,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "build",
+    "moduleResolution": "bundler",
     "tsBuildInfoFile": "build/.tsbuildinfo",
     "emitDeclarationOnly": true
   },
