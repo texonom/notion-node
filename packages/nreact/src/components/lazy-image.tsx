@@ -20,7 +20,7 @@ export const LazyImage: React.FC<{
 
   const zoomRef = React.useRef(zoom ? zoom.clone() : null)
   const previewImage = previewImages
-    ? recordMap?.preview_images?.[src] ?? recordMap?.preview_images?.[normalizeUrl(src)]
+    ? (recordMap?.preview_images?.[src] ?? recordMap?.preview_images?.[normalizeUrl(src)])
     : null
 
   const onLoad = React.useCallback(
