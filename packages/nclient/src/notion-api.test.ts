@@ -15,17 +15,13 @@ const pageIdFixturesFailure = [
 ]
 
 for (const pageId of pageIdFixturesSuccess)
-  test.concurrent(
-    `NotionAPI.getPage success ${pageId}`,
-    async () => {
-      const api = new NotionAPI()
-      const page = await api.getPage(pageId)
+  test(`NotionAPI.getPage success ${pageId}`, { timeout: 10000, concurrent: true }, async () => {
+    const api = new NotionAPI()
+    const page = await api.getPage(pageId)
 
-      expect(page).toBeTruthy()
-      expect(page.block).toBeTruthy()
-    },
-    { timeout: 10000 }
-  )
+    expect(page).toBeTruthy()
+    expect(page.block).toBeTruthy()
+  })
 
 for (const pageId of pageIdFixturesFailure)
   test.concurrent(`NotionAPI.getPage failure ${pageId}`, async () => {
@@ -33,33 +29,25 @@ for (const pageId of pageIdFixturesFailure)
     await expect(() => api.getPage(pageId, { fetchOption: { timeout: 1000 } })).rejects.toThrow()
   })
 
-test.concurrent(
-  `Search`,
-  async () => {
-    const api = new NotionAPI()
-    const results = await api.search({
-      query: 'Texonom',
-      ancestorId: '04089c8ae3534bf79512fc495944b321',
-      filters: {
-        isDeletedOnly: false,
-        excludeTemplates: true,
-        navigableBlockContentOnly: true,
-        requireEditPermissions: false
-      }
-    })
-    if (!(results.total > 0)) throw new Error('Search error')
-    expect(results.recordMap.block).toBeTypeOf('object')
-  },
-  { timeout: 10000 }
-)
+test(`Search`, { timeout: 10000, concurrent: true }, async () => {
+  const api = new NotionAPI()
+  const results = await api.search({
+    query: 'Texonom',
+    ancestorId: '04089c8ae3534bf79512fc495944b321',
+    filters: {
+      isDeletedOnly: false,
+      excludeTemplates: true,
+      navigableBlockContentOnly: true,
+      requireEditPermissions: false
+    }
+  })
+  if (!(results.total > 0)) throw new Error('Search error')
+  expect(results.recordMap.block).toBeTypeOf('object')
+})
 
-test.concurrent(
-  `Get block`,
-  async () => {
-    const id = '3f9e0d86-c643-4672-aa0c-78d63fa80598'
-    const api = new NotionAPI()
-    const res = await api.getBlocks([id])
-    expect(res.recordMap.block[id].role).toBe('none')
-  },
-  { timeout: 10000 }
-)
+test(`Get block`, { timeout: 10000, concurrent: true }, async () => {
+  const id = '3f9e0d86-c643-4672-aa0c-78d63fa80598'
+  const api = new NotionAPI()
+  const res = await api.getBlocks([id])
+  expect(res.recordMap.block[id].role).toBe('none')
+})
