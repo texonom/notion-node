@@ -5,7 +5,7 @@ import fs from 'graceful-fs'
 import { promisify } from 'util'
 import stream from 'stream'
 
-import prettier from 'prettier'
+import { format } from 'prettier'
 
 import { Option } from 'clipanion'
 import { NotionAPI } from '@texonom/nclient'
@@ -22,7 +22,7 @@ import {
 } from '@texonom/nutils'
 import { isCollection, isSpace } from '@texonom/ntypes'
 
-import { NotionCommand } from '.'
+import { NotionCommand, getBlockLink } from '.'
 
 import type { PageTree } from '@texonom/nutils'
 import type { ExtendedRecordMap, Decoration, PageBlock, Block, PageMap, CollectionViewBlock } from '@texonom/ntypes'
@@ -38,13 +38,13 @@ export class NotionExportCommand extends NotionCommand {
   promises: Promise<unknown>[] = []
 
   folder = Option.String('-o,--output', 'data', {
-    description: 'Export folder'
+    description: 'Target root folder to export folder'
   })
   validation = Option.Boolean('-v,--validation', {
     description: 'Validation exported data only'
   })
   update = Option.Boolean('-u,--update', {
-    description: 'Update exported data and resave to --folder'
+    description: 'Update exported data and resave to the --root'
   })
   page = Option.String('-p,--page', {
     required: true,
@@ -57,7 +57,7 @@ export class NotionExportCommand extends NotionCommand {
     description: 'Prefetch all space for faster export (recommended for exporting all pages in a space)'
   })
   load = Option.Boolean('-l, --load', {
-    description: 'Load datas from exported cache folder --folder'
+    description: 'Load datas from exported cache folder --root'
   })
   raw = Option.Boolean('--raw', {
     description: 'Export raw recordMap JSON data \n Markdown format do not preserve all information'
@@ -87,7 +87,7 @@ export class NotionExportCommand extends NotionCommand {
       if (this.recursive) await this.saveRawSpace()
       else await this.saveRawPage(id)
     // Export
-    else await this.exportMd(id, this.folder)
+    else await this.exportMd(id)
     await Promise.all(this.promises)
     console.timeEnd('time spent')
     // Update
@@ -147,7 +147,7 @@ export class NotionExportCommand extends NotionCommand {
     const promises = []
     await mkdir(join(this.folder, 'recordMap'), { recursive: true })
     for (const table in this.recordMap)
-      promises.push(writeFile(`${join(this.folder, 'recordMap', table)}.${ext}`, JSON.stringify(this.recordMap[table])))
+      promises.push(this.writeFile(`${join(this.folder, 'recordMap', table)}.${ext}`, JSON.stringify(this.recordMap[table])))
 
     const outputStream = fs.createWriteStream(`${join(this.folder, 'pageMap')}.${ext}`)
     const transformStream = JSONStream.stringifyObject()
@@ -156,7 +156,7 @@ export class NotionExportCommand extends NotionCommand {
     for (const key in this.pageMap) transformStream.write([key, this.pageMap[key]])
     transformStream.end()
 
-    promises.push(writeFile(`${join(this.folder, 'pageTree')}.${ext}`, JSON.stringify(this.pageTree)))
+    promises.push(this.writeFile(`${join(this.folder, 'pageTree')}.${ext}`, JSON.stringify(this.pageTree)))
 
     await Promise.all(promises)
     console.timeEnd('write file')
@@ -169,11 +169,16 @@ export class NotionExportCommand extends NotionCommand {
     const filename = `${getCanonicalPageId(id, recordMap)}`
     let target = JSON.stringify(recordMap)
     const ext = 'json'
-    target = await prettier.format(target, { parser: 'json' })
-    await writeFile(`${join(this.folder, filename)}.${ext}`, target)
+    target = await format(target, { parser: 'json' })
+    await this.writeFile(`${join(this.folder, filename)}.${ext}`, target)
   }
 
-  async exportMd(id: string, folder: string) {
+  async writeFile(path: string, target: string) {
+    if (this.folder) return
+    else await writeFile(path, target)
+  }
+
+  async exportMd(id: string) {
     try {
       let recordMap = this.pageMap ? this.pageMap[id] : await this.notion.getPage(id)
       if (!this.recursive) this.recordMap = recordMap
@@ -183,15 +188,15 @@ export class NotionExportCommand extends NotionCommand {
         return
       }
       if (!['page', 'collection_view_page'].includes(recordMap.block[id].value.type)) throw new Error('Not a page')
-      const target = await this.pageToMarkdown(id, recordMap, folder)
-      const path = join(folder, `${getCanonicalPageId(id, recordMap)}`)
-      this.promises.push(writeFile(`${path}.md`, target))
+      const target = await this.pageToMarkdown(id, recordMap)
+      const path = join(this.folder, `${getCanonicalPageId(id, recordMap)}`)
+      this.promises.push(this.writeFile(`${path}.md`, target))
     } catch (e) {
       console.error(id, e)
     }
   }
 
-  async pageToMarkdown(id: string, recordMap: ExtendedRecordMap, folder: string) {
+  async pageToMarkdown(id: string, recordMap: ExtendedRecordMap) {
     const page = recordMap.block[id].value as PageBlock
 
     // Metadata
@@ -243,7 +248,7 @@ export class NotionExportCommand extends NotionCommand {
     }
     md += '---\n'
 
-    return md + (await this.childrenToMd(page, recordMap, '\n', folder, page))
+    return md + (await this.childrenToMd(page, recordMap, '\n', page))
   }
 
   async getBlock(id: string, recordMap: ExtendedRecordMap, message = '') {
@@ -395,7 +400,7 @@ export class NotionExportCommand extends NotionCommand {
     return results
   }
 
-  async childrenToMd(parentBlock: Block, recordMap: ExtendedRecordMap, prefix: string, folder: string, page: Block) {
+  async childrenToMd(parentBlock: Block, recordMap: ExtendedRecordMap, prefix: string, page: Block) {
     let md = String()
     let numbering = 1
     for (const child of parentBlock.content ? parentBlock.content : []) {
@@ -503,15 +508,9 @@ export class NotionExportCommand extends NotionCommand {
           }
 
           // Make children page
-          if (this.recursive && children.length) {
-            const parentFolder = join(
-              folder,
-              `${getCanonicalPageId(page.id, recordMap)}`,
-              `${getCanonicalPageId(collection.id, recordMap)}`
-            )
-            await mkdir(parentFolder, { recursive: true })
-            for (const childPage of children) this.promises.push(this.exportMd(childPage, parentFolder))
-          }
+          if (this.recursive && children.length)
+            for (const childPage of children) this.promises.push(this.exportMd(childPage))
+
           break
         }
         case 'page': {
@@ -519,11 +518,8 @@ export class NotionExportCommand extends NotionCommand {
             childBlock.id,
             recordMap
           )})${prefix}`
-          if (this.recursive) {
-            const parentFolder = join(folder, `${getCanonicalPageId(page.id, recordMap)}`)
-            await mkdir(parentFolder, { recursive: true })
-            this.promises.push(this.exportMd(childBlock.id, parentFolder))
-          }
+          if (this.recursive) this.promises.push(this.exportMd(childBlock.id))
+
           break
         }
         case 'alias': {
@@ -579,7 +575,7 @@ export class NotionExportCommand extends NotionCommand {
         )
           ? prefix
           : `\n${prefix.trim()}> `
-        md += await this.childrenToMd(childBlock, recordMap, nestedPrefix, folder, page)
+        md += await this.childrenToMd(childBlock, recordMap, nestedPrefix, page)
         if (childBlock.type === 'column') md += '\n'
       }
       if (childBlock.type === 'toggle') md += `${prefix}</details>${prefix}`
@@ -669,6 +665,3 @@ export class NotionExportCommand extends NotionCommand {
     return prefixed.join('')
   }
 }
-
-const getBlockLink = (blockId: string, recordMap: ExtendedRecordMap, domain = 'https://texonom.com') =>
-  `${domain}/${getCanonicalPageId(blockId, recordMap)}`
