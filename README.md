@@ -1,7 +1,7 @@
 # Texonom Notion
 
 This repository is fork of [React Notion X](https://github.com/NotionX/react-notion-x).
-Refactored with [Turboplate](https://github.com/seonglae/turboplate). Search API and Property rendering are maintained in this project.
+Refactored with [Turboplate](https://github.com/seonglae/turboplate). Search API, Backlinks and Property rendering are maintained in this project.
 
 ![Property](image/property.png)
 
