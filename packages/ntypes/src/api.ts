@@ -40,6 +40,13 @@ export interface SearchParams {
   type?: 'BlocksInAncestor'
 }
 
+export interface BacklinkParams {
+  block: {
+    id: string
+    spaceId: string
+  }
+}
+
 export interface SearchTimeFilter {
   starting?: {
     type: 'date'
@@ -55,6 +62,25 @@ export interface SearchResults {
   recordMap: RecordMap
   results: SearchResult[]
   total: number
+}
+
+export interface BacklinkResults {
+  backlinks: {
+    block_id: string
+    mentioned_from: {
+      block_id: string
+      pointer: {
+        id: string
+        table: 'block'
+        spaceId: string
+      }
+      property_id: 'title'
+      type: 'property_mention'
+    }
+  }[]
+  fanoutData: []
+  inaccessibleBacklinkCount: number
+  recordMap: RecordMap
 }
 
 export interface SearchResult {
