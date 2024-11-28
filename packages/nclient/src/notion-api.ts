@@ -19,7 +19,9 @@ import type {
   User,
   Space,
   SearchParams,
-  SearchResults
+  SearchResults,
+  BacklinkParams,
+  BacklinkResults
 } from '@texonom/ntypes'
 
 import type { SignedUrlRequest, FetchOption, SignedUrlResponse } from './types'
@@ -546,6 +548,27 @@ export class NotionAPI {
 
     return this.fetch<SearchResults>({
       endpoint: 'search',
+      body,
+      fetchOption
+    })
+  }
+
+  /**
+   * Backlink function which requires an authToken for NotionAPI client.
+   * @param params object to pass black and space id
+   * @param fetchOption Fetch options
+   * @returns backlink list with recordmap
+   */
+  public async getBacklinks(params: BacklinkParams, fetchOption?: FetchOption) {
+    const body: BacklinkParams = {
+      block: {
+        id: parsePageId(params.block.id),
+        spaceId: parsePageId(params.block.spaceId)
+      }
+    }
+
+    return this.fetch<BacklinkResults>({
+      endpoint: 'getBacklinksForBlockInitial',
       body,
       fetchOption
     })
