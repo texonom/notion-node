@@ -62,8 +62,10 @@ export async function getAllInSpace(
 
   let tempRecordMap: ExtendedRecordMap = JSON.parse(JSON.stringify(recordMap))
 
-  console.time('fetch total')
+  console.time('Total fetch time')
+  let iteration = 1
   while (true) {
+    console.info(`Iteration ${iteration}`)
     console.info('block length ', Object.keys(recordMap.block).length)
 
     console.time('getPageContentBlockIds')
@@ -104,8 +106,10 @@ export async function getAllInSpace(
     if (Number.isInteger(maxPage) && pageLength >= maxPage) break
 
     console.info(`memory usage ${process.memoryUsage().rss / 1024 / 1024}MB`)
+    iteration += 1
+    console.info()
   }
-  console.timeEnd('fetch total')
+  console.timeEnd('Total fetch time')
 
   console.time('get page map')
   console.info('Total block length ', Object.keys(recordMap.block).length)
@@ -143,7 +147,7 @@ export function recursivePageTree(recordMap: ExtendedRecordMap, pageTree: PageTr
 
   const current = recordMap.block[pageTree.id]?.value
   if (!current) {
-    console.debug('No block value')
+    console.warn(`No block value for ${pageTree.id}`)
     delete pageTree.parent
     return pageTree
   }
@@ -168,7 +172,7 @@ export function recursivePageTree(recordMap: ExtendedRecordMap, pageTree: PageTr
   } else if (current?.type === 'collection_view') {
     const collectionQuery = recordMap.collection_query[current.collection_id]?.[current.view_ids[0]]
     if (!collectionQuery) {
-      console.debug('No collection query')
+      console.warn(`No collection query for ${pageTree.id}`)
       delete pageTree.parent
       return pageTree
     }
@@ -263,7 +267,7 @@ export async function getPageSync(
       blockMap = { ...blockMap, ...responseMap.block }
       for (const blockId in responseMap.block) recordMap.block[blockId] = responseMap.block[blockId]
     } else {
-      console.debug(`fetching ${missing.length} fail`)
+      console.debug(`fetching ${missing.length} fail for ${pageId}`)
     }
   }
 
