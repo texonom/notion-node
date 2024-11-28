@@ -1,6 +1,8 @@
 import { test, expect } from 'vitest'
-
+import { config } from 'dotenv'
 import { NotionAPI } from './notion-api'
+
+config()
 
 const pageIdFixturesSuccess = [
   'e0ae7b40-dd23-463e-a7bc-92195d6ec7fd',
@@ -10,7 +12,7 @@ const pageIdFixturesSuccess = [
 ]
 
 const pageIdFixturesFailure = [
-  'bdecdf150d0e40cb9f3412be132335d4', // private page
+  'a4252f427d2b4a64b2e668af0ec3aa53', // private page
   'foo' // invalid page id
 ]
 
@@ -43,6 +45,17 @@ test(`Search`, { timeout: 10000, concurrent: true }, async () => {
   })
   if (!(results.total > 0)) throw new Error('Search error')
   expect(results.recordMap.block).toBeTypeOf('object')
+})
+
+test(`Backlink`, { timeout: 10000, concurrent: true }, async () => {
+  const api = new NotionAPI({ authToken: process.env.NOTION_TOKEN })
+  const backlinks = await api.getBacklinks({
+    block: {
+      id: '441d5ce2-b781-46d0-9354-54042b4f06d9',
+      spaceId: '0bf522c6-2468-4c71-99e3-68f5a25d4225'
+    }
+  })
+  expect(backlinks.backlinks.length > 0)
 })
 
 test(`Get block`, { timeout: 10000, concurrent: true }, async () => {
