@@ -33,7 +33,7 @@ const pageIdFixturesFailure = [
   null
 ]
 
-test.concurrent('utils.parsePageId non-uuid success', () => {
+test('utils.parsePageId non-uuid success', { concurrent: true }, () => {
   for (const id of pageIdFixturesSuccess) {
     const pageId = parsePageId(id, { uuid: false })
     expect(pageId).toBeTruthy()
@@ -41,7 +41,7 @@ test.concurrent('utils.parsePageId non-uuid success', () => {
   }
 })
 
-test.concurrent('utils.parsePageId uuid success', () => {
+test('utils.parsePageId uuid success', { concurrent: true }, () => {
   for (const id of pageIdFixturesSuccess) {
     const pageId = parsePageId(id, { uuid: true })
     expect(pageId).toBeTruthy()
@@ -49,7 +49,7 @@ test.concurrent('utils.parsePageId uuid success', () => {
   }
 })
 
-test.concurrent('utils.parsePageId failure', () => {
+test('utils.parsePageId failure', { concurrent: true }, () => {
   for (const id of pageIdFixturesFailure) {
     const pageId = parsePageId(id as string)
     expect(pageId).toBeFalsy()

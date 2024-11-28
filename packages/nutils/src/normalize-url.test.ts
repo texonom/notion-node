@@ -2,7 +2,7 @@ import { test, expect } from 'vitest'
 
 import { normalizeUrl } from './normalize-url'
 
-test.concurrent('normalizeUrl invalid', () => {
+test('normalizeUrl invalid', { concurrent: true }, () => {
   expect(normalizeUrl()).toBe('')
   expect(normalizeUrl('')).toBe('')
   expect(normalizeUrl('#')).toBe('')
@@ -12,7 +12,7 @@ test.concurrent('normalizeUrl invalid', () => {
   expect(normalizeUrl('://test.com')).toBe('')
 })
 
-test.concurrent('normalizeUrl valid', () => {
+test('normalizeUrl valid', { concurrent: true }, () => {
   const fixtures = [
     'test.com',
     'test.com/123',
