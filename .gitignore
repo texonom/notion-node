@@ -29,3 +29,5 @@ npm-debug.log*
 turbo-build.log
 .turbo
 data
+texonom-md
+texonom-raw
