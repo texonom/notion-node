@@ -6,6 +6,8 @@ import { convertPage } from './convert-page'
 
 import type { BlockMap, PageMap, ParentMap, BlockChildrenMap, Block, Page, BlockChildren } from './types'
 import type { ExtendedRecordMap } from '@texonom/ntypes'
+import type { GetBlockResponse, GetPageResponse } from '@notionhq/client/build/src/api-endpoints'
+
 export class NotionCompatAPI {
   client: Client
 
@@ -31,7 +33,11 @@ export class NotionCompatAPI {
       parentMap
     })
 
-    ;(recordMap as any).raw = {
+    ;(
+      recordMap as ExtendedRecordMap & {
+        raw: { page: GetPageResponse; block: GetBlockResponse; children: GetBlockResponse[] }
+      }
+    ).raw = {
       page,
       block,
       children

@@ -1,11 +1,12 @@
-import type { Block, ExtendedRecordMap } from '@texonom/ntypes'
+import type { Block, CollectionViewBlock, ExtendedRecordMap } from '@texonom/ntypes'
 
 export function getBlockCollectionId(block: Block, recordMap: ExtendedRecordMap): string | null {
-  const collectionId = (block as any).collection_id || (block as any).format?.collection_pointer?.id
+  const collectionId =
+    (block as CollectionViewBlock).collection_id || (block as CollectionViewBlock).format?.collection_pointer?.id
 
   if (collectionId) return collectionId
 
-  const collectionViewId = (block as any)?.view_ids?.[0]
+  const collectionViewId = (block as CollectionViewBlock)?.view_ids?.[0]
   if (collectionViewId) {
     const collectionView = recordMap.collection_view?.[collectionViewId]?.value
     if (collectionView) {
