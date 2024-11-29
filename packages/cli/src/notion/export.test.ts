@@ -1,7 +1,7 @@
 import { test, expect } from 'vitest'
 
 import { NotionExporter } from '.'
-import { parsePageId } from 'packages/nutils/build'
+import { parsePageId } from '@texonom/nutils'
 
 const pageIdFixturesSuccess = [
   'e0ae7b40-dd23-463e-a7bc-92195d6ec7fd',
