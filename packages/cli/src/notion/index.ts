@@ -177,6 +177,7 @@ export class NotionExporter {
   }
 
   async exportMd(id: string) {
+    await mkdir(this.md, { recursive: true })
     try {
       let recordMap = this.pageMap ? this.pageMap[id] : await this.notion.getPage(id)
       if (!this.recursive) this.recordMap = recordMap
