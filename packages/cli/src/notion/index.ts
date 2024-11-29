@@ -35,7 +35,9 @@ export class NotionExporter {
   promises: Promise<unknown>[] = []
 
   // Options
-  folder: string = 'data'
+  folder: string = 'texonom-raw'
+  md: string = 'texonom-md'
+  domain: string = 'https://texonom.com'
   validation: boolean = false
   update: boolean = false
   page: string
@@ -53,6 +55,8 @@ export class NotionExporter {
     page: string
     recursive?: boolean
     prefetch?: boolean
+    md?: string
+    domain?: string
     load?: boolean
     raw?: boolean
     dataset?: boolean
@@ -60,6 +64,8 @@ export class NotionExporter {
   }) {
     this.page = parsePageId(options.page, { uuid: false })
     this.folder = options.folder ?? this.folder
+    this.domain = options.domain ?? this.domain
+    this.md = options.md ?? this.md
     this.validation = options.validation ?? this.validation
     this.update = options.update ?? this.update
     this.recursive = options.recursive ?? this.recursive
@@ -109,40 +115,10 @@ export class NotionExporter {
   }
 
   async loadRaw() {
-    console.time('load prefetch file')
-    const promises = []
-    promises.push(readFile(join(this.folder, 'recordMap', 'block.json'), 'utf8').then(JSON.parse))
-    promises.push(readFile(join(this.folder, 'recordMap', 'collection.json'), 'utf8').then(JSON.parse))
-    promises.push(readFile(join(this.folder, 'recordMap', 'notion_user.json'), 'utf8').then(JSON.parse))
-    promises.push(readFile(join(this.folder, 'recordMap', 'space.json'), 'utf8').then(JSON.parse))
-    promises.push(readFile(join(this.folder, 'recordMap', 'collection_view.json'), 'utf8').then(JSON.parse))
-    promises.push(readFile(join(this.folder, 'recordMap', 'collection_query.json'), 'utf8').then(JSON.parse))
-    promises.push(readFile(join(this.folder, 'recordMap', 'signed_urls.json'), 'utf8').then(JSON.parse))
-    promises.push(readFile(join(this.folder, 'pageTree.json'), 'utf8').then(JSON.parse))
-
-    const [block, collection, notion_user, space, collection_view, collection_query, signed_urls, pageTree] =
-      await Promise.all(promises)
-
-    const pageMap = {}
-    const inputStream = fs.createReadStream(join(this.folder, 'pageMap.json'))
-    const parseStream = JSONStream.parse('*')
-    inputStream.pipe(parseStream)
-    parseStream.on('data', (recordMap: ExtendedRecordMap) => {
-      const key = Object.keys(recordMap.block)[0]
-      pageMap[key] = recordMap
-    })
-    await new Promise(res => stream.finished(parseStream, err => res(err)))
-    this.pageMap = pageMap
+    const { recordMap, pageTree, pageMap } = await loadRaw(this.folder)
+    this.recordMap = recordMap
     this.pageTree = pageTree
-    this.recordMap = {
-      block,
-      collection,
-      notion_user,
-      space,
-      collection_query,
-      collection_view,
-      signed_urls
-    }
+    this.pageMap = pageMap
     console.timeEnd('load prefetch file')
   }
 
@@ -211,7 +187,7 @@ export class NotionExporter {
       }
       if (!['page', 'collection_view_page'].includes(recordMap.block[id].value.type)) throw new Error('Not a page')
       const target = await this.pageToMarkdown(id, recordMap)
-      const path = join(this.folder, `${getCanonicalPageId(id, recordMap)}`)
+      const path = join(this.md, `${getCanonicalPageId(id, recordMap)}`)
       this.promises.push(this.writeFile(`${path}.md`, target))
     } catch (e) {
       console.error(id, e)
@@ -686,4 +662,42 @@ export class NotionExporter {
     }
     return space
   }
+}
+
+export async function loadRaw(
+  folder: string
+): Promise<{ recordMap: ExtendedRecordMap; pageTree: PageTree; pageMap: PageMap }> {
+  console.time('load prefetch file')
+  const promises = []
+  promises.push(readFile(join(folder, 'recordMap', 'block.json'), 'utf8').then(JSON.parse))
+  promises.push(readFile(join(folder, 'recordMap', 'collection.json'), 'utf8').then(JSON.parse))
+  promises.push(readFile(join(folder, 'recordMap', 'notion_user.json'), 'utf8').then(JSON.parse))
+  promises.push(readFile(join(folder, 'recordMap', 'space.json'), 'utf8').then(JSON.parse))
+  promises.push(readFile(join(folder, 'recordMap', 'collection_view.json'), 'utf8').then(JSON.parse))
+  promises.push(readFile(join(folder, 'recordMap', 'collection_query.json'), 'utf8').then(JSON.parse))
+  promises.push(readFile(join(folder, 'recordMap', 'signed_urls.json'), 'utf8').then(JSON.parse))
+  promises.push(readFile(join(folder, 'pageTree.json'), 'utf8').then(JSON.parse))
+
+  const [block, collection, notion_user, space, collection_view, collection_query, signed_urls, pageTree] =
+    await Promise.all(promises)
+
+  const pageMap = {}
+  const inputStream = fs.createReadStream(join(folder, 'pageMap.json'))
+  const parseStream = JSONStream.parse('*')
+  inputStream.pipe(parseStream)
+  parseStream.on('data', (recordMap: ExtendedRecordMap) => {
+    const key = Object.keys(recordMap.block)[0]
+    pageMap[key] = recordMap
+  })
+  await new Promise(res => stream.finished(parseStream, err => res(err)))
+  const recordMap: ExtendedRecordMap = {
+    block,
+    collection,
+    notion_user,
+    space,
+    collection_query,
+    collection_view,
+    signed_urls
+  }
+  return { recordMap, pageTree, pageMap }
 }

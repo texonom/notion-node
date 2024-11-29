@@ -4,8 +4,14 @@ import { NotionExporter } from './index'
 export class NotionExportCommand extends Command {
   static paths = [['export']]
 
-  folder = Option.String('-o,--output', 'data', {
+  folder = Option.String('-o,--output', 'texonom-raw', {
     description: 'Target root folder to export folder'
+  })
+  md = Option.String('-m,--md', 'texonom-md', {
+    description: 'Target folder to export markdown'
+  })
+  domain = Option.String('-d,--domain', 'https://texonom.com', {
+    description: 'Domain to fill in the link'
   })
   validation = Option.Boolean('-v,--validation', {
     description: 'Validation exported data only'
