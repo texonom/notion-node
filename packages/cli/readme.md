@@ -42,7 +42,7 @@ pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 -r -l -t $NOTION
 ```
 if there is memory error
 ```
-NODE_OPTIONS="--max-old-space-size=8192" tsx ...
+NODE_OPTIONS="--max-old-space-size=16384" tsx ...
 ```
 
 Export a single page
