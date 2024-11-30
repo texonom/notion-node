@@ -41,7 +41,9 @@ pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 --raw -r -f
 # it requres Notion token if there are missed blocks & spaces & users & collections (No ~ query)
 export NOTION_TOKEN=
 pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 -r -l -t $NOTION_TOKEN -u
-# Iterate the second command until collection error is gone (due to the rate limit)
+# 3. If there is a rate limit error try without token for anonymous request
+pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 -r -l -u
+# Iterate the 2-3 commands until collection error is gone (due to the rate limit)
 ```
 
 if there is memory error
