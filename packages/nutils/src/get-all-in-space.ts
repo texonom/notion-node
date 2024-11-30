@@ -1,11 +1,13 @@
 import { findAncestors } from './find-ancestors'
 import { getPageContentBlockIds } from './get-page-content-block-ids'
+import { getBlockTitle } from './get-block-title'
 
 import type { ExtendedRecordMap, PageMap, PageChunk, BlockMap } from '@texonom/ntypes'
 
 export type PageTree = {
   id: string
   type: string
+  title: string
   blocks: number
   pages: number
   parent?: PageTree
@@ -127,7 +129,14 @@ export async function getAllInSpace(
   console.info('Total page length ', Object.keys(pageMap).length)
 
   console.time('get page tree')
-  const pageTree = { id: startPageId, blocks: 1, pages: 1, children: [], type: 'page' }
+  const pageTree = {
+    id: startPageId,
+    title: getBlockTitle(recordMap.block[startPageId].value, recordMap),
+    blocks: 1,
+    pages: 1,
+    children: [],
+    type: 'page'
+  }
   recursivePageTree(recordMap, pageTree)
   console.timeEnd('get page tree')
 
@@ -135,6 +144,7 @@ export async function getAllInSpace(
 }
 
 export function recursivePageTree(recordMap: ExtendedRecordMap, pageTree: PageTree): PageTree {
+  // Save ancestors to update the count
   const ancestors = [pageTree]
   let ancestor = pageTree
   while (true)
@@ -160,6 +170,7 @@ export function recursivePageTree(recordMap: ExtendedRecordMap, pageTree: PageTr
       pageTree.children.push(
         recursivePageTree(recordMap, {
           id: contentBlockId,
+          title: getBlockTitle(block, recordMap),
           blocks: 1,
           pages: 0,
           children: [],
@@ -187,6 +198,7 @@ export function recursivePageTree(recordMap: ExtendedRecordMap, pageTree: PageTr
       pageTree.children.push(
         recursivePageTree(recordMap, {
           id: blockId,
+          title: getBlockTitle(recordMap.block[blockId].value, recordMap),
           blocks: childrenPages.length,
           pages: childrenPages.length,
           children: [],

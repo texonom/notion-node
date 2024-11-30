@@ -1,7 +1,5 @@
 import fs from 'fs'
 import { promisify } from 'util'
-import { getBlockTitle } from '@texonom/nutils'
-import type { ExtendedRecordMap } from '@texonom/ntypes'
 import { loadRaw } from './notion'
 
 const writeFile = promisify(fs.writeFile)
@@ -10,22 +8,23 @@ interface PageNode {
   id: string
   blocks: number
   pages: number
+  title: string
   children?: PageNode[]
 }
 
 async function main() {
-  const { recordMap, pageTree } = await loadRaw('texonom-raw')
+  const { pageTree } = await loadRaw('texonom-raw')
 
   // Generate treemap for page counts
-  const treemapDataPages = computeMetrics(pageTree, recordMap, 'pages')
-  const titlePages = 'Texonom PageMap'
-  const outputPathPages = 'texonom-raw/page-treemap.html'
+  const treemapDataPages = computeMetrics(pageTree, 'pages')
+  const titlePages = 'Texonom PageTree'
+  const outputPathPages = 'texonom-raw/pagetree.html'
   await generateTreemapHTML(treemapDataPages, titlePages, outputPathPages)
 
   // Generate treemap for block counts
-  const treemapDataBlocks = computeMetrics(pageTree, recordMap, 'blocks')
+  const treemapDataBlocks = computeMetrics(pageTree, 'blocks')
   const titleBlocks = 'Texonom BlockMap'
-  const outputPathBlocks = 'texonom-raw/block-treemap.html'
+  const outputPathBlocks = 'texonom-raw/blocktree.html'
   await generateTreemapHTML(treemapDataBlocks, titleBlocks, outputPathBlocks)
 
   console.info('Treemap HTML files generated successfully.')
@@ -38,12 +37,9 @@ interface TreemapNode {
   children?: TreemapNode[]
 }
 
-function computeMetrics(pageTree: PageNode, recordMap: ExtendedRecordMap, metric: 'blocks' | 'pages'): TreemapNode | null {
+function computeMetrics(pageTree: PageNode, metric: 'blocks' | 'pages'): TreemapNode | null {
   function recurse(node: PageNode): TreemapNode | null {
     const children = node.children ? node.children.map(recurse).filter((child): child is TreemapNode => child !== null) : []
-    const block = recordMap.block[node.id]?.value
-    const title = block ? getBlockTitle(block, recordMap) : 'Untitled'
-
     let nodeValue = node[metric] || 0
 
     // Sum the values of the children
@@ -52,9 +48,12 @@ function computeMetrics(pageTree: PageNode, recordMap: ExtendedRecordMap, metric
       if (nodeValue === 0) nodeValue = childrenValue
     }
 
+    // Exclude nodes with zero value
+    if (nodeValue <= 0) return null
+
     return {
       id: node.id,
-      name: title,
+      name: node.title,
       value: nodeValue,
       children: children.length > 0 ? children : undefined
     }
@@ -73,11 +72,25 @@ async function generateTreemapHTML(data: TreemapNode, title: string, outputPath:
   body {
     margin: 0;
     font-family: sans-serif;
+    background-color: #202229;
   }
   .header {
     text-align: center;
     margin: 20px;
     font-size: 24px;
+    color: white;
+  }
+  .breadcrumb {
+    text-align: center;
+    margin: 10px;
+    font-size: 16px;
+    color: white;
+  }
+  .current-title {
+    text-align: center;
+    margin: 10px;
+    font-size: 18px;
+    color: white;
   }
   .chart {
     width: 100%;
@@ -89,37 +102,37 @@ async function generateTreemapHTML(data: TreemapNode, title: string, outputPath:
     cursor: pointer;
     stroke: #fff;
     stroke-width: 1px;
+    rx: 8;
+    ry: 8;
   }
   .label {
     text-anchor: middle;
-    dominant-baseline: central;
     fill: white;
     text-decoration: underline;
     cursor: pointer;
   }
   .count {
     text-anchor: middle;
-    dominant-baseline: central;
     fill: lightgray;
   }
 </style>
 </head>
 <body>
 <div class="header">${title}</div>
-<div id="chart" class="chart"></div>
+<div class="breadcrumb" id="breadcrumb"></div>
+<div class="current-title" id="current-title"></div>
+<div class="chart" id="chart"></div>
 <script src="https://d3js.org/d3.v6.min.js"></script>
 <script>
   var data = ${JSON.stringify(data)};
 
   var margin = {top: 20, right: 0, bottom: 0, left: 0},
       width = document.getElementById('chart').clientWidth,
-      height = document.getElementById('chart').clientHeight - margin.top - margin.bottom;
+      height = document.getElementById('chart').clientHeight;
 
-  var formatNumber = d3.format(",d");
-
-  var transitioning;
-
-  var color = d3.scaleOrdinal(d3.schemePastel1);
+  var color = d3.scaleOrdinal()
+      .domain([0, 1, 2, 3, 4, 5])
+      .range(["#465881", "#5f6d96", "#7882ab", "#9197c0"]);
 
   var x = d3.scaleLinear()
       .domain([0, width])
@@ -129,164 +142,209 @@ async function generateTreemapHTML(data: TreemapNode, title: string, outputPath:
       .domain([0, height])
       .range([0, height]);
 
-  var treemap = d3.treemap()
-      .tile(d3.treemapResquarify)
+  var treemapLayout = d3.treemap()
       .size([width, height])
       .paddingInner(2)
       .round(false);
 
-  var svg = d3.select("#chart").html("").append("svg")
-      .attr("width", width)
-      .attr("height", height + margin.top + margin.bottom)
-      .style("font", "10px sans-serif")
-      .style("margin-left", -margin.left + "px")
-      .style("margin.right", -margin.right + "px")
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-      .style("shape-rendering", "crispEdges");
-
-  var grandparent = svg.append("g")
-      .attr("class", "grandparent");
-
-  grandparent.append("rect")
-      .attr("y", -20)
-      .attr("width", width)
-      .attr("height", 20)
-      .attr("fill", '#bbbbbb');
-
-  grandparent.append("text")
-      .attr("x", 6)
-      .attr("y", -6)
-      .attr("dy", ".75em");
-
   var root = d3.hierarchy(data)
-      .eachBefore(function(d) { d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.id; })
       .sum(function(d) { return d.value; })
       .sort(function(a, b) { return b.value - a.value; });
 
-  treemap(root);
+  treemapLayout(root);
+
+  var svg = d3.select("#chart").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .style("font", "10px sans-serif")
+      .style("position", "relative");
 
   display(root);
 
   function display(d) {
-    grandparent
-        .datum(d.parent)
-        .on("click", transition)
-      .select("text")
-        .text(name(d));
+    var currentDepth = d.depth;
 
-    grandparent
-        .datum(d.parent)
-      .select("rect")
-        .attr("fill", '#bbbbbb');
+    // Update breadcrumb
+    var breadcrumb = d.ancestors().reverse().map(function(d) {
+      return '<span class="breadcrumb-item" data-id="' + d.data.id + '">' + d.data.name + '</span>';
+    }).join(' / ');
+    document.getElementById('breadcrumb').innerHTML = breadcrumb;
 
-    var g1 = svg.insert("g", ".grandparent")
-        .datum(d)
-        .attr("class", "depth");
+    // Add click events to breadcrumb
+    var breadcrumbItems = document.querySelectorAll('.breadcrumb-item');
+    breadcrumbItems.forEach(function(item) {
+      item.addEventListener('click', function(event) {
+        var id = event.target.getAttribute('data-id');
+        var node = findNodeById(root, id);
+        if (node) {
+          zoom(node);
+        }
+      });
+    });
 
-    var g = g1.selectAll("g")
-        .data(d.children)
-      .enter().append("g");
+    // Update current title
+    document.getElementById('current-title').innerText = d.data.name;
 
-    g.filter(function(d) { return d.children; })
-        .classed("children", true)
-        .on("click", transition);
+    x.domain([d.x0, d.x1]);
+    y.domain([d.y0, d.y1]);
 
-    g.selectAll(".child")
-        .data(function(d) { return d.children || [d]; })
-      .enter().append("rect")
-        .attr("class", "child")
-        .attr("fill", function(d) { return color(d.data.name); })
-        .call(rect);
+    var nodes = d.descendants().filter(function(node) {
+      return node.depth - currentDepth <= 1 && node.depth >= currentDepth;
+    });
 
-    g.append("rect")
-        .attr("class", "parent")
-        .call(rect)
-        .attr("fill", function(d) { return color(d.data.name); })
-        .attr("rx", 8)
-        .attr("ry", 8)
-        .on("click", function(event, d) { 
-          if (d.children) transition(d); 
-          else window.open('https://texonom.com/' + d.data.id, '_blank'); 
+    svg.selectAll(".node").remove();
+
+    var cell = svg.selectAll(".node")
+        .data(nodes)
+      .enter().append("g")
+        .attr("class", "node")
+        .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.y0) + ")"; })
+        .on("click", function(event, d) {
+          if (d.children) {
+            zoom(d);
+          } else {
+            window.open('https://texonom.com/' + d.data.id, '_blank');
+          }
+          event.stopPropagation();
         });
 
-    g.append("text")
+    cell.append("rect")
+        .attr("id", function(d) { return d.data.id; })
+        .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+        .attr("height", function(d) { return y(d.y1) - y(d.y0); })
+        .attr("fill", function(d) { return color(d.depth); })
+        .attr("rx", 8)
+        .attr("ry", 8);
+
+    cell.append("text")
         .attr("class", "label")
-        .attr("dy", ".75em")
-        .attr("x", function(d) { return x(d.x0 + (d.x1 - d.x0) / 2); })
-        .attr("y", function(d) { return y(d.y0 + (d.y1 - d.y0) / 2 - 10); })
+        .attr("x", function(d) { return (x(d.x1) - x(d.x0)) / 2; })
+        .attr("y", function(d) { return (y(d.y1) - y(d.y0)) / 2; })
         .text(function(d) { return d.data.name; })
         .style("font-size", function(d) {
-          var boxWidth = x(d.x1) - x(d.x0);
-          var size = Math.min(20, (boxWidth / d.data.name.length) * 4);
+          var boxArea = (x(d.x1) - x(d.x0)) * (y(d.y1) - y(d.y0));
+          var size = Math.max(10, Math.min(30, Math.sqrt(boxArea) / 5));
           return size + "px";
         })
         .on("click", function(event, d) {
-          window.open('https://texonom.com/' + d.data.id, '_blank'); 
+          window.open('https://texonom.com/' + d.data.id, '_blank');
+          event.stopPropagation();
         });
 
-    g.append("text")
+    cell.append("text")
         .attr("class", "count")
-        .attr("x", function(d) { return x(d.x0 + (d.x1 - d.x0) / 2); })
-        .attr("y", function(d) { return y(d.y0 + (d.y1 - d.y0) / 2 + 10); })
+        .attr("x", function(d) { return (x(d.x1) - x(d.x0)) / 2; })
+        .attr("y", function(d) { return (y(d.y1) - y(d.y0)) / 2 + 20; })
         .text(function(d) { return d.data.value; })
-        .style("fill", "#888")
-        .style("font-size", "12px");
-
-    function transition(d) {
-      if (transitioning || !d) return;
-      transitioning = true;
-
-      var g2 = display(d),
-          t1 = g1.transition().duration(750),
-          t2 = g2.transition().duration(750);
-
-      // Update the domain only after entering new elements.
-      x.domain([d.x0, d.x1]);
-      y.domain([d.y0, d.y1]);
-
-      // Enable anti-aliasing during the transition.
-      svg.style("shape-rendering", null);
-
-      // Draw child nodes on top of parent nodes.
-      svg.selectAll(".depth").sort(function(a, b) { return a.depth - b.depth; });
-
-      // Fade-in entering text.
-      g2.selectAll("text").style("fill-opacity", 0);
-
-      // Transition to the new view.
-      t1.selectAll("text").call(text).style("fill-opacity", 0);
-      t2.selectAll("text").call(text).style("fill-opacity", 1);
-      t1.selectAll("rect").call(rect);
-      t2.selectAll("rect").call(rect);
-
-      // Remove the old node when the transition is finished.
-      t1.on("end.remove", function() {
-        g1.remove();
-        transitioning = false;
-      });
-    }
-
-    function text(text) {
-      text.attr("x", function(d) { return x(d.x0 + (d.x1 - d.x0) / 2); })
-          .attr("y", function(d) { return y(d.y0 + (d.y1 - d.y0) / 2 - 10); });
-    }
-
-    function rect(rect) {
-      rect
-          .attr("x", function(d) { return x(d.x0); })
-          .attr("y", function(d) { return y(d.y0); })
-          .attr("width", function(d) { return x(d.x1) - x(d.x0); })
-          .attr("height", function(d) { return y(d.y1) - y(d.y0); })
-          .attr("rx", 8)
-          .attr("ry", 8);
-    }
-
-    return g;
+        .style("fill", "lightgray")
+        .style("font-size", "0.8rem");
   }
 
-  function name(d) {
-    return d.ancestors().reverse().map(function(d) { return d.data.name; }).join(" / ");
+  function zoom(d) {
+    var currentDepth = d.depth;
+
+    // Update breadcrumb
+    var breadcrumb = d.ancestors().reverse().map(function(d) {
+      return '<span class="breadcrumb-item" data-id="' + d.data.id + '">' + d.data.name + '</span>';
+    }).join(' / ');
+    document.getElementById('breadcrumb').innerHTML = breadcrumb;
+
+    // Add click events to breadcrumb
+    var breadcrumbItems = document.querySelectorAll('.breadcrumb-item');
+    breadcrumbItems.forEach(function(item) {
+      item.addEventListener('click', function(event) {
+        var id = event.target.getAttribute('data-id');
+        var node = findNodeById(root, id);
+        if (node) {
+          zoom(node);
+        }
+      });
+    });
+
+    // Update current title
+    document.getElementById('current-title').innerText = d.data.name;
+
+    var t = svg.transition()
+        .duration(750);
+
+    x.domain([d.x0, d.x1]);
+    y.domain([d.y0, d.y1]);
+
+    var nodes = d.descendants().filter(function(node) {
+      return node.depth - currentDepth <= 1 && node.depth >= currentDepth;
+    });
+
+    var cell = svg.selectAll(".node")
+        .data(nodes, function(d) { return d.data.id; });
+
+    cell.exit().remove();
+
+    var cellEnter = cell.enter().append("g")
+        .attr("class", "node")
+        .on("click", function(event, d) {
+          if (d.children) {
+            zoom(d);
+          } else {
+            window.open('https://texonom.com/' + d.data.id, '_blank');
+          }
+          event.stopPropagation();
+        });
+
+    cellEnter.append("rect")
+        .attr("id", function(d) { return d.data.id; })
+        .attr("fill", function(d) { return color(d.depth); })
+        .attr("rx", 8)
+        .attr("ry", 8);
+
+    cellEnter.append("text")
+        .attr("class", "label")
+        .style("fill", "white")
+        .on("click", function(event, d) {
+          window.open('https://texonom.com/' + d.data.id, '_blank');
+          event.stopPropagation();
+        });
+
+    cellEnter.append("text")
+        .attr("class", "count")
+        .style("fill", "lightgray")
+        .style("font-size", "0.8rem");
+
+    cell = cellEnter.merge(cell);
+
+    cell.transition(t)
+        .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.y0) + ")"; });
+
+    cell.select("rect").transition(t)
+        .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+        .attr("height", function(d) { return y(d.y1) - y(d.y0); });
+
+    cell.select(".label").transition(t)
+        .attr("x", function(d) { return (x(d.x1) - x(d.x0)) / 2; })
+        .attr("y", function(d) { return (y(d.y1) - y(d.y0)) / 2; })
+        .text(function(d) { return d.data.name; })
+        .style("font-size", function(d) {
+          var boxArea = (x(d.x1) - x(d.x0)) * (y(d.y1) - y(d.y0));
+          var size = Math.max(10, Math.min(30, Math.sqrt(boxArea) / 5));
+          return size + "px";
+        });
+
+    cell.select(".count").transition(t)
+        .attr("x", function(d) { return (x(d.x1) - x(d.x0)) / 2; })
+        .attr("y", function(d) { return (y(d.y1) - y(d.y0)) / 2 + 20; })
+        .text(function(d) { return d.data.value; });
+  }
+
+  function findNodeById(node, id) {
+    if (node.data.id === id) {
+      return node;
+    }
+    if (node.children) {
+      for (var child of node.children) {
+        var result = findNodeById(child, id);
+        if (result) return result;
+      }
+    }
+    return null;
   }
 </script>
 </body>
