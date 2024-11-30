@@ -8,7 +8,8 @@ import {
   getBlockParent,
   defaultMapImageUrl,
   getAllInSpace,
-  getPageTitle
+  getPageTitle,
+  recursivePageTree
 } from '@texonom/nutils'
 import { join } from 'path'
 import { mkdir, readFile } from 'fs/promises'
@@ -46,6 +47,7 @@ export class NotionExporter {
   load: boolean = false
   raw: boolean = false
   dataset: boolean = false
+  wait: number = 5
   token: string | undefined
 
   constructor(options: {
@@ -62,7 +64,7 @@ export class NotionExporter {
     dataset?: boolean
     token?: string
   }) {
-    this.page = parsePageId(options.page, { uuid: false })
+    this.page = parsePageId(options.page)
     this.folder = options.folder ?? this.folder
     this.domain = options.domain ?? this.domain
     this.md = options.md ?? this.md
@@ -106,6 +108,16 @@ export class NotionExporter {
       console.time('Extract markdown')
       await this.exportMd(id)
       console.timeEnd('Extract markdown')
+      const pageTree = {
+        id: this.page,
+        title: getBlockTitle(this.recordMap.block[this.page].value, this.recordMap),
+        blocks: 1,
+        pages: 1,
+        children: [],
+        type: 'page'
+      }
+      recursivePageTree(this.recordMap, pageTree)
+      this.pageTree = pageTree
     }
     await Promise.all(this.promises)
     // Update
@@ -119,7 +131,6 @@ export class NotionExporter {
     this.recordMap = recordMap
     this.pageTree = pageTree
     this.pageMap = pageMap
-    console.timeEnd('load prefetch file')
   }
 
   async fetchRawSpace(startPage: string) {
@@ -568,6 +579,9 @@ export class NotionExporter {
       if (!collection && this.token) {
         const notion = new NotionAPI({ authToken: this.token })
         const response = await notion.getPageRaw(collectionViewBlock.id)
+        // @wait for rate limit
+        sleepSync(1000 * this.wait)
+        if (!response.recordMap) console.error(response)
         collection = response.recordMap.collection[collectionId]?.value
         if (collection) {
           recordMap.collection_view = { ...recordMap.collection_view, ...response.recordMap.collection_view }
@@ -668,7 +682,6 @@ export class NotionExporter {
 export async function loadRaw(
   folder: string
 ): Promise<{ recordMap: ExtendedRecordMap; pageTree: PageTree; pageMap: PageMap }> {
-  console.time('load prefetch file')
   const promises = []
   promises.push(readFile(join(folder, 'recordMap', 'block.json'), 'utf8').then(JSON.parse))
   promises.push(readFile(join(folder, 'recordMap', 'collection.json'), 'utf8').then(JSON.parse))
@@ -701,4 +714,9 @@ export async function loadRaw(
     signed_urls
   }
   return { recordMap, pageTree, pageMap }
+}
+
+const sleepSync = (ms: number) => {
+  const sharedBuffer = new Int32Array(new SharedArrayBuffer(4))
+  Atomics.wait(sharedBuffer, 0, 0, ms)
 }

@@ -41,6 +41,9 @@ export class NotionExportCommand extends Command {
   token = Option.String('-t,--token', {
     description: 'Notion Access Token'
   })
+  wait = Option.Counter('-w,--wait', {
+    description: 'Wait couter for missed collection view'
+  })
 
   async execute() {
     const exporter = new NotionExporter({
