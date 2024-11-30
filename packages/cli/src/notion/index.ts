@@ -154,21 +154,22 @@ export class NotionExporter {
   async saveRawSpace() {
     if (this.validation) return
     await mkdir(this.folder, { recursive: true })
-    const ext = 'json'
     const promises = []
     await mkdir(join(this.folder, 'recordMap'), { recursive: true })
-    for (const table in this.recordMap)
-      promises.push(this.writeFile(`${join(this.folder, 'recordMap', table)}.${ext}`, JSON.stringify(this.recordMap[table])))
+    for (const table in this.recordMap) this.saveJson(join('recordMap', table), this.recordMap[table])
+    this.saveJson('pageMap', this.pageMap)
+    this.saveJson('pageTree', this.pageTree)
+    await Promise.all(promises)
+  }
 
-    const outputStream = fs.createWriteStream(`${join(this.folder, 'pageMap')}.${ext}`)
+  saveJson(filename: string, object: Record<string, unknown>) {
+    if (this.validation) return
+    const outputStream = fs.createWriteStream(`${join(this.folder, filename)}.json`)
     const transformStream = JSONStream.stringifyObject()
     transformStream.pipe(outputStream)
     // @ts-ignore
-    for (const key in this.pageMap) transformStream.write([key, this.pageMap[key]])
+    for (const key in object) transformStream.write([key, object[key]])
     transformStream.end()
-
-    promises.push(this.writeFile(`${join(this.folder, 'pageTree')}.${ext}`, JSON.stringify(this.pageTree)))
-    await Promise.all(promises)
   }
 
   async saveRawPage(id: string) {
@@ -190,7 +191,11 @@ export class NotionExporter {
   async exportMd(id: string) {
     await mkdir(this.md, { recursive: true })
     try {
-      let recordMap = this.pageMap ? this.pageMap[id] : await this.notion.getPage(id)
+      let recordMap = this.pageMap && this.pageMap[id]
+      if (!recordMap) {
+        console.warn(`Missing from pageMap ${id}`)
+        recordMap = await this.notion.getPage(id)
+      }
       if (!this.recursive) this.recordMap = recordMap
       try {
         if (!recordMap) recordMap = await this.notion.getPage(id)
@@ -199,6 +204,7 @@ export class NotionExporter {
       }
       if (!['page', 'collection_view_page'].includes(recordMap.block[id].value.type)) throw new Error('Not a page')
       const target = await this.pageToMarkdown(id, recordMap)
+      if (!this.pageMap[id]) this.pageMap[id] = recordMap
       const path = join(this.md, `${getCanonicalPageId(id, recordMap)}`)
       this.promises.push(this.writeFile(`${path}.md`, target))
     } catch (e) {
@@ -608,8 +614,16 @@ export class NotionExporter {
           ...recordMap.collection_query![collectionId],
           [viewId]: this.recordMap.collection_query?.[collectionId]?.[viewId]
         }
+        this.recordMap.collection_query![collectionId] = {
+          ...this.recordMap.collection_query![collectionId],
+          [viewId]: this.recordMap.collection_query?.[collectionId]?.[viewId]
+        }
         recordMap.collection![collectionId] = {
           ...recordMap.collection![collectionId],
+          [viewId]: this.recordMap.collection?.[collectionId]?.[viewId]
+        }
+        this.recordMap.collection![collectionId] = {
+          ...this.recordMap.collection![collectionId],
           [viewId]: this.recordMap.collection?.[collectionId]?.[viewId]
         }
       }
@@ -714,6 +728,22 @@ export async function loadRaw(
     signed_urls
   }
   return { recordMap, pageTree, pageMap }
+}
+
+async function loadJson<C>(folder: string, filename: string): Promise<C> {
+  const object = {} as C
+  const inputStream = fs.createReadStream(join(folder, `${filename}.json`))
+  const parseStream = JSONStream.parse('*')
+  inputStream.pipe(parseStream)
+  parseStream.on('*', ([key, value]) => {
+    object[key] = value
+  })
+  return new Promise(res =>
+    stream.finished(parseStream, err => {
+      console.error(err)
+      res(object)
+    })
+  )
 }
 
 const sleepSync = (ms: number) => {
