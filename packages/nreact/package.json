@@ -41,7 +41,7 @@
   "devDependencies": {
     "@types/lodash.throttle": "^4.1.9",
     "@types/node": "^20.17.9",
-    "@types/react": "^18.3.12",
+    "@types/react": "^18.3.14",
     "clipboard-copy": "^4.0.1",
     "date-fns": "^2.30.0",
     "format-number": "^3.0.0",
