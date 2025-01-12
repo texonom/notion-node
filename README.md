@@ -1,5 +1,7 @@
 # Texonom Notion
 
+![downloads](https://img.shields.io/npm/d18m/%40texonom%2Fnclient)
+
 This repository is fork of [React Notion X](https://github.com/NotionX/react-notion-x).
 Refactored with [Turboplate](https://github.com/seonglae/turboplate). Search API, Backlinks and Property rendering are maintained in this project.
 
