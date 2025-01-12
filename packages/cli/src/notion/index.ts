@@ -25,7 +25,7 @@ import type { ExtendedRecordMap, PageMap, PageBlock, Block, Decoration, Collecti
 
 let writeFile = promisify(fs.writeFile)
 
-const getBlockLink = (blockId: string, recordMap: ExtendedRecordMap, domain = 'https://texonom.com') =>
+export const getBlockLink = (blockId: string, recordMap: ExtendedRecordMap, domain = 'https://texonom.com') =>
   `${domain}/${getCanonicalPageId(blockId, recordMap)}`
 
 export class NotionExporter {
@@ -730,7 +730,7 @@ export async function loadRaw(
   return { recordMap, pageTree, pageMap }
 }
 
-async function loadJson<C>(folder: string, filename: string): Promise<C> {
+export async function loadJson<C>(folder: string, filename: string): Promise<C> {
   const object = {} as C
   const inputStream = fs.createReadStream(join(folder, `${filename}.json`))
   const parseStream = JSONStream.parse('*')
