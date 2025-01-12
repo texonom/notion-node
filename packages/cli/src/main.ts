@@ -15,3 +15,4 @@ cli.register(Builtins.VersionCommand)
 cli.runExit(process.argv.slice(2), Cli.defaultContext)
 
 export * from './notion/export'
+export * from './notion/index'
