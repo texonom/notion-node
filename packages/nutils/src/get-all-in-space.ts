@@ -43,12 +43,13 @@ export async function getAllInSpace(
       fetchOption,
       concurrency,
       collectionConcurrency
-    }?: { fetchOption?: FetchOption; concurrency?: number; collectionConcurrency?: number }
+    }?: { fetchOption?: FetchOption; concurrency: number; collectionConcurrency?: number }
   ) => Promise<ExtendedRecordMap>,
   {
     startRecordMap,
     fetchOption = { timeout: 100000 },
     maxPage,
+    debug,
     concurrency = 100,
     collectionConcurrency = 100
   }: {
@@ -56,6 +57,7 @@ export async function getAllInSpace(
     fetchOption?: FetchOption
     concurrency?: number
     maxPage?: number
+    debug?: boolean
     collectionConcurrency?: number
   } = {}
 ): Promise<{ recordMap: ExtendedRecordMap; pageMap: PageMap; pageTree: PageTree }> {
@@ -64,13 +66,13 @@ export async function getAllInSpace(
 
   let tempRecordMap: ExtendedRecordMap = JSON.parse(JSON.stringify(recordMap))
 
-  console.time('Total fetch time')
+  if (debug) console.time('Total fetch time')
   let iteration = 1
   while (true) {
-    console.info(`Iteration ${iteration}`)
-    console.info('block length ', Object.keys(recordMap.block).length)
+    if (debug) console.debug(`Iteration ${iteration}`)
+    if (debug) console.debug('block length ', Object.keys(recordMap.block).length)
 
-    console.time('getPageContentBlockIds')
+    if (debug) console.time('getPageContentBlockIds')
     const targetBlocks = Object.keys(tempRecordMap.block)
     const missing = Object.keys(
       targetBlocks.reduce((blockMap, root) => {
@@ -81,40 +83,40 @@ export async function getAllInSpace(
     )
     for (const { value: block } of Object.values(tempRecordMap.block))
       if (block && !recordMap.block[block.parent_id] && block.parent_table === 'block') missing.push(block.parent_id)
-    console.timeEnd('getPageContentBlockIds')
+    if (debug) console.timeEnd('getPageContentBlockIds')
 
-    console.time('getBlocks')
+    if (debug) console.time('getBlocks')
     tempRecordMap = (await getBlocks(missing, fetchOption)).recordMap as ExtendedRecordMap
-    console.timeEnd('getBlocks')
+    if (debug) console.timeEnd('getBlocks')
     if (!tempRecordMap?.block) break
 
-    console.time('mapBlocks')
+    if (debug) console.time('mapBlocks')
     const contentBlockIds = Object.values(recordMap.block)
       .map(obj => obj.value?.id)
       .filter(Boolean)
     recordMap.block = { ...recordMap.block, ...tempRecordMap.block }
-    console.timeEnd('mapBlocks')
+    if (debug) console.timeEnd('mapBlocks')
 
-    console.time('fetchCollections')
+    if (debug) console.time('fetchCollections')
     await fetchCollections(contentBlockIds, recordMap, undefined, { fetchOption, concurrency, collectionConcurrency })
-    console.timeEnd('fetchCollections')
-    console.info('collection query length ' + Object.keys(recordMap.collection_query).length)
+    if (debug) console.timeEnd('fetchCollections')
+    if (debug) console.debug('collection query length ' + Object.keys(recordMap.collection_query).length)
 
-    console.info('new block length ', Object.keys(tempRecordMap.block).length)
+    if (debug) console.debug('new block length ', Object.keys(tempRecordMap.block).length)
     const pageLength = Object.values(recordMap.block)
       .map(obj => obj.value?.type)
       .filter(type => type === 'page').length
-    console.info('page length ', pageLength)
+    if (debug) console.debug('page length ', pageLength)
     if (Number.isInteger(maxPage) && pageLength >= maxPage) break
 
-    console.info(`memory usage ${process.memoryUsage().rss / 1024 / 1024}MB`)
+    if (debug) console.debug(`memory usage ${process.memoryUsage().rss / 1024 / 1024}MB`)
     iteration += 1
-    console.info()
+    if (debug) console.debug()
   }
-  console.timeEnd('Total fetch time')
+  if (debug) console.timeEnd('Total fetch time')
 
-  console.time('get page map')
-  console.info('Total block length ', Object.keys(recordMap.block).length)
+  if (debug) console.time('get page map')
+  if (debug) console.debug('Total block length ', Object.keys(recordMap.block).length)
   const blockIds = Object.keys(recordMap.block)
 
   const promises = []
@@ -125,10 +127,10 @@ export async function getAllInSpace(
     }
   await Promise.all(promises)
 
-  console.timeEnd('get page map')
-  console.info('Total page length ', Object.keys(pageMap).length)
+  if (debug) console.timeEnd('get page map')
+  if (debug) console.debug('Total page length ', Object.keys(pageMap).length)
 
-  console.time('get page tree')
+  if (debug) console.time('get page tree')
   const pageTree = {
     id: startPageId,
     title: getBlockTitle(recordMap.block[startPageId].value, recordMap),
@@ -138,7 +140,7 @@ export async function getAllInSpace(
     type: 'page'
   }
   recursivePageTree(recordMap, pageTree)
-  console.timeEnd('get page tree')
+  if (debug) console.timeEnd('get page tree')
 
   return { pageMap, pageTree, recordMap }
 }
@@ -279,7 +281,7 @@ export async function getPageSync(
       blockMap = { ...blockMap, ...responseMap.block }
       for (const blockId in responseMap.block) recordMap.block[blockId] = responseMap.block[blockId]
     } else {
-      console.debug(`fetching ${missing.length} fail for ${pageId}`)
+      console.warn(`fetching ${missing.length} fail for ${pageId}`)
     }
   }
 
