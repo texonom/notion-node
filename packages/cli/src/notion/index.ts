@@ -51,6 +51,7 @@ export class NotionExporter {
   load: boolean = false
   raw: boolean = false
   dataset: boolean = false
+  debug: boolean = false
   wait: number = 5
   token: string | undefined
 
@@ -147,7 +148,8 @@ export class NotionExporter {
         startRecordMap: this.recordMap,
         collectionConcurrency: 100,
         concurrency: 100,
-        fetchOption: { timeout: 10000 }
+        fetchOption: { timeout: 10000 },
+        debug: this.debug
       }
     )
     this.pageMap = pageMap
@@ -372,7 +374,7 @@ export class NotionExporter {
           md += `${prefix}|Title|\n|:-:|`
           const views = childBlock.view_ids
             .map(id => {
-              if (!recordMap.collection_view[id]) console.debug(`Missing view ${id} from ${collection.name}`)
+              if (!recordMap.collection_view[id]) if (this.debug) console.warn(`Missing view ${id} from ${collection.name}`)
               return recordMap.collection_view[id]?.value
             })
             .filter(Boolean)
@@ -389,7 +391,7 @@ export class NotionExporter {
           }
           for (const childPage of children) {
             const childBlock = recordMap.block[childPage]?.value
-            if (!childBlock) console.debug(`no ${childPage} in ${collection.name[0]}`)
+            if (!childBlock) if (this.debug) console.warn(`no ${childPage} in ${collection.name[0]}`)
             md += `${prefix}|[${getBlockTitle(childBlock, recordMap)}](${getBlockLink(childPage, recordMap)})|`
           }
 
@@ -411,9 +413,10 @@ export class NotionExporter {
         case 'alias': {
           const aliasBlock = recordMap.block[childBlock.format?.alias_pointer?.id]?.value
           if (!aliasBlock) {
-            console.debug(
-              `Missing alias ${childBlock.format?.alias_pointer?.id} from ${getBlockTitle(page, recordMap)} ${page.id}`
-            )
+            if (this.debug)
+              console.warn(
+                `Missing alias ${childBlock.format?.alias_pointer?.id} from ${getBlockTitle(page, recordMap)} ${page.id}`
+              )
             continue
           }
           md += `${prefix}${prefix}[${getBlockTitle(aliasBlock, recordMap)}](${getBlockLink(
@@ -561,7 +564,7 @@ export class NotionExporter {
         block = response.recordMap?.block?.[id]?.value
       }
     } catch {
-      if (!block) console.debug(`${message} Missing block ${id}`)
+      if (!block) if (this.debug) console.warn(`${message} Missing block ${id}`)
     }
     if (block) {
       recordMap.block[id] = { value: block, role: 'reader' }
@@ -580,7 +583,7 @@ export class NotionExporter {
         user = response.recordMapWithRoles?.notion_user?.[id]?.value
       }
     } catch {
-      if (!user) console.debug(`Missing user ${id}`)
+      if (!user) if (this.debug) console.warn(`Missing user ${id}`)
     }
     if (user) {
       recordMap.notion_user[id] = { value: user, role: 'reader' }
@@ -618,7 +621,7 @@ export class NotionExporter {
         }
       }
     } catch {
-      if (!collection) console.debug(`${message} Missing collection block ${collectionViewBlock.id}`)
+      if (!collection) if (this.debug) console.warn(`${message} Missing collection block ${collectionViewBlock.id}`)
     }
     await this.getCollectionView(collectionId, collectionViewBlock.view_ids[0], recordMap, message)
     return collection
@@ -687,7 +690,7 @@ export class NotionExporter {
         }
       }
     } catch {
-      if (!results) console.debug(`${message} Missing collection view ${viewId}`)
+      if (!results) if (this.debug) console.warn(`${message} Missing collection view ${viewId}`)
     }
     return results
   }
@@ -706,7 +709,7 @@ export class NotionExporter {
         }
       }
     } catch {
-      if (!space) console.debug(`Missing space ${id}`)
+      if (!space) if (this.debug) console.warn(`Missing space ${id}`)
     }
     return space
   }
