@@ -1,6 +1,6 @@
 {
   "name": "@texonom/nreact",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "type": "module",
   "description": "Fast and accurate React renderer for Notion.",
   "repository": "texonom/notion-node",
