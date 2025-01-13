@@ -28,6 +28,10 @@ let writeFile = promisify(fs.writeFile)
 export const getBlockLink = (blockId: string, recordMap: ExtendedRecordMap, domain = 'https://texonom.com') =>
   `${domain}/${getCanonicalPageId(blockId, recordMap)}`
 
+export type Markdown = {
+  [attre in string]: string
+}
+
 export class NotionExporter {
   notion: NotionAPI
   recordMap: ExtendedRecordMap
@@ -39,7 +43,7 @@ export class NotionExporter {
   folder: string = 'texonom-raw'
   md: string = 'texonom-md'
   domain: string = 'https://texonom.com'
-  validation: boolean = false
+  validation: boolean = true
   update: boolean = false
   page: string
   recursive: boolean = false
@@ -213,18 +217,33 @@ export class NotionExporter {
   }
 
   async pageToMarkdown(id: string, recordMap: ExtendedRecordMap) {
-    const page = recordMap.block[id].value as PageBlock
+    const markdown = await this.pageToMarkdownObj(id, recordMap)
+    let md = `---\nTitle: ${markdown.title}\n`
+    md += `Parent: ${markdown.parent}\n`
+    const attrs = Object.keys(markdown).filter(key => !['title', 'parent', 'body'].includes(key))
+    for (const attr of attrs) md += `${attr}: ${markdown[attr]}\n`
+    md += '---\n'
+    md += markdown.body
+    return md
+  }
 
-    // Metadata
-    let md = `---\n`
-    md += `Title: ${await this.decorationsToMarkdown(
+  async pageToMarkdownObj(id: string, recordMap: ExtendedRecordMap) {
+    const page = recordMap.block[id].value as PageBlock
+    const markdown: Markdown = {}
+
+    // Title
+    const title = await this.decorationsToMarkdown(
       page.properties?.title ? page.properties.title : [['Untitled']],
       recordMap
-    )}\n`
-    const parent = getBlockParent(page, recordMap)
-    if (isSpace(parent)) md += `Parent: ${parent.name}\n`
-    else if (isCollection(parent)) md += `Parent: ${getTextContent(parent.name)}\n`
-    else if (parent) md += `Parent: ${getBlockTitle(parent, recordMap)}\n`
+    )
+    markdown.title = title
+
+    // Parent
+    const parentBlock = getBlockParent(page, recordMap)
+    let parent: string
+    if (isSpace(parentBlock)) parent = parentBlock.name
+    else if (isCollection(parentBlock)) parent = getTextContent(parentBlock.name)
+    else if (parentBlock) parent = getBlockTitle(parentBlock, recordMap)
 
     // Collection Attributes
     if (isCollection(parent)) {
@@ -259,12 +278,12 @@ export class NotionExporter {
           default:
             value = ''
         }
-        md += `${propName}: ${value}\n`
+        markdown[propName] = value
       }
     }
-    md += '---\n'
-
-    return md + (await this.childrenToMd(page, recordMap, '\n', page))
+    const body = await this.childrenToMd(page, recordMap, '', page)
+    markdown.body = body
+    return markdown
   }
 
   async childrenToMd(parentBlock: Block, recordMap: ExtendedRecordMap, prefix: string, page: Block) {
