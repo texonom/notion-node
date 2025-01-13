@@ -8,12 +8,13 @@
   "license": "MIT",
   "types": "./build/index.d.ts",
   "main": "./build/index.js",
+  "module": "./build/index.js",
   "sideEffects": false,
   "files": [
     "build"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsup",
     "prerelease": "standard-version --skip.changelog --prerelease",
     "release": "standard-version --release-as",
     "pu": "pnpm publish"
