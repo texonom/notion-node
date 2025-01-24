@@ -20,7 +20,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=20.18.1"
+    "node": ">=20.18.2"
   },
   "scripts": {
     "build": "tsc && tsup",
@@ -35,7 +35,7 @@
     "mem": "^10.0.0",
     "normalize-url": "^8.0.1",
     "@texonom/ntypes": "workspace:^",
-    "p-queue": "^8.0.1"
+    "p-queue": "^8.1.0"
   },
   "standard-version": {
     "skip": {
