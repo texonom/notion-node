@@ -24,13 +24,13 @@ export const Code: React.FC<{
   className?: string
 }> = ({ block, defaultLanguage = 'typescript', className }) => {
   const [isCopied, setIsCopied] = React.useState(false)
-  const copyTimeout = React.useRef<number>()
+  const copyTimeout = React.useRef<number>(null)
   const { recordMap } = useNotionContext()
   const content = getBlockTitle(block, recordMap)
   const language = (block.properties?.language?.[0]?.[0] || defaultLanguage).toLowerCase()
   const caption = block.properties.caption
 
-  const codeRef = React.useRef()
+  const codeRef = React.useRef(null)
   React.useEffect(() => {
     if (codeRef.current)
       try {
