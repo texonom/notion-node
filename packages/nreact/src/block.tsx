@@ -371,7 +371,7 @@ export const Block: React.FC<BlockProps> = props => {
           </ol>
         )
 
-      let output: JSX.Element | null = null
+      let output: React.JSX.Element | null = null
 
       if (block.content)
         output = (

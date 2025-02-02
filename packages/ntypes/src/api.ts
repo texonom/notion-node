@@ -88,6 +88,8 @@ export interface SearchResult {
   isNavigable: boolean
   score: number
   highlight: {
+    // <gzkNfoUU>query</gzkNfoUU> else for bold
+    title: string
     pathText: string
     text: string
   }
