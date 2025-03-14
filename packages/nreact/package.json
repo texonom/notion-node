@@ -30,7 +30,7 @@
     "katex": "^0.16.21",
     "@texonom/ntypes": "workspace:^",
     "@texonom/nutils": "workspace:^",
-    "prismjs": "^1.29.0",
+    "prismjs": "^1.30.0",
     "react-fast-compare": "^3.2.2",
     "react-hotkeys-hook": "^4.6.1",
     "react-image": "^4.1.0",
@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@types/lodash.throttle": "^4.1.9",
-    "@types/node": "^22.13.9",
+    "@types/node": "^22.13.10",
     "@types/react": "^19.0.10",
     "clipboard-copy": "^4.0.1",
     "date-fns": "^2.30.0",

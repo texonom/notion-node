@@ -17,7 +17,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.11.x
+          node-version: 22.14.0
 
       - name: Cache node modules
         uses: actions/cache@v4
