@@ -20,7 +20,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=22.14.0"
+    "node": ">=22.15.0"
   },
   "scripts": {
     "build": "tsc && tsup",
