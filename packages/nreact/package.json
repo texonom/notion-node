@@ -15,7 +15,7 @@
     "src/styles.css"
   ],
   "engines": {
-    "node": ">=22.15.0"
+    "node": ">=22.15.1"
   },
   "scripts": {
     "build": "tsc && tsup",
@@ -32,7 +32,7 @@
     "@texonom/nutils": "workspace:^",
     "prismjs": "^1.30.0",
     "react-fast-compare": "^3.2.2",
-    "react-hotkeys-hook": "^5.0.1",
+    "react-hotkeys-hook": "^5.1.0",
     "react-image": "^4.1.0",
     "react-modal": "^3.16.3",
     "react-pdf": "^9.2.1",
@@ -40,8 +40,8 @@
   },
   "devDependencies": {
     "@types/lodash.throttle": "^4.1.9",
-    "@types/node": "^22.15.17",
-    "@types/react": "^19.1.3",
+    "@types/node": "^22.15.18",
+    "@types/react": "^19.1.4",
     "clipboard-copy": "^4.0.1",
     "date-fns": "^2.30.0",
     "format-number": "^3.0.0",
