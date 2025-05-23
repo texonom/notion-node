@@ -15,7 +15,7 @@
     "src/styles.css"
   ],
   "engines": {
-    "node": ">=22.15.1"
+    "node": ">=22.16.0"
   },
   "scripts": {
     "build": "tsc && tsup",
@@ -40,8 +40,8 @@
   },
   "devDependencies": {
     "@types/lodash.throttle": "^4.1.9",
-    "@types/node": "^22.15.18",
-    "@types/react": "^19.1.4",
+    "@types/node": "^22.15.21",
+    "@types/react": "^19.1.5",
     "clipboard-copy": "^4.0.1",
     "date-fns": "^2.30.0",
     "format-number": "^3.0.0",
