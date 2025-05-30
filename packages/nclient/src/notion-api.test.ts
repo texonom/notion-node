@@ -28,7 +28,7 @@ for (const pageId of pageIdFixturesSuccess)
 for (const pageId of pageIdFixturesFailure)
   test.concurrent(`NotionAPI.getPage failure ${pageId}`, async () => {
     const api = new NotionAPI()
-    await expect(() => api.getPage(pageId, { fetchOption: { timeout: 1000 } })).rejects.toThrow()
+    await expect(() => api.getPage(pageId, { fetchOption: { timeout: 3000 } })).rejects.toThrow()
   })
 
 test(`Search`, { timeout: 10000, concurrent: true }, async () => {
@@ -43,6 +43,7 @@ test(`Search`, { timeout: 10000, concurrent: true }, async () => {
       requireEditPermissions: false
     }
   })
+  console.info(results)
   if (!(results.total > 0)) throw new Error('Search error')
   expect(results.recordMap.block).toBeTypeOf('object')
 })
