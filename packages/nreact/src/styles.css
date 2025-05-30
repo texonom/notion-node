@@ -1,6 +1,7 @@
 :root {
-  --notion-font: ui-sans-serif, system-ui, apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, 'Apple Color Emoji',
-    Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --notion-font:
+    ui-sans-serif, system-ui, apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, 'Apple Color Emoji', Arial,
+    sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
   --fg-color: rgb(55, 53, 47);
   --fg-color-0: rgba(55, 53, 47, 0.09);
   --fg-color-1: rgba(55, 53, 47, 0.16);
@@ -604,7 +605,8 @@
 }
 
 .notion-page-icon {
-  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', NotoColorEmoji, 'Noto Color Emoji', 'Segoe UI Symbol', 'Android Emoji',
+  font-family:
+    'Apple Color Emoji', 'Segoe UI Emoji', NotoColorEmoji, 'Noto Color Emoji', 'Segoe UI Symbol', 'Android Emoji',
     EmojiSymbols;
   font-size: 1.1em;
   fill: var(--fg-color-6);
