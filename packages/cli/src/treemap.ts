@@ -1,10 +1,7 @@
 import fs from 'fs'
 import { promisify } from 'util'
-import { loadRaw } from './notion'
 
-const writeFile = promisify(fs.writeFile)
-
-interface PageNode {
+export interface PageNode {
   id: string
   blocks: number
   pages: number
@@ -12,22 +9,18 @@ interface PageNode {
   children?: PageNode[]
 }
 
-async function main() {
-  const { pageTree } = await loadRaw('texonom-raw')
+const writeFile = promisify(fs.writeFile)
 
-  // Generate treemap for page counts
+export async function generateTreemaps(folder: string, pageTree: PageNode) {
   const treemapDataPages = computeMetrics(pageTree, 'pages')
   const titlePages = 'Texonom PageTree'
-  const outputPathPages = 'texonom-raw/pagetree.html'
+  const outputPathPages = `${folder}/pagetree.html`
   await generateTreemapHTML(treemapDataPages, titlePages, outputPathPages)
 
-  // Generate treemap for block counts
   const treemapDataBlocks = computeMetrics(pageTree, 'blocks')
   const titleBlocks = 'Texonom BlockMap'
-  const outputPathBlocks = 'texonom-raw/blocktree.html'
+  const outputPathBlocks = `${folder}/blocktree.html`
   await generateTreemapHTML(treemapDataBlocks, titleBlocks, outputPathBlocks)
-
-  console.info('Treemap HTML files generated successfully.')
 }
 
 interface TreemapNode {
@@ -353,5 +346,3 @@ async function generateTreemapHTML(data: TreemapNode, title: string, outputPath:
 
   await writeFile(outputPath, htmlContent, 'utf8')
 }
-
-main().catch(error => console.error(error))
