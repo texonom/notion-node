@@ -44,6 +44,9 @@ export class NotionExportCommand extends Command {
   wait = Option.Counter('-w,--wait', {
     description: 'Wait couter for missed collection view'
   })
+  push = Option.Boolean('--push', {
+    description: 'Push exported data to remote repositories'
+  })
 
   async execute() {
     const exporter = new NotionExporter({
@@ -56,8 +59,10 @@ export class NotionExportCommand extends Command {
       load: this.load,
       raw: this.raw,
       dataset: this.dataset,
-      token: this.token
+      token: this.token,
+      push: this.push
     })
     await exporter.execute()
+    if (this.push) await exporter.push()
   }
 }
