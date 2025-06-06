@@ -177,20 +177,25 @@ export const NotionContextProvider: React.FC<PartialNotionContext> = ({
 }) => {
   for (const key of Object.keys(rest)) if (rest[key] === undefined) delete rest[key]
 
-  const wrappedThemeComponents = React.useMemo(
-    () => ({
-      ...themeComponents
-    }),
-    [themeComponents]
-  )
+  const wrappedThemeComponents = React.useMemo(() => {
+    const components = { ...themeComponents }
 
-  if (wrappedThemeComponents.nextImage) wrappedThemeComponents.Image = wrapNextImage(themeComponents.nextImage)
+    if (components.nextImage) components.Image = wrapNextImage(components.nextImage)
 
-  if (wrappedThemeComponents.nextLink) wrappedThemeComponents.nextLink = wrapNextLink(themeComponents.nextLink)
+    if (components.nextLink) {
+      const nextLink = wrapNextLink(components.nextLink)
+      components.nextLink = nextLink
 
-  // ensure the user can't override default components with falsy values
-  // since it would result in very difficult-to-debug react errors
-  for (const key of Object.keys(wrappedThemeComponents)) if (!wrappedThemeComponents[key]) delete wrappedThemeComponents[key]
+      if (!components.PageLink) components.PageLink = nextLink
+      if (!components.Link) components.Link = nextLink
+    }
+
+    // ensure the user can't override default components with falsy values
+    // since it would result in very difficult-to-debug react errors
+    for (const key of Object.keys(components)) if (!components[key]) delete components[key]
+
+    return components
+  }, [themeComponents])
 
   const value = React.useMemo(
     () => ({
