@@ -65,6 +65,12 @@ test(`Page Backlink`, { timeout: 10000, concurrent: true }, async () => {
   expect(backlinks.backlinks.length > 0)
 })
 
+test(`Page Backlink`, { timeout: 10000, concurrent: true }, async () => {
+  const api = new NotionAPI({ authToken: process.env.NOTION_TOKEN })
+  const backlinks = await api.getPageBacklinks('441d5ce2-b781-46d0-9354-54042b4f06d9')
+  expect(backlinks.backlinks.length > 0)
+})
+
 test(`Get block`, { timeout: 10000, concurrent: true }, async () => {
   const id = '3f9e0d86-c643-4672-aa0c-78d63fa80598'
   const api = new NotionAPI()
