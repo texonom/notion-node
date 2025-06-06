@@ -1,28 +1,21 @@
 import fs from 'fs'
 import { promisify } from 'util'
-
 export interface PageNode {
-  id: string
-  blocks: number
   pages: number
   title: string
   children?: PageNode[]
 }
 
 const writeFile = promisify(fs.writeFile)
-
 export async function generateTreemaps(folder: string, pageTree: PageNode) {
   const treemapDataPages = computeMetrics(pageTree, 'pages')
   const titlePages = 'Texonom PageTree'
   const outputPathPages = `${folder}/pagetree.html`
   await generateTreemapHTML(treemapDataPages, titlePages, outputPathPages)
 
-  const treemapDataBlocks = computeMetrics(pageTree, 'blocks')
   const titleBlocks = 'Texonom BlockMap'
   const outputPathBlocks = `${folder}/blocktree.html`
   await generateTreemapHTML(treemapDataBlocks, titleBlocks, outputPathBlocks)
-}
-
 interface TreemapNode {
   id: string
   name: string
