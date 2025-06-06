@@ -16,3 +16,5 @@ cli.runExit(process.argv.slice(2), Cli.defaultContext)
 
 export * from './notion/export'
 export * from './notion/index'
+export * from './treemap'
+export * from './stats'
