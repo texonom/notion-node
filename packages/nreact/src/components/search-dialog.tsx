@@ -1,6 +1,4 @@
 import React from 'react'
-
-import throttle from 'lodash.throttle'
 import { getBlockParentPage, getBlockTitle } from '@texonom/nutils'
 
 import { NotionContextConsumer, NotionContextProvider } from '../context'
@@ -11,6 +9,15 @@ import { PageTitle } from './page-title'
 
 import type { SearchParams, SearchResults, APIError } from '@texonom/ntypes'
 // TODO: modal.default.setAppElement('.notion-viewport')
+
+// simple debounce utility so we only search after the user stops typing
+const debounce = (func: (...args: any[]) => void, wait: number) => {
+  let timeout: ReturnType<typeof setTimeout> | undefined
+  return (...args: any[]) => {
+    if (timeout) clearTimeout(timeout)
+    timeout = setTimeout(() => func(...args), wait)
+  }
+}
 
 export class SearchDialog extends React.Component<{
   isOpen: boolean
@@ -34,7 +41,8 @@ export class SearchDialog extends React.Component<{
   _search: any
 
   componentDidMount() {
-    this._search = throttle(this._searchImpl.bind(this), 1000)
+    // debounce search calls so the expensive query only runs after typing stops
+    this._search = debounce(this._searchImpl.bind(this), 500)
     this._warmupSearch()
   }
 
@@ -66,7 +74,7 @@ export class SearchDialog extends React.Component<{
                     placeholder='Search'
                     value={query}
                     ref={this._inputRef}
-                    onChange={this._onChangeQuery}
+                    onInput={this._onChangeQuery}
                   />
 
                   {query && (

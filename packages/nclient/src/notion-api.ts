@@ -574,6 +574,23 @@ export class NotionAPI {
     })
   }
 
+  /**
+   * Fetch backlinks for a page by automatically resolving its space id.
+   * Requires an authToken since backlinks are a private API.
+   *
+   * @param pageId page id or url
+   * @param fetchOption additional fetch options
+   */
+  public async getPageBacklinks(pageId: string, fetchOption?: FetchOption) {
+    const id = parsePageId(pageId)
+    const res = await this.getBlocks([id], fetchOption)
+    const block = res.recordMap.block[id]?.value
+    if (!block) throw new Error(`Block not found "${uuidToId(id)}"`)
+    const spaceId = block.space_id
+
+    return this.getBacklinks({ block: { id, spaceId } }, fetchOption)
+  }
+
   public async fetch<T>({
     endpoint,
     body,
