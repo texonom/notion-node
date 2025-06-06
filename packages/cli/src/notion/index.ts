@@ -16,6 +16,7 @@ import { mkdir, readFile } from 'fs/promises'
 import JSONStream from 'JSONStream'
 import fs from 'graceful-fs'
 import { promisify } from 'util'
+import { execSync } from 'child_process'
 import stream from 'stream'
 import { format } from 'prettier'
 import { isCollection, isSpace } from '@texonom/ntypes'
@@ -51,6 +52,7 @@ export class NotionExporter {
   load: boolean = false
   raw: boolean = false
   dataset: boolean = false
+  push: boolean = false
   debug: boolean = false
   wait: number = 5
   token: string | undefined
@@ -68,6 +70,7 @@ export class NotionExporter {
     raw?: boolean
     dataset?: boolean
     token?: string
+    push?: boolean
   }) {
     this.page = parsePageId(options.page)
     this.folder = options.folder ?? this.folder
@@ -81,6 +84,7 @@ export class NotionExporter {
     this.raw = options.raw ?? this.raw
     this.dataset = options.dataset ?? this.dataset
     this.token = options.token
+    this.push = options.push ?? this.push
 
     this.notion = new NotionAPI({ authToken: this.token })
     if (this.validation) writeFile = async () => {}
@@ -712,6 +716,31 @@ export class NotionExporter {
       if (!space) if (this.debug) console.warn(`Missing space ${id}`)
     }
     return space
+  }
+
+  push() {
+    const run = (cmd: string, cwd: string) => {
+      try {
+        execSync(cmd, { cwd, stdio: 'ignore' })
+      } catch {}
+    }
+    const message = new Date().toString()
+
+    // push raw
+    run('git init', this.folder)
+    run('git add .', this.folder)
+    run(`git commit -m "${message}"`, this.folder)
+    run('git branch -M main', this.folder)
+    run('git remote add origin https://github.com/texonom/texonom-raw.git', this.folder)
+    run('git push -u origin main --force', this.folder)
+
+    // push md
+    run('git init', this.md)
+    run('git add .', this.md)
+    run(`git commit -m "${message}"`, this.md)
+    run('git branch -M main', this.md)
+    run('git remote add origin https://github.com/texonom/texonom-md.git', this.md)
+    run('git push -u origin main --force', this.md)
   }
 }
 
