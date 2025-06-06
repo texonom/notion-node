@@ -29,6 +29,19 @@ const collectionViewId = 'ab639a5a-853e-45e1-9ef7-133b486c0acf'
 const collectionData = await api.getCollectionData(collectionId, collectionViewId)
 ```
 
+### Fetch backlinks
+
+Backlinks require an auth token.
+
+```ts
+const backlinks = await api.getBacklinks({
+  block: { id: 'page-id', spaceId: 'space-id' }
+})
+
+// or simply pass the page id
+const pageBacklinks = await api.getPageBacklinks('page-id')
+```
+
 ### Fetch a database's content
 
 You can pass a database ID to the `getPage` method. The response is an object which contains several important properties:
