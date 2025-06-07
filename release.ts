@@ -18,13 +18,19 @@ if (!version) {
   process.exit(1)
 }
 
-run('pnpm build')
-run('pnpm test')
-run(`pnpm release ${version}`)
-run(`pnpm turbo release -- ${version}`)
-run('pnpm format')
-run(`git commit -am "meta: deployment commit for ${version}"`)
-run(`git tag ${version}`)
-run('pnpm turbo pu')
-run('git push')
-run('git push --tags')
+const commands = [
+  'pnpm build',
+  'pnpm test',
+  `pnpm release ${version}`,
+  `pnpm turbo release -- ${version}`,
+  'pnpm format',
+  `git commit -am "meta: deployment commit for ${version}"`,
+  `git tag ${version}`,
+  'pnpm turbo pu',
+  'git push',
+  'git push --tags',
+];
+
+for (const cmd of commands) {
+  run(cmd);
+}
