@@ -1,6 +1,4 @@
 import React from 'react'
-import { getBlockParentPage, getBlockTitle } from '@texonom/nutils'
-
 import { NotionContextConsumer, NotionContextProvider } from '../context'
 import { ClearIcon } from '../icons/clear-icon'
 import { LoadingIcon } from '../icons/loading-icon'
@@ -12,6 +10,16 @@ import type { SearchParams, SearchResults, APIError } from '@texonom/ntypes'
 
 // simple debounce utility so we only search after the user stops typing
 const debounce = (func: (...args: any[]) => void, wait: number) => {
+  let timeout: ReturnType<typeof setTimeout> | undefined
+  return (...args: any[]) => {
+    if (timeout) clearTimeout(timeout)
+    timeout = setTimeout(() => func(...args), wait)
+  }
+}
+
+    // debounce search calls so the expensive query only runs after typing stops
+    this._search = debounce(this._searchImpl.bind(this), 500)
+                    onInput={this._onChangeQuery}
   let timeout: ReturnType<typeof setTimeout> | undefined
   return (...args: any[]) => {
     if (timeout) clearTimeout(timeout)
