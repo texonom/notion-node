@@ -718,7 +718,7 @@ export class NotionExporter {
     return space
   }
 
-  push() {
+  pushRepos() {
     const run = (cmd: string, cwd: string) => {
       try {
         execSync(cmd, { cwd, stdio: 'ignore' })

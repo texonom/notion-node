@@ -63,6 +63,6 @@ export class NotionExportCommand extends Command {
       push: this.push
     })
     await exporter.execute()
-    if (this.push) await exporter.push()
+    if (this.push) await exporter.pushRepos()
   }
 }
