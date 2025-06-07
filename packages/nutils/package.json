@@ -30,6 +30,9 @@
     "release": "standard-version --release-as",
     "pu": "pnpm publish"
   },
+  "devDependencies": {
+    "vite-plugin-dts": "^3.8.1"
+  },
   "dependencies": {
     "is-url-superb": "^6.1.0",
     "mem": "^10.0.0",
