@@ -525,9 +525,9 @@ export class NotionAPI {
 
   public async search(params: SearchParams, fetchOption?: FetchOption) {
     const body: SearchParams = {
-      type: 'BlocksInAncestor',
+      type: 'BlocksInSpace',
       source: 'quick_find_filters',
-      ancestorId: parsePageId(params.ancestorId),
+      spaceId: parsePageId(params.spaceId),
       sort: { field: 'relevance' },
       limit: params.limit || 20,
       query: params.query,
@@ -537,15 +537,14 @@ export class NotionAPI {
         excludeTemplates: true,
         requireEditPermissions: false,
         includePublicPagesWithoutExplicitAccess: true,
-        ancestors: [],
         createdBy: [],
         editedBy: [],
         lastEditedTime: {},
         createdTime: {},
-        ...params.filters
+        ...params.filters,
+        ancestors: params.filters?.ancestors ? params.filters.ancestors.map(id => parsePageId(id)) : []
       }
     }
-
     return this.fetch<SearchResults>({
       endpoint: 'search',
       body,
