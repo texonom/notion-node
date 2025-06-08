@@ -21,6 +21,7 @@ export interface NotionContext {
 
   rootPageId?: string
   rootDomain?: string
+  rootSpaceId?: string
 
   fullPage: boolean
   darkMode: boolean
