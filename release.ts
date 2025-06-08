@@ -4,7 +4,7 @@ import { execSync } from 'node:child_process'
 
 function run(cmd: string): void {
   console.log(`\n$ ${cmd}`)
-  execSync(cmd, { stdio: 'inherit', shell: true })
+  execSync(cmd, { stdio: 'inherit' })
 }
 
 const arg = process.argv.find(a => a.startsWith('--version='))
@@ -31,6 +31,4 @@ const commands = [
   'git push --tags'
 ]
 
-for (const cmd of commands) {
-  run(cmd)
-}
+for (const cmd of commands) run(cmd)
