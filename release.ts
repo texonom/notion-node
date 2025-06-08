@@ -28,9 +28,9 @@ const commands = [
   `git tag ${version}`,
   'pnpm turbo pu',
   'git push',
-  'git push --tags',
-];
+  'git push --tags'
+]
 
 for (const cmd of commands) {
-  run(cmd);
+  run(cmd)
 }

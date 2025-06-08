@@ -1,6 +1,6 @@
 {
   "name": "@texonom/ncompat",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "type": "module",
   "description": "Compatibility layer between the official Notion API and unofficial private API.",
   "repository": "texonom/notion-node",
