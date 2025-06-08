@@ -22,6 +22,7 @@ const debounce = (func: (...args: any[]) => void, wait: number) => {
 export class SearchDialog extends React.Component<{
   isOpen: boolean
   rootBlockId: string
+  rootSpaceId: string
   onClose: () => void
   searchNotion: (params: SearchParams) => Promise<SearchResults>
 }> {
@@ -159,19 +160,26 @@ export class SearchDialog extends React.Component<{
   }
 
   _warmupSearch = async () => {
-    const { searchNotion, rootBlockId } = this.props
+    const { searchNotion, rootBlockId, rootSpaceId } = this.props
 
     // search is generally implemented as a serverless function wrapping the notion
     // private API, upon opening the search dialog, so we eagerly invoke an empty
     // search in order to warm up the serverless lambda
     await searchNotion({
       query: '',
-      ancestorId: rootBlockId
+      spaceId: rootSpaceId,
+      filters: {
+        ancestors: [rootBlockId],
+        isDeletedOnly: false,
+        excludeTemplates: true,
+        navigableBlockContentOnly: true,
+        requireEditPermissions: false
+      }
     })
   }
 
   _searchImpl = async () => {
-    const { searchNotion, rootBlockId } = this.props
+    const { searchNotion, rootBlockId, rootSpaceId } = this.props
     const { query } = this.state
 
     if (!query.trim()) {
@@ -182,7 +190,14 @@ export class SearchDialog extends React.Component<{
     this.setState({ isLoading: true })
     const result: any = await searchNotion({
       query,
-      ancestorId: rootBlockId
+      spaceId: rootSpaceId,
+      filters: {
+        ancestors: [rootBlockId],
+        isDeletedOnly: false,
+        excludeTemplates: true,
+        navigableBlockContentOnly: true,
+        requireEditPermissions: false
+      }
     })
 
     console.debug('search', query, result)

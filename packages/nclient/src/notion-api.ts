@@ -525,9 +525,9 @@ export class NotionAPI {
 
   public async search(params: SearchParams, fetchOption?: FetchOption) {
     const body: SearchParams = {
-      type: 'BlocksInAncestor',
+      type: 'BlocksInSpace',
       source: 'quick_find_filters',
-      ancestorId: parsePageId(params.ancestorId),
+      spaceId: parsePageId(params.spaceId),
       sort: { field: 'relevance' },
       limit: params.limit || 20,
       query: params.query,
@@ -537,15 +537,14 @@ export class NotionAPI {
         excludeTemplates: true,
         requireEditPermissions: false,
         includePublicPagesWithoutExplicitAccess: true,
-        ancestors: [],
         createdBy: [],
         editedBy: [],
         lastEditedTime: {},
         createdTime: {},
-        ...params.filters
+        ...params.filters,
+        ancestors: params.filters?.ancestors ? params.filters.ancestors.map(id => parsePageId(id)) : []
       }
     }
-
     return this.fetch<SearchResults>({
       endpoint: 'search',
       body,
@@ -572,23 +571,6 @@ export class NotionAPI {
       body,
       fetchOption
     })
-  }
-
-  /**
-   * Fetch backlinks for a page by automatically resolving its space id.
-   * Requires an authToken since backlinks are a private API.
-   *
-   * @param pageId page id or url
-   * @param fetchOption additional fetch options
-   */
-  public async getPageBacklinks(pageId: string, fetchOption?: FetchOption) {
-    const id = parsePageId(pageId)
-    const res = await this.getBlocks([id], fetchOption)
-    const block = res.recordMap.block[id]?.value
-    if (!block) throw new Error(`Block not found "${uuidToId(id)}"`)
-    const spaceId = block.space_id
-
-    return this.getBacklinks({ block: { id, spaceId } }, fetchOption)
   }
 
   public async fetch<T>({
