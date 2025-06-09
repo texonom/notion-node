@@ -14,10 +14,11 @@
     "build"
   ],
   "scripts": {
-    "build": "tsc && tsup",
+    "build": "tsc && vite build",
     "prerelease": "standard-version --skip.changelog --prerelease",
     "release": "standard-version --release-as",
-    "pu": "pnpm publish"
+    "pu": "pnpm publish",
+    "watch": "vite build --watch --mode development"
   },
   "engines": {
     "node": ">=22.16.0"
