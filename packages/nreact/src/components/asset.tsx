@@ -1,3 +1,4 @@
+'use server'
 import React from 'react'
 
 import { BaseContentBlock, Block } from '@texonom/ntypes'

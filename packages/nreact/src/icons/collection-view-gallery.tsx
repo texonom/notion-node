@@ -1,3 +1,4 @@
+'use server'
 import React from 'react'
 
 function SvgCollectionViewGallery(props: React.SVGProps<SVGSVGElement>) {
