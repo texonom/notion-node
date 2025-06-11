@@ -1,3 +1,4 @@
+'use server'
 import React from 'react'
 
 function SvgTypeEmail(props: React.SVGProps<SVGSVGElement>) {

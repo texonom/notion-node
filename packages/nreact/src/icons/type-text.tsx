@@ -1,3 +1,4 @@
+'use server'
 import React from 'react'
 
 function SvgTypeText(props: React.SVGProps<SVGSVGElement>) {

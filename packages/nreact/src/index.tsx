@@ -1,3 +1,4 @@
+'use server'
 export { NotionRenderer } from './renderer'
 
 export * from './block'

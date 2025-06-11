@@ -1,3 +1,4 @@
+'use server'
 import React from 'react'
 import { getBlockParentPage, getBlockTitle } from '@texonom/nutils'
 
