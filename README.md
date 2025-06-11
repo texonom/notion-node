@@ -19,7 +19,7 @@ Refactored with [Turboplate](https://github.com/seonglae/turboplate). Search API
 
 ```zsh
 pnpm i
-pnpm build # TSUp
+pnpm build # Vite
 pnpm test # Vitest
 ```
 
@@ -58,7 +58,7 @@ pnpm turbo pu
 [Turboplate](https://github.com/seonglae/turboplate) stacks
 
 - `Turborepo` monorepo
-- `TSup` build
+- `Vite` build
 - `Vitest` test
 - `ESLint` lint
 - `Prettier` format
