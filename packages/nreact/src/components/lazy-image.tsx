@@ -53,6 +53,7 @@ export const LazyImage: React.FC<{
         blurDataURL={previewImage.dataURIBase64}
         placeholder='blur'
         priority={priority}
+        fetchPriority={priority ? 'high' : undefined}
         onLoad={onLoad}
       />
     )
@@ -81,6 +82,7 @@ export const LazyImage: React.FC<{
           width={null}
           height={height || null}
           priority={priority}
+          fetchPriority={priority ? 'high' : undefined}
           onLoad={onLoad}
         />
       )
@@ -93,7 +95,8 @@ export const LazyImage: React.FC<{
         src={src}
         alt={alt}
         ref={attachZoomRef}
-        loading='lazy'
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : undefined}
         decoding='async'
         {...rest}
       />

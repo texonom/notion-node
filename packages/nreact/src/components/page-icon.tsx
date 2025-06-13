@@ -23,7 +23,8 @@ export const PageIconImpl: React.FC<{
   inline?: boolean
   hideDefaultIcon?: boolean
   defaultIcon?: string
-}> = ({ block, className, inline = true, hideDefaultIcon = false, defaultIcon }) => {
+  priority?: boolean
+}> = ({ block, className, inline = true, hideDefaultIcon = false, defaultIcon, priority = false }) => {
   const { mapImageUrl, recordMap, darkMode } = useNotionContext()
   let isImage = false
   let content: React.ReactNode = null
@@ -36,11 +37,25 @@ export const PageIconImpl: React.FC<{
       const url = mapImageUrl(icon, block)
       isImage = true
 
-      content = <LazyImage src={url} alt={title || 'page icon'} className={`${className || ''} notion-page-icon`} />
+      content = (
+        <LazyImage
+          src={url}
+          alt={title || 'page icon'}
+          className={`${className || ''} notion-page-icon`}
+          priority={priority}
+        />
+      )
     } else if (icon && icon.startsWith('/icons/')) {
       const url = 'https://www.notion.so' + icon + '?mode=' + (darkMode ? 'dark' : 'light')
 
-      content = <LazyImage src={url} alt={title || 'page icon'} className={`${className || ''} notion-page-icon`} />
+      content = (
+        <LazyImage
+          src={url}
+          alt={title || 'page icon'}
+          className={`${className || ''} notion-page-icon`}
+          priority={priority}
+        />
+      )
     } else if (!icon) {
       if (!hideDefaultIcon) {
         isImage = true

@@ -10,7 +10,7 @@ const baseConfig: Options = {
     'src/third-party/pdf.tsx'
   ],
   outDir: 'build',
-  target: 'es2015',
+  target: 'es2020',
   platform: 'browser',
   format: ['esm'],
   splitting: true,
@@ -28,7 +28,7 @@ export default defineConfig([
   {
     ...baseConfig,
     outDir: 'build',
-    minify: false,
+    minify: true,
     sourcemap: false
   }
 ])
