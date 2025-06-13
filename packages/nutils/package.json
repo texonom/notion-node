@@ -33,7 +33,7 @@
   "dependencies": {
     "is-url-superb": "^6.1.0",
     "mem": "^10.0.0",
-    "normalize-url": "^8.0.1",
+    "normalize-url": "^8.0.2",
     "@texonom/ntypes": "workspace:^",
     "p-queue": "^8.1.0"
   },
