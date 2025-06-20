@@ -1,3 +1,4 @@
+'use server'
 import React from 'react'
 
 function SvgTypeFormula(props: React.SVGProps<SVGSVGElement>) {

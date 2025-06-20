@@ -1,3 +1,4 @@
+'use server'
 import React from 'react'
 
 function SvgTypeGitHub(props: React.SVGProps<SVGSVGElement>) {
