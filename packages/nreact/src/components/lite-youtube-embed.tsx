@@ -86,7 +86,13 @@ export const LiteYouTubeEmbed: React.FC<{
           ${iframeInitialized && 'notion-yt-initialized'}
           ${className || ''}`}
         style={style}>
-        <img src={posterUrl} className='notion-yt-thumbnail' loading={lazyImage ? 'lazy' : undefined} alt={alt} />
+        <img
+          src={posterUrl}
+          className='notion-yt-thumbnail'
+          loading={lazyImage ? 'lazy' : 'eager'}
+          fetchPriority={lazyImage ? 'low' : 'high'}
+          alt={alt}
+        />
 
         <div className='notion-yt-playbtn' />
 
