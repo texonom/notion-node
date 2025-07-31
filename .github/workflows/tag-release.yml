@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  run:
+    if: github.repository == 'texonom/notion-node'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Install dependencies
+        run: |
+          npm i -g pnpm
+          pnpm i --frozen-lockfile
+
+      - name: Run release script
+        run: pnpm tsx release.ts --version=${{ github.ref_name }}
