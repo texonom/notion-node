@@ -1,3 +1,4 @@
+'use server'
 import React from 'react'
 
 function SvgTypeCheckbox(props: React.SVGProps<SVGSVGElement>) {
