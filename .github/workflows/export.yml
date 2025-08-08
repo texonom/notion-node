@@ -1,0 +1,44 @@
+name: Export Notion
+
+on:
+  # Trigger near month end; the last-day check below ensures a single run
+  schedule:
+    - cron: '0 0 28-31 * *'
+  workflow_dispatch:
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    env:
+      NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+      NOTION_PAGE_ID: ${{ secrets.NOTION_PAGE_ID }}
+    steps:
+      - name: Check last day of month
+        id: last
+        run: |
+          if [ "$(date -d tomorrow +'%m')" != "$(date +'%m')" ]; then
+            echo "value=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=false" >> "$GITHUB_OUTPUT"
+          fi
+        # Only continue when tomorrow starts a new month
+        # ensuring the export happens once each month (e.g. January 31)
+      - name: Setup Node.js
+        if: steps.last.outputs.value == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Install pnpm
+        if: steps.last.outputs.value == 'true'
+        run: npm i -g pnpm
+
+      - name: Export raw data
+        if: steps.last.outputs.value == 'true'
+        run: |
+          pnpm dlx @texonom/cli export -p "$NOTION_PAGE_ID" --raw -r -f --output texonom-raw --push
+
+      - name: Export markdown
+        if: steps.last.outputs.value == 'true'
+        run: |
+          pnpm dlx @texonom/cli export -p "$NOTION_PAGE_ID" -r -l -t "$NOTION_TOKEN" -u --output texonom-raw --md texonom-md --push
