@@ -1,3 +1,4 @@
+'use server'
 import React from 'react'
 
 import { parsePageId } from '@texonom/nutils'
