@@ -128,8 +128,8 @@ importers:
         version: 8.1.0
     devDependencies:
       '@notionhq/client':
-        specifier: ^4.0.2
-        version: 4.0.2
+        specifier: ^5.0.0
+        version: 5.0.0
       '@texonom/nclient':
         specifier: workspace:^
         version: link:../nclient
@@ -574,8 +574,8 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@notionhq/client@4.0.2':
-    resolution: {integrity: sha512-4pk3dm4umhjsRI0umCnJ8lCZh0TMiaMdkY0rz6FV4OqVuTsmYFV3pk+YTR5S8792ZY2Rm4lJHlLj05HQVKDuIg==}
+  '@notionhq/client@5.0.0':
+    resolution: {integrity: sha512-eXq0bZTXN8+xwT6e3qlrH9QCUn8mQLJ9UkNgKSew2NKNV/hyKb2wmIzQAuass8a2Q6F1aMjMPi+EGLQwgbVlOA==}
     engines: {node: '>=18'}
 
   '@pkgjs/parseargs@0.11.0':
@@ -3796,7 +3796,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
 
-  '@notionhq/client@4.0.2': {}
+  '@notionhq/client@5.0.0': {}
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
