@@ -179,7 +179,7 @@ export const Block: React.FC<BlockProps> = props => {
                       ${page_full_width && 'notion-full-width'}
                       ${page_small_text && 'notion-small-text'}
                       ${bodyClassName}`}>
-                    {page_icon && <PageIcon block={block} defaultIcon={defaultPageIcon} inline={false} />}
+                    {page_icon && <PageIcon block={block} defaultIcon={defaultPageIcon} inline={false} priority={true} />}
 
                     {pageHeader}
 
