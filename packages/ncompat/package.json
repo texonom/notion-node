@@ -26,10 +26,10 @@
   "dependencies": {
     "@texonom/ntypes": "workspace:^",
     "@texonom/nutils": "workspace:^",
-    "p-queue": "^8.1.0"
+    "p-queue": "^8.1.1"
   },
   "devDependencies": {
-    "@notionhq/client": "^5.0.0",
+    "@notionhq/client": "^5.1.0",
     "@texonom/nclient": "workspace:^"
   },
   "peerDependencies": {
