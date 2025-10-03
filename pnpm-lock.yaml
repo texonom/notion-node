@@ -124,8 +124,8 @@ importers:
         specifier: workspace:^
         version: link:../nutils
       p-queue:
-        specifier: ^8.1.1
-        version: 8.1.1
+        specifier: ^9.0.0
+        version: 9.0.0
     devDependencies:
       '@notionhq/client':
         specifier: ^5.1.0
@@ -218,8 +218,8 @@ importers:
         specifier: ^8.1.0
         version: 8.1.0
       p-queue:
-        specifier: ^8.1.1
-        version: 8.1.1
+        specifier: ^9.0.0
+        version: 9.0.0
 
 packages:
 
@@ -2707,13 +2707,13 @@ packages:
     resolution: {integrity: sha512-VFqfGDHlx87K66yZrNdI4YGtD70IRyd+zSvgks6mzHPRNkoKy+9EKP4SFC77/vTTQYmRmti7dvqC+m5jBrBAcg==}
     engines: {node: '>=12'}
 
-  p-queue@8.1.1:
-    resolution: {integrity: sha512-aNZ+VfjobsWryoiPnEApGGmf5WmNsCo9xu8dfaYamG5qaLP7ClhLN6NgsFe6SwJ2UbLEBK5dv9x8Mn5+RVhMWQ==}
-    engines: {node: '>=18'}
+  p-queue@9.0.0:
+    resolution: {integrity: sha512-KO1RyxstL9g1mK76530TExamZC/S2Glm080Nx8PE5sTd7nlduDQsAfEl4uXX+qZjLiwvDauvzXavufy3+rJ9zQ==}
+    engines: {node: '>=20'}
 
-  p-timeout@6.1.2:
-    resolution: {integrity: sha512-UbD77BuZ9Bc9aABo74gfXhNvzC9Tx7SxtHSh1fxvx3jTLLYvmVhiQZZrJzqqU0jKbN32kb5VOKiLEQI/3bIjgQ==}
-    engines: {node: '>=14.16'}
+  p-timeout@7.0.0:
+    resolution: {integrity: sha512-DhZ7ydOE3JXtXzDf2wz/KEamkKAD7Il5So09I2tOz4i+9pLcdghDKKmODkkoHKJ0TyczmhcHNxyTeTrsENT81A==}
+    engines: {node: '>=20'}
 
   p-try@1.0.0:
     resolution: {integrity: sha512-U1etNYuMJoIz3ZXSrrySFjsXQTWOx2/jdi86L+2pRvph/qMKL6sbcCYdH23fqsbm8TH2Gn0OybpT4eSFlCVHww==}
@@ -6366,12 +6366,12 @@ snapshots:
     dependencies:
       aggregate-error: 4.0.1
 
-  p-queue@8.1.1:
+  p-queue@9.0.0:
     dependencies:
       eventemitter3: 5.0.1
-      p-timeout: 6.1.2
+      p-timeout: 7.0.0
 
-  p-timeout@6.1.2: {}
+  p-timeout@7.0.0: {}
 
   p-try@1.0.0: {}
 
