@@ -15,7 +15,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=22.21.0"
+    "node": ">=24.11.0"
   },
   "bin": {
     "notion": "./build/src/main.js"

@@ -6,7 +6,7 @@
   "license": "MIT",
   "version": "1.4.7",
   "engines": {
-    "node": ">=20.19.5"
+    "node": ">=24.11.0"
   },
   "packageManager": "pnpm@10.19.0",
   "scripts": {
@@ -24,7 +24,7 @@
     "pu": "turbo pu -- --access=public --no-git-checks"
   },
   "devDependencies": {
-    "@types/node": "^22.18.12",
+    "@types/node": "^24.9.2",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "@vitest/coverage-v8": "^4.0.3",
