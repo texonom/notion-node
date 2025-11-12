@@ -1,3 +1,4 @@
+'use server'
 import React from 'react'
 
 export const DefaultPageIcon = props => {
