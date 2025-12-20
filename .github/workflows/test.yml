@@ -10,6 +10,7 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
