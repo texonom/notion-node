@@ -19,6 +19,7 @@ export const NotionRenderer: React.FC<{
 
   rootPageId?: string
   rootDomain?: string
+  rootSpaceId?: string
 
   // set fullPage to false to render page content only
   // this will remove the header, cover image, and footer
@@ -64,6 +65,7 @@ export const NotionRenderer: React.FC<{
   fullPage,
   rootPageId,
   rootDomain,
+  rootSpaceId,
   darkMode,
   previewImages,
   forceCustomImages,
@@ -101,6 +103,7 @@ export const NotionRenderer: React.FC<{
       fullPage={fullPage}
       rootPageId={rootPageId}
       rootDomain={rootDomain}
+      rootSpaceId={rootSpaceId}
       darkMode={darkMode}
       previewImages={previewImages}
       forceCustomImages={forceCustomImages}

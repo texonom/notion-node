@@ -53,6 +53,7 @@ export interface PartialNotionContext {
 
   rootPageId?: string
   rootDomain?: string
+  rootSpaceId?: string
 
   fullPage?: boolean
   darkMode?: boolean
@@ -174,6 +175,7 @@ export const NotionContextProvider: React.FC<PartialNotionContext> = ({
   mapPageUrl,
   mapImageUrl,
   rootPageId,
+  rootSpaceId,
   ...rest
 }) => {
   for (const key of Object.keys(rest)) if (rest[key] === undefined) delete rest[key]
@@ -203,11 +205,12 @@ export const NotionContextProvider: React.FC<PartialNotionContext> = ({
       ...defaultNotionContext,
       ...rest,
       rootPageId,
+      rootSpaceId,
       mapPageUrl: mapPageUrl ?? defaultMapPageUrl(rootPageId),
       mapImageUrl: mapImageUrl ?? defaultMapImageUrl,
       components: { ...defaultComponents, ...wrappedThemeComponents }
     }),
-    [mapImageUrl, mapPageUrl, wrappedThemeComponents, rootPageId, rest]
+    [mapImageUrl, mapPageUrl, wrappedThemeComponents, rootPageId, rootSpaceId, rest]
   )
 
   return <ctx.Provider value={value}>{children}</ctx.Provider>
