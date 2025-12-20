@@ -71,7 +71,7 @@ export const Search: React.FC<{
   search?: SearchNotionFn
   title?: React.ReactNode
 }> = ({ block, search, title = 'Search' }) => {
-  const { searchNotion, rootPageId, isShowingSearch, onHideSearch } = useNotionContext()
+  const { searchNotion, rootPageId, isShowingSearch, onHideSearch, rootSpaceId } = useNotionContext()
   const onSearchNotion = search || searchNotion
 
   const [isSearchOpen, setIsSearchOpen] = React.useState(isShowingSearch)
@@ -116,6 +116,7 @@ export const Search: React.FC<{
         <SearchDialog
           isOpen={isSearchOpen}
           rootBlockId={rootPageId || block?.id}
+          rootSpaceId={rootSpaceId}
           onClose={onCloseSearch}
           searchNotion={onSearchNotion}
         />

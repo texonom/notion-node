@@ -6,6 +6,7 @@ import { SearchIcon } from '../icons/search-icon'
 import { PageTitle } from './page-title'
 
 import type { SearchParams, SearchResults, APIError } from '@texonom/ntypes'
+import { getBlockTitle, getBlockParentPage } from '@texonom/nutils'
 // TODO: modal.default.setAppElement('.notion-viewport')
 
 // simple debounce utility so we only search after the user stops typing
@@ -17,19 +18,10 @@ const debounce = (func: (...args: any[]) => void, wait: number) => {
   }
 }
 
-    // debounce search calls so the expensive query only runs after typing stops
-    this._search = debounce(this._searchImpl.bind(this), 500)
-                    onInput={this._onChangeQuery}
-  let timeout: ReturnType<typeof setTimeout> | undefined
-  return (...args: any[]) => {
-    if (timeout) clearTimeout(timeout)
-    timeout = setTimeout(() => func(...args), wait)
-  }
-}
-
 export class SearchDialog extends React.Component<{
   isOpen: boolean
   rootBlockId: string
+  rootSpaceId: string
   onClose: () => void
   searchNotion: (params: SearchParams) => Promise<SearchResults>
 }> {
@@ -167,19 +159,26 @@ export class SearchDialog extends React.Component<{
   }
 
   _warmupSearch = async () => {
-    const { searchNotion, rootBlockId } = this.props
+    const { searchNotion, rootBlockId, rootSpaceId } = this.props
 
     // search is generally implemented as a serverless function wrapping the notion
     // private API, upon opening the search dialog, so we eagerly invoke an empty
     // search in order to warm up the serverless lambda
     await searchNotion({
       query: '',
-      ancestorId: rootBlockId
+      spaceId: rootSpaceId,
+      filters: {
+        ancestors: [rootBlockId],
+        isDeletedOnly: false,
+        excludeTemplates: true,
+        navigableBlockContentOnly: true,
+        requireEditPermissions: false
+      }
     })
   }
 
   _searchImpl = async () => {
-    const { searchNotion, rootBlockId } = this.props
+    const { searchNotion, rootBlockId, rootSpaceId } = this.props
     const { query } = this.state
 
     if (!query.trim()) {
@@ -190,7 +189,14 @@ export class SearchDialog extends React.Component<{
     this.setState({ isLoading: true })
     const result: any = await searchNotion({
       query,
-      ancestorId: rootBlockId
+      spaceId: rootSpaceId,
+      filters: {
+        ancestors: [rootBlockId],
+        isDeletedOnly: false,
+        excludeTemplates: true,
+        navigableBlockContentOnly: true,
+        requireEditPermissions: false
+      }
     })
 
     console.debug('search', query, result)

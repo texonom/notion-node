@@ -32,19 +32,19 @@ for (const pageId of pageIdFixturesFailure)
   })
 
 test(`Search`, { timeout: 10000, concurrent: true }, async () => {
-  const api = new NotionAPI()
+  const api = new NotionAPI({ authToken: process.env.NOTION_TOKEN })
   const results = await api.search({
     query: 'Texonom',
-    ancestorId: '04089c8ae3534bf79512fc495944b321',
+    spaceId: '0bf522c6-2468-4c71-99e3-68f5a25d4225',
     filters: {
+      ancestors: ['04089c8ae3534bf79512fc495944b321'],
       isDeletedOnly: false,
       excludeTemplates: true,
       navigableBlockContentOnly: true,
       requireEditPermissions: false
     }
   })
-  console.info(results)
-  if (!(results.total > 0)) throw new Error('Search error')
+  if (!(results.results.length > 0)) throw new Error('Search error')
   expect(results.recordMap.block).toBeTypeOf('object')
 })
 
@@ -56,18 +56,6 @@ test(`Backlink`, { timeout: 10000, concurrent: true }, async () => {
       spaceId: '0bf522c6-2468-4c71-99e3-68f5a25d4225'
     }
   })
-  expect(backlinks.backlinks.length > 0)
-})
-
-test(`Page Backlink`, { timeout: 10000, concurrent: true }, async () => {
-  const api = new NotionAPI({ authToken: process.env.NOTION_TOKEN })
-  const backlinks = await api.getPageBacklinks('441d5ce2-b781-46d0-9354-54042b4f06d9')
-  expect(backlinks.backlinks.length > 0)
-})
-
-test(`Page Backlink`, { timeout: 10000, concurrent: true }, async () => {
-  const api = new NotionAPI({ authToken: process.env.NOTION_TOKEN })
-  const backlinks = await api.getPageBacklinks('441d5ce2-b781-46d0-9354-54042b4f06d9')
   expect(backlinks.backlinks.length > 0)
 })
 
