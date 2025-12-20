@@ -1,6 +1,4 @@
 import React from 'react'
-import { getBlockParentPage, getBlockTitle } from '@texonom/nutils'
-
 import { NotionContextConsumer, NotionContextProvider } from '../context'
 import { ClearIcon } from '../icons/clear-icon'
 import { LoadingIcon } from '../icons/loading-icon'
@@ -8,6 +6,7 @@ import { SearchIcon } from '../icons/search-icon'
 import { PageTitle } from './page-title'
 
 import type { SearchParams, SearchResults, APIError } from '@texonom/ntypes'
+import { getBlockTitle, getBlockParentPage } from '@texonom/nutils'
 // TODO: modal.default.setAppElement('.notion-viewport')
 
 // simple debounce utility so we only search after the user stops typing
