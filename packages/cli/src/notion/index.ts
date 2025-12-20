@@ -722,7 +722,9 @@ export class NotionExporter {
     const run = (cmd: string, cwd: string) => {
       try {
         execSync(cmd, { cwd, stdio: 'ignore' })
-      } catch {}
+      } catch {
+        // Ignore errors - some commands may fail (e.g., remote already exists)
+      }
     }
     const message = new Date().toString()
 
