@@ -44,7 +44,7 @@ test(`Search`, { timeout: 10000, concurrent: true }, async () => {
       requireEditPermissions: false
     }
   })
-  if (!(results.total > 0)) throw new Error('Search error')
+  if (!(results.results.length > 0)) throw new Error('Search error')
   expect(results.recordMap.block).toBeTypeOf('object')
 })
 
