@@ -6,6 +6,8 @@
 
 ## Features
 
+- Uses the official Notion API while keeping the response structure of the unofficial API
+
 - fully compatible with `nreact`
 - backwards compatible with `nclient` and the unofficial notion API
 
@@ -20,7 +22,27 @@ const notion = new NotionCompatAPI(new Client({ auth: process.env.NOTION_TOKEN }
 const recordMap = await notion.getPage(pageId)
 ```
 
+```ts
+// searching works too
+const results = await notion.search({ query: 'Texonom' })
+```
+
 The resulting `recordMap` is compatible with notion's unofficial API and nreact.
+
+## API
+
+Exports:
+
+- `NotionCompatAPI` – wrapper around '@notionhq/client'
+- `convertPage({ pageId, blockMap })`
+- `convertBlock({ block, blockMap })`
+- `convertTime(time)`
+- `convertColor(color)`
+- `convertRichText(rich)`
+
+## Difference from React Notion X
+
+This layer lets you use the official API while retaining the features of the original unofficial client.
 
 ## Demo
 
