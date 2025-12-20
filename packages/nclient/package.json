@@ -1,6 +1,6 @@
 {
   "name": "@texonom/nclient",
-  "version": "1.4.4",
+  "version": "1.4.7",
   "type": "module",
   "description": "Robust TypeScript client for the unofficial Notion API.",
   "repository": "texonom/notion-node",
@@ -14,7 +14,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=22.16.0"
+    "node": ">=22.21.1"
   },
   "scripts": {
     "build": "tsc && vite build",

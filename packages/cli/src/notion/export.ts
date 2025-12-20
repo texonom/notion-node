@@ -2,24 +2,6 @@ import { Option, Command } from 'clipanion'
 import { NotionExporter } from './index'
 import { generateTreemaps, PageNode } from '../treemap'
 import { computeStats, writeStats } from '../stats'
-  treemap = Option.Boolean('--treemap', {
-    description: 'Generate HTML treemap after export'
-  })
-  stats = Option.Boolean('--stats', {
-    description: 'Generate statistics JSON after export'
-  })
-
-    if (this.treemap || this.stats) if (!exporter.pageTree) await exporter.loadRaw()
-
-    const tree = exporter.pageTree as unknown as PageNode
-    if (this.treemap && tree) await generateTreemaps(this.folder, tree)
-
-    if (this.stats && tree) {
-      const stats = computeStats(tree)
-      await writeStats(`${this.folder}/stats.json`, stats)
-    }
-import { generateTreemaps, PageNode } from '../treemap'
-import { computeStats, writeStats } from '../stats'
 
 export class NotionExportCommand extends Command {
   static paths = [['export']]

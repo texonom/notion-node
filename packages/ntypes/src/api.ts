@@ -9,7 +9,7 @@ export interface RecordValues<T> {
 }
 
 export interface SearchParams {
-  ancestorId: string
+  spaceId: string
   query: string
   excludedBlockIds?: string[]
   searchExperimentOverrides?: object
@@ -37,7 +37,7 @@ export interface SearchParams {
     direction?: 'desc' | 'acs'
   }
   source?: 'quick_find_filters' | 'quick_find_public'
-  type?: 'BlocksInAncestor'
+  type?: 'BlocksInSpace'
 }
 
 export interface BacklinkParams {
