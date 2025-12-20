@@ -1,6 +1,6 @@
 {
   "name": "@texonom/ntypes",
-  "version": "1.4.4",
+  "version": "1.4.7",
   "type": "module",
   "description": "TypeScript types for core Notion data structures.",
   "repository": "texonom/notion-node",
@@ -21,7 +21,10 @@
     "watch": "vite build --watch --mode development"
   },
   "engines": {
-    "node": ">=22.16.0"
+    "node": ">=22.21.1"
+  },
+  "devDependencies": {
+    "vite-plugin-dts": "^4.5.0"
   },
   "standard-version": {
     "skip": {

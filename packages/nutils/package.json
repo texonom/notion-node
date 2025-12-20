@@ -1,6 +1,6 @@
 {
   "name": "@texonom/nutils",
-  "version": "1.4.4",
+  "version": "1.4.7",
   "type": "module",
   "description": "Useful utilities for working with Notion data. Isomorphic.",
   "repository": "texonom/notion-node",
@@ -20,7 +20,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=22.16.0"
+    "node": ">=22.21.1"
   },
   "scripts": {
     "build": "tsc && vite build",
@@ -36,9 +36,9 @@
   "dependencies": {
     "is-url-superb": "^6.1.0",
     "mem": "^10.0.0",
-    "normalize-url": "^8.0.1",
+    "normalize-url": "^8.1.0",
     "@texonom/ntypes": "workspace:^",
-    "p-queue": "^8.1.0"
+    "p-queue": "^9.0.1"
   },
   "standard-version": {
     "skip": {
