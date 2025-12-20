@@ -64,6 +64,15 @@ const fileBlock: BlockType = {
   }
 } as any
 
+const imageBlock: BlockType = {
+  ...baseBlock,
+  id: 'image',
+  type: 'image',
+  properties: {
+    source: [['https://example.com/image.png']]
+  }
+} as any
+
 const googleDriveBlock: BlockType = {
   ...baseBlock,
   id: 'gd',
@@ -82,13 +91,15 @@ const eoiBlock: BlockType = {
   }
 } as any
 
-async function renderElement(element: React.ReactNode) {
+async function renderElement(element: React.ReactNode, expectContent = true) {
   const stream = await renderToReadableStream(
     <NotionContextProvider recordMap={emptyRecordMap}>{element}</NotionContextProvider>
   )
   const reader = stream.getReader()
   const chunk = await reader.read()
-  expect(chunk.done).toBe(false)
+  // Components that render nothing (return null) will have chunk.done = true
+  // This is valid behavior, we just want to ensure no errors during rendering
+  if (expectContent) expect(chunk.done).toBe(false)
 }
 
 describe('individual component rendering', () => {
@@ -101,7 +112,7 @@ describe('individual component rendering', () => {
   })
 
   test('Asset', async () => {
-    await renderElement(<Asset blockId='file' block={fileBlock} />)
+    await renderElement(<Asset block={imageBlock}>{null}</Asset>)
   })
 
   test('Audio', async () => {
@@ -145,10 +156,11 @@ describe('individual component rendering', () => {
   })
 
   test('SyncPointerBlock', async () => {
-    await renderElement(<SyncPointerBlock block={baseBlock} level={0} />)
+    // SyncPointerBlock returns null when there's no transclusion_reference_pointer
+    await renderElement(<SyncPointerBlock block={baseBlock} level={0} />, false)
   })
 
   test('Text', async () => {
-    await renderElement(<Text value={[]} block={baseBlock} />)
+    await renderElement(<Text value={[['Hello']]} block={baseBlock} />)
   })
 })
