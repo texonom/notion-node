@@ -1,4 +1,3 @@
-'use server'
 import React from 'react'
 
 export const ClearIcon = props => {

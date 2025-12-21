@@ -1,4 +1,3 @@
-'use server'
 import React from 'react'
 
 function SvgTypeNumber(props: React.SVGProps<SVGSVGElement>) {

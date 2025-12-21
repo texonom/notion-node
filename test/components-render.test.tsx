@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import React from '../packages/nreact/node_modules/react'
-import { renderToReadableStream } from '../packages/nreact/node_modules/react-dom/server.edge'
+import { renderToString } from '../packages/nreact/node_modules/react-dom/server'
 import { NotionContextProvider } from '../packages/nreact/src/context'
 import {
   Block,
@@ -91,76 +91,74 @@ const eoiBlock: BlockType = {
   }
 } as any
 
-async function renderElement(element: React.ReactNode, expectContent = true) {
-  const stream = await renderToReadableStream(
+function renderElement(element: React.ReactNode, expectContent = true) {
+  const html = renderToString(
     <NotionContextProvider recordMap={emptyRecordMap}>{element}</NotionContextProvider>
   )
-  const reader = stream.getReader()
-  const chunk = await reader.read()
-  // Components that render nothing (return null) will have chunk.done = true
+  // Components that render nothing (return null) will produce empty string
   // This is valid behavior, we just want to ensure no errors during rendering
-  if (expectContent) expect(chunk.done).toBe(false)
+  if (expectContent) expect(html.length).toBeGreaterThan(0)
 }
 
 describe('individual component rendering', () => {
-  test('Block', async () => {
-    await renderElement(<Block block={baseBlock} level={0} />)
+  test('Block', () => {
+    renderElement(<Block block={baseBlock} level={0} />)
   })
 
-  test('AssetWrapper', async () => {
-    await renderElement(<AssetWrapper blockId='file' block={fileBlock} />)
+  test('AssetWrapper', () => {
+    renderElement(<AssetWrapper blockId='file' block={fileBlock} />)
   })
 
-  test('Asset', async () => {
-    await renderElement(<Asset block={imageBlock}>{null}</Asset>)
+  test('Asset', () => {
+    renderElement(<Asset block={imageBlock}>{null}</Asset>)
   })
 
-  test('Audio', async () => {
-    await renderElement(<Audio block={audioBlock} />)
+  test('Audio', () => {
+    renderElement(<Audio block={audioBlock} />)
   })
 
-  test('Checkbox', async () => {
-    await renderElement(<Checkbox isChecked={true} blockId='page' />)
+  test('Checkbox', () => {
+    renderElement(<Checkbox isChecked={true} blockId='page' />)
   })
 
-  test('EOI', async () => {
-    await renderElement(<EOI block={eoiBlock} />)
+  test('EOI', () => {
+    renderElement(<EOI block={eoiBlock} />)
   })
 
-  test('File', async () => {
-    await renderElement(<File block={fileBlock} />)
+  test('File', () => {
+    renderElement(<File block={fileBlock} />)
   })
 
-  test('GoogleDrive', async () => {
-    await renderElement(<GoogleDrive block={googleDriveBlock} />)
+  test('GoogleDrive', () => {
+    renderElement(<GoogleDrive block={googleDriveBlock} />)
   })
 
-  test('GracefulImage', async () => {
-    await renderElement(<GracefulImage src='image.png' />)
+  test('GracefulImage', () => {
+    renderElement(<GracefulImage src='image.png' />)
   })
 
-  test('LazyImage', async () => {
-    await renderElement(<LazyImage src='image.png' />)
+  test('LazyImage', () => {
+    renderElement(<LazyImage src='image.png' />)
   })
 
-  test('LiteYouTubeEmbed', async () => {
-    await renderElement(<LiteYouTubeEmbed id='dQw4w9WgXcQ' />)
+  test('LiteYouTubeEmbed', () => {
+    renderElement(<LiteYouTubeEmbed id='dQw4w9WgXcQ' />)
   })
 
-  test('PageIcon', async () => {
-    await renderElement(<PageIcon block={baseBlock} />)
+  test('PageIcon', () => {
+    renderElement(<PageIcon block={baseBlock} />)
   })
 
-  test('PageTitle', async () => {
-    await renderElement(<PageTitle block={baseBlock} />)
+  test('PageTitle', () => {
+    renderElement(<PageTitle block={baseBlock} />)
   })
 
-  test('SyncPointerBlock', async () => {
+  test('SyncPointerBlock', () => {
     // SyncPointerBlock returns null when there's no transclusion_reference_pointer
-    await renderElement(<SyncPointerBlock block={baseBlock} level={0} />, false)
+    renderElement(<SyncPointerBlock block={baseBlock} level={0} />, false)
   })
 
-  test('Text', async () => {
-    await renderElement(<Text value={[['Hello']]} block={baseBlock} />)
+  test('Text', () => {
+    renderElement(<Text value={[['Hello']]} block={baseBlock} />)
   })
 })

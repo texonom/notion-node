@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import React from '../packages/nreact/node_modules/react'
-import { renderToReadableStream } from '../packages/nreact/node_modules/react-dom/server.edge'
+import { renderToString } from '../packages/nreact/node_modules/react-dom/server'
 import { NotionRenderer } from '../packages/nreact/src/renderer'
 import type { ExtendedRecordMap } from '../packages/ntypes/src/maps'
 
@@ -33,9 +33,8 @@ const recordMap: ExtendedRecordMap = {
   signed_urls: {}
 }
 
-test('server component renders to stream', async () => {
-  const stream = await renderToReadableStream(<NotionRenderer recordMap={recordMap} />)
-  const reader = stream.getReader()
-  const chunk = await reader.read()
-  expect(chunk.done).toBe(false)
+test('server component renders to string', async () => {
+  const html = renderToString(<NotionRenderer recordMap={recordMap} />)
+  expect(html).toBeTruthy()
+  expect(html.length).toBeGreaterThan(0)
 })

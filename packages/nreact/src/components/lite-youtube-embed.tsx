@@ -1,4 +1,3 @@
-'use server'
 import React from 'react'
 
 const qs = (params: Record<string, string>) => {

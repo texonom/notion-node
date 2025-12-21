@@ -1,4 +1,3 @@
-'use server'
 import React from 'react'
 
 function SvgTypeFile(props: React.SVGProps<SVGSVGElement>) {

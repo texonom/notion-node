@@ -1,4 +1,3 @@
-'use server'
 import React from 'react'
 
 import { PageBlock } from '@texonom/ntypes'
