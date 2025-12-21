@@ -1,4 +1,3 @@
-'use server'
 import React from 'react'
 
 function SvgTypePerson(props: React.SVGProps<SVGSVGElement>) {

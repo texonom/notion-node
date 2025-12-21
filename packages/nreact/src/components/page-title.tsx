@@ -1,4 +1,3 @@
-'use server'
 import React from 'react'
 
 import { Block, Decoration } from '@texonom/ntypes'

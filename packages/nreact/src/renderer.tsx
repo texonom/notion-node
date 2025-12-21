@@ -1,4 +1,3 @@
-'use server'
 import React from 'react'
 
 import mediumZoom from '@fisch0920/medium-zoom'

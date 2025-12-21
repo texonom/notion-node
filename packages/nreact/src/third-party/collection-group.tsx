@@ -1,4 +1,3 @@
-'use server'
 import React from 'react'
 
 import { CollectionGroupProps } from '../types'

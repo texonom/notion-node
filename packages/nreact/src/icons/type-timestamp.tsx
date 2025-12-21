@@ -1,4 +1,3 @@
-'use server'
 import React from 'react'
 
 function SvgTypeTimestamp(props: React.SVGProps<SVGSVGElement>) {
