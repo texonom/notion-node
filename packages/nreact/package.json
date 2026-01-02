@@ -35,7 +35,7 @@
     "react-hotkeys-hook": "^5.2.1",
     "react-image": "^4.1.0",
     "react-modal": "^3.16.3",
-    "react-pdf": "^10.2.0",
+    "react-pdf": "^10.3.0",
     "react-use": "^17.6.0"
   },
   "devDependencies": {
