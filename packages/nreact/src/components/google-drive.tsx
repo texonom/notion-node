@@ -29,6 +29,7 @@ export const GoogleDrive: React.FC<{
             src={mapImageUrl(properties.thumbnail, block)}
             alt={properties.title || 'Google Drive Document'}
             loading='lazy'
+            fetchPriority='low'
           />
         </div>
 
