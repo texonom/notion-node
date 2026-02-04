@@ -75,6 +75,8 @@ export const Text: React.FC<{
                           src={mapImageUrl(user.profile_photo, block)}
                           alt={name}
                           style={{ display: 'inline', marginRight: '0.3em', marginBottom: '0.3em' }}
+                          loading='lazy'
+                          fetchPriority='low'
                         />
                         {name}
                       </components.Link>
@@ -187,6 +189,8 @@ export const Text: React.FC<{
                       src={mapImageUrl(user.profile_photo, block)}
                       alt={name}
                       style={{ display: 'inline', marginRight: '0.3em', marginBottom: '0.3em' }}
+                      loading='lazy'
+                      fetchPriority='low'
                     />
                     {name}
                   </components.Link>
