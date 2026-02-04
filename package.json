@@ -6,9 +6,9 @@
   "license": "MIT",
   "version": "1.4.7",
   "engines": {
-    "node": ">=20.19.6"
+    "node": ">=20.20.0"
   },
-  "packageManager": "pnpm@10.26.1",
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
     "prepare": "husky install",
     "link": "turbo link",
@@ -17,34 +17,35 @@
     "clean": "rm -rf packages/*/build packages/*/.turbo node_modules/.cache",
     "test": "vitest --run",
     "coverage": "vitest --run --coverage",
-    "lint": "eslint \"**/*.{ts,tsx}\" --fix --ignore-path .gitignore --cache",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint \"**/*.{ts,tsx}\" --fix --ignore-path .gitignore --cache",
     "format": "prettier \"**/*.{js,json,md,css,js,ts,tsx}\" --write --ignore-path .gitignore",
     "prerelease": "standard-version -a -t '' --skip.changelog --prerelease",
     "release": "standard-version -a -t '' --release-as",
     "pu": "turbo pu -- --access=public --no-git-checks"
   },
   "devDependencies": {
-    "@types/node": "^22.19.3",
-    "@typescript-eslint/eslint-plugin": "^8.50.0",
-    "@typescript-eslint/parser": "^8.50.0",
-    "@vitest/coverage-v8": "^4.0.16",
+    "@types/node": "^22.19.7",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
+    "@vitest/coverage-v8": "^4.0.18",
     "dotenv": "^17.2.3",
-    "eslint": "8.57.1",
-    "eslint-config-next": "^16.1.0",
+    "eslint": "9.39.2",
+    "eslint-config-next": "^16.1.6",
     "eslint-config-prettier": "^10.1.7",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "husky": "^9.1.7",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.1",
     "standard-version": "^9.5.0",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
-    "turbo": "^2.7.0",
+    "turbo": "^2.8.0",
     "typescript": "^5.9.3",
-    "vite": "^7.3.0",
-    "vitest": "^4.0.16"
+"vite": "^7.3.1",
+    "vite-plugin-dts": "^4.5.0",
+    "vitest": "^4.0.18"
   },
   "standard-version": {
     "scripts": {

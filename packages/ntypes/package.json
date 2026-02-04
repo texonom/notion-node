@@ -14,13 +14,17 @@
     "build"
   ],
   "scripts": {
-    "build": "tsc && tsup",
+    "build": "tsc && vite build",
     "prerelease": "standard-version --skip.changelog --prerelease",
     "release": "standard-version --release-as",
-    "pu": "pnpm publish"
+    "pu": "pnpm publish",
+    "watch": "vite build --watch --mode development"
   },
   "engines": {
-    "node": ">=22.21.1"
+    "node": ">=22.22.0"
+  },
+  "devDependencies": {
+    "vite-plugin-dts": "^4.5.0"
   },
   "standard-version": {
     "skip": {
