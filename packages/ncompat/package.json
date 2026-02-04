@@ -14,11 +14,11 @@
     "build"
   ],
   "engines": {
-    "node": ">=22.21.1"
+    "node": ">=22.22.0"
   },
   "scripts": {
-    "build": "tsc && tsup",
-    "watch": "tsup --watch --silent --onSuccess 'echo build successful'",
+    "build": "tsc && vite build",
+    "watch": "vite build --watch --mode development",
     "prerelease": "standard-version --skip.changelog --prerelease",
     "release": "standard-version --release-as",
     "pu": "pnpm publish"
@@ -26,10 +26,10 @@
   "dependencies": {
     "@texonom/ntypes": "workspace:^",
     "@texonom/nutils": "workspace:^",
-    "p-queue": "^9.0.1"
+    "p-queue": "^9.1.0"
   },
   "devDependencies": {
-    "@notionhq/client": "^5.6.0",
+    "@notionhq/client": "^5.9.0",
     "@texonom/nclient": "workspace:^"
   },
   "peerDependencies": {
