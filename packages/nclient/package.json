@@ -17,8 +17,8 @@
     "node": ">=22.22.0"
   },
   "scripts": {
-    "build": "tsc && tsup",
-    "watch": "tsup --watch --silent --onSuccess 'echo build successful'",
+    "build": "tsc && vite build",
+    "watch": "vite build --watch --mode development",
     "test": "vitest --run",
     "prerelease": "standard-version --skip.changelog --prerelease",
     "release": "standard-version --release-as",
