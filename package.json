@@ -17,7 +17,7 @@
     "clean": "rm -rf packages/*/build packages/*/.turbo node_modules/.cache",
     "test": "vitest --run",
     "coverage": "vitest --run --coverage",
-    "lint": "eslint \"**/*.{ts,tsx}\" --fix --ignore-path .gitignore --cache",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint \"**/*.{ts,tsx}\" --fix --ignore-path .gitignore --cache",
     "format": "prettier \"**/*.{js,json,md,css,js,ts,tsx}\" --write --ignore-path .gitignore",
     "prerelease": "standard-version -a -t '' --skip.changelog --prerelease",
     "release": "standard-version -a -t '' --release-as",
