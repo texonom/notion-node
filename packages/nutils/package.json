@@ -20,7 +20,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=22.21.1"
+    "node": ">=22.22.0"
   },
   "scripts": {
     "build": "tsc && vite build",
@@ -36,9 +36,9 @@
   "dependencies": {
     "is-url-superb": "^6.1.0",
     "mem": "^10.0.0",
-    "normalize-url": "^8.1.0",
+    "normalize-url": "^8.1.1",
     "@texonom/ntypes": "workspace:^",
-    "p-queue": "^9.0.1"
+    "p-queue": "^9.1.0"
   },
   "standard-version": {
     "skip": {
