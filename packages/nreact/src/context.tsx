@@ -203,11 +203,9 @@ export const NotionContextProvider: React.FC<PartialNotionContext> = ({
     if (components.nextLink) {
       const nextLink = wrapNextLink(components.nextLink)
       components.nextLink = nextLink
-
       if (!components.PageLink) components.PageLink = nextLink
       if (!components.Link) components.Link = nextLink
     }
-
     // ensure the user can't override default components with falsy values
     // since it would result in very difficult-to-debug react errors
     for (const key of Object.keys(components)) if (!components[key]) delete components[key]
