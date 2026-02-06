@@ -17,6 +17,7 @@ export default defineConfig({
       external: [
         ...Object.keys(pkg.dependencies || {}),
         ...Object.keys(pkg.peerDependencies || {}),
+        'child_process',
         'fs',
         'fs/promises',
         'path',
@@ -27,4 +28,3 @@ export default defineConfig({
   },
   plugins: [dts({ tsconfigPath: 'tsconfig.json', outDir: 'build/src' })]
 })
-
