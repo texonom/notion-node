@@ -24,11 +24,11 @@
     "pu": "turbo pu -- --access=public --no-git-checks"
   },
   "devDependencies": {
-    "@types/node": "^22.19.7",
+    "@types/node": "^22.19.9",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
     "@vitest/coverage-v8": "^4.0.18",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.2.4",
     "eslint": "9.39.2",
     "eslint-config-next": "^16.1.6",
     "eslint-config-prettier": "^10.1.7",
@@ -41,10 +41,10 @@
     "standard-version": "^9.5.0",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
-    "turbo": "^2.8.0",
+    "turbo": "^2.8.3",
     "typescript": "^5.9.3",
 "vite": "^7.3.1",
-    "vite-plugin-dts": "^4.5.0",
+    "vite-plugin-dts": "^4.5.4",
     "vitest": "^4.0.18"
   },
   "standard-version": {
