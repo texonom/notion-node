@@ -540,7 +540,14 @@ export const Block: React.FC<BlockProps> = props => {
               <div className='notion-bookmark-link'>
                 {block.format?.bookmark_icon && (
                   <div className='notion-bookmark-link-icon'>
-                    <LazyImage src={mapImageUrl(block.format?.bookmark_icon, block)} alt={title} />
+                    <LazyImage
+                      src={mapImageUrl(block.format?.bookmark_icon, block)}
+                      alt={title}
+                      onError={e => {
+                        const target = e.currentTarget as HTMLImageElement
+                        target.style.display = 'none'
+                      }}
+                    />
                   </div>
                 )}
 
@@ -557,6 +564,10 @@ export const Block: React.FC<BlockProps> = props => {
                   alt={getTextContent(block.properties?.title)}
                   style={{
                     objectFit: 'cover'
+                  }}
+                  onError={e => {
+                    const parent = (e.currentTarget as HTMLImageElement).closest('.notion-bookmark-image')
+                    if (parent instanceof HTMLElement) parent.style.display = 'none'
                   }}
                 />
               </div>
