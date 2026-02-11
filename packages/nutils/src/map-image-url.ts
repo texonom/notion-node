@@ -19,6 +19,9 @@ export const defaultMapImageUrl = (url: string, block: Block): string | null => 
       )
         // if the URL is already signed, then use it as-is
         return url
+
+    // external HTTPS URLs that aren't from notion.so or amazonaws should bypass the proxy
+    if (u.protocol === 'https:' && !u.hostname.endsWith('notion.so') && !u.hostname.endsWith('amazonaws.com')) return url
   } catch {
     // ignore invalid urls
   }
