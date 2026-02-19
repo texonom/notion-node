@@ -82,6 +82,12 @@ export class NotionAPI {
     const recordMap = page?.recordMap as ExtendedRecordMap
     if (!recordMap?.block) throw new Error(`Notion page not found "${uuidToId(pageId)}"`)
 
+    // Normalize nested API format from loadPageChunk
+    normalizeMap(recordMap.block)
+    normalizeMap(recordMap.collection)
+    normalizeMap(recordMap.collection_view)
+    normalizeMap(recordMap.notion_user)
+
     // ensure that all top-level maps exist
     recordMap.collection = recordMap.collection ?? {}
     recordMap.collection_view = recordMap.collection_view ?? {}
@@ -113,6 +119,11 @@ export class NotionAPI {
       recordMap.notion_user = { ...recordMap.notion_user, ...newUsers }
       recordMap.block = { ...recordMap.block, ...newBlocks }
       recordMap.space = { ...recordMap.space, ...newSpaces }
+
+      // Normalize after merging syncRecordValues/getRecordValues data
+      normalizeMap(recordMap.block)
+      normalizeMap(recordMap.collection)
+      normalizeMap(recordMap.notion_user)
     }
 
     // Optionally fetch all data for embedded collections and their associated views.
@@ -215,6 +226,9 @@ export class NotionAPI {
           if (!collectionView) {
             const viewBlockData = await this.getPageRaw(collectionViewBlockId, { fetchOption })
             if (viewBlockData.recordMap) {
+              normalizeMap(viewBlockData.recordMap.block)
+              normalizeMap(viewBlockData.recordMap.collection)
+              normalizeMap(viewBlockData.recordMap.collection_view)
               recordMap.collection_view = { ...recordMap.collection_view, ...viewBlockData.recordMap.collection_view }
               resultMap.collection_view = { ...resultMap.collection_view, ...viewBlockData.recordMap.collection_view }
               recordMap.collection = { ...recordMap.collection, ...viewBlockData.recordMap.collection }
