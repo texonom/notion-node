@@ -13,7 +13,7 @@ export const defaultMapImageUrl = (url: string, block: Block): string | null => 
   try {
     const u = new URL(url)
     if (
-      u.protocol === 'https:' &&
+      (u.protocol === 'https:' || u.protocol === 'http:') &&
       !u.hostname.endsWith('.notion.so') &&
       !u.hostname.endsWith('.amazonaws.com') &&
       u.hostname !== 'www.notion.so' &&
