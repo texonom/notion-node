@@ -1,6 +1,6 @@
 {
   "name": "@texonom/nutils",
-  "version": "1.4.7",
+  "version": "1.5.0",
   "type": "module",
   "description": "Useful utilities for working with Notion data. Isomorphic.",
   "repository": "texonom/notion-node",
@@ -31,9 +31,7 @@
     "pu": "pnpm publish"
   },
   "devDependencies": {
-
     "vite-plugin-dts": "^4.5.4"
-
   },
   "dependencies": {
     "is-url-superb": "^6.1.0",
