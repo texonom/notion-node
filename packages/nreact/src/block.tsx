@@ -518,10 +518,10 @@ export const Block: React.FC<BlockProps> = props => {
           }
 
       return (
-        <components.Link
+        <a
           target='_blank'
           rel='noopener noreferrer'
-          className={`notion-bookmark ${block.format?.block_color && `notion-${block.format.block_color}`} ${blockId}`}
+          className={`notion-bookmark ${block.format?.block_color ? `notion-${block.format.block_color}` : ''} ${blockId}`}
           href={link[0][0]}>
           <div>
             {title && (
@@ -530,9 +530,9 @@ export const Block: React.FC<BlockProps> = props => {
               </div>
             )}
 
-            {block.properties?.description && (
+            {block.properties.description && (
               <div className='notion-bookmark-description'>
-                <Text value={block.properties?.description} block={block} />
+                <Text value={block.properties.description} block={block} />
               </div>
             )}
 
@@ -540,7 +540,7 @@ export const Block: React.FC<BlockProps> = props => {
               {block.format?.bookmark_icon && (
                 <div className='notion-bookmark-link-icon'>
                   <LazyImage
-                    src={mapImageUrl(block.format?.bookmark_icon, block)}
+                    src={mapImageUrl(block.format.bookmark_icon, block)}
                     alt={title}
                     onError={e => {
                       const parent = e.currentTarget.closest('.notion-bookmark-link-icon') as HTMLElement
@@ -559,8 +559,8 @@ export const Block: React.FC<BlockProps> = props => {
           {block.format?.bookmark_cover && (
             <div className='notion-bookmark-image'>
               <LazyImage
-                src={mapImageUrl(block.format?.bookmark_cover, block)}
-                alt={getTextContent(block.properties?.title)}
+                src={mapImageUrl(block.format.bookmark_cover, block)}
+                alt={getTextContent(block.properties.title)}
                 style={{
                   objectFit: 'cover'
                 }}
@@ -571,7 +571,7 @@ export const Block: React.FC<BlockProps> = props => {
               />
             </div>
           )}
-        </components.Link>
+        </a>
       )
     }
 

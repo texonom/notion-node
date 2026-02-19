@@ -10,6 +10,7 @@ import pMap from 'p-map'
 
 import type {
   ExtendedRecordMap,
+  NotionMap,
   PageChunk,
   BaseCollectionView,
   CollectionViewType,
@@ -485,17 +486,12 @@ export class NotionAPI {
     // Normalize queryCollection recordMap — Notion API now wraps entries with
     // {spaceId, value: {value, role}} instead of {value, role}. Unwrap so
     // downstream code can use entry.value.* consistently with loadPageChunk.
-    if (response.recordMap)
-      for (const table of ['block', 'collection', 'collection_view', 'notion_user']) {
-        const map = (response.recordMap as unknown as Record<string, Record<string, unknown>>)[table] as
-          | Record<string, unknown>
-          | undefined
-        if (!map) continue
-        for (const [id, entry] of Object.entries(map)) {
-          const e = entry as { spaceId?: string; value?: { value?: unknown; role?: string } }
-          if (e.spaceId && e.value?.value) map[id] = e.value
-        }
-      }
+    if (response.recordMap) {
+      normalizeMap(response.recordMap.block)
+      normalizeMap(response.recordMap.collection)
+      normalizeMap(response.recordMap.collection_view)
+      normalizeMap(response.recordMap.notion_user)
+    }
 
     return response
   }
@@ -624,5 +620,15 @@ export class NotionAPI {
     }
 
     return fetch(url, requestInit).then(res => res.json())
+  }
+}
+
+// Notion's queryCollection API wraps entries as {spaceId, value: {value, role}}
+// instead of {value, role}. Unwrap in-place to match loadPageChunk format.
+function normalizeMap<T>(map: NotionMap<T> | undefined) {
+  if (!map) return
+  for (const id of Object.keys(map)) {
+    const entry: any = map[id]
+    if (entry?.spaceId && entry.value?.value) map[id] = entry.value
   }
 }
