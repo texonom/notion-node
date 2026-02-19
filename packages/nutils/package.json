@@ -1,6 +1,6 @@
 {
   "name": "@texonom/nutils",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "type": "module",
   "description": "Useful utilities for working with Notion data. Isomorphic.",
   "repository": "texonom/notion-node",

@@ -15,7 +15,8 @@ export const LazyImage: React.FC<{
   height?: number
   zoomable?: boolean
   priority?: boolean
-}> = ({ src, alt, className, style, zoomable = false, priority = false, height, ...rest }) => {
+  onError?: React.ReactEventHandler<HTMLImageElement>
+}> = ({ src, alt, className, style, zoomable = false, priority = false, height, onError, ...rest }) => {
   const { recordMap, zoom, previewImages, forceCustomImages, components } = useNotionContext()
 
   const zoomRef = React.useRef(zoom ? zoom.clone() : null)
@@ -95,6 +96,7 @@ export const LazyImage: React.FC<{
         ref={attachZoomRef}
         loading='lazy'
         decoding='async'
+        onError={onError}
         {...rest}
       />
     )
