@@ -976,6 +976,8 @@ svg.notion-page-icon {
 .notion-bookmark {
   margin: 4px 0;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   box-sizing: border-box;
   text-decoration: none;
   border: 1px solid var(--fg-color-1);
@@ -991,6 +993,7 @@ svg.notion-page-icon {
 
 .notion-bookmark > div:first-child {
   flex: 4 1 180px;
+  min-width: 0;
   padding: 12px 14px 14px;
   overflow: hidden;
   text-align: left;
@@ -1018,6 +1021,8 @@ svg.notion-page-icon {
 .notion-bookmark-link {
   display: flex;
   margin-top: 6px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .notion-bookmark-link-icon {
@@ -1034,6 +1039,7 @@ svg.notion-page-icon {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .notion-bookmark-link-icon img {
