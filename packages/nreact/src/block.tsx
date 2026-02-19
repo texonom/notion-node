@@ -543,8 +543,8 @@ export const Block: React.FC<BlockProps> = props => {
                     src={mapImageUrl(block.format?.bookmark_icon, block)}
                     alt={title}
                     onError={e => {
-                      const target = e.currentTarget as HTMLImageElement
-                      target.style.display = 'none'
+                      const parent = e.currentTarget.closest('.notion-bookmark-link-icon') as HTMLElement
+                      if (parent) parent.style.display = 'none'
                     }}
                   />
                 </div>
@@ -565,8 +565,8 @@ export const Block: React.FC<BlockProps> = props => {
                   objectFit: 'cover'
                 }}
                 onError={e => {
-                  const target = e.currentTarget as HTMLImageElement
-                  target.style.display = 'none'
+                  const parent = e.currentTarget.closest('.notion-bookmark-image') as HTMLElement
+                  if (parent) parent.style.display = 'none'
                 }}
               />
             </div>
