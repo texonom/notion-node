@@ -472,7 +472,7 @@ export class NotionAPI {
       }
     }
 
-    return this.fetch<ReducerResponse<CollectionQueryResult>>({
+    const response = await this.fetch<ReducerResponse<CollectionQueryResult>>({
       endpoint: 'queryCollection',
       body: {
         collection: { id: collectionId },
@@ -481,6 +481,23 @@ export class NotionAPI {
       },
       fetchOption
     })
+
+    // Normalize queryCollection recordMap — Notion API now wraps entries with
+    // {spaceId, value: {value, role}} instead of {value, role}. Unwrap so
+    // downstream code can use entry.value.* consistently with loadPageChunk.
+    if (response.recordMap)
+      for (const table of ['block', 'collection', 'collection_view', 'notion_user']) {
+        const map = (response.recordMap as unknown as Record<string, Record<string, unknown>>)[table] as
+          | Record<string, unknown>
+          | undefined
+        if (!map) continue
+        for (const [id, entry] of Object.entries(map)) {
+          const e = entry as { spaceId?: string; value?: { value?: unknown; role?: string } }
+          if (e.spaceId && e.value?.value) map[id] = e.value
+        }
+      }
+
+    return response
   }
 
   public async getUsers(userIds: string[], fetchOption?: FetchOption) {
