@@ -73,7 +73,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
     }
   } else if (cover?.type === 'property') {
     const { property } = cover
-    const schema = collection.schema[property]
+    const schema = collection.schema?.[property]
     const data = block.properties?.[property]
 
     if (schema && data)
@@ -102,10 +102,10 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
   //check if a visible property has a url and we settings are for linking to it for the card
   if (isLinkCollectionToUrlProperty)
     linkProperties = properties
-      ?.filter(p => p.visible && p.property !== 'title' && collection.schema[p.property])
+      ?.filter(p => p.visible && p.property !== 'title' && collection.schema?.[p.property])
       .filter(p => {
         if (!block.properties) return false
-        const schema = collection.schema[p.property]
+        const schema = collection.schema?.[p.property]
 
         return schema.type == 'url'
       })
@@ -124,14 +124,19 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
 
       <div className='notion-collection-card-body'>
         <div className='notion-collection-card-property'>
-          <Property schema={collection.schema.title} data={block?.properties?.title} block={block} collection={collection} />
+          <Property
+            schema={collection.schema?.title}
+            data={block?.properties?.title}
+            block={block}
+            collection={collection}
+          />
         </div>
 
         {properties
-          ?.filter(p => p.visible && p.property !== 'title' && collection.schema[p.property])
+          ?.filter(p => p.visible && p.property !== 'title' && collection.schema?.[p.property])
           .map(p => {
             if (!block.properties) return null
-            const schema = collection.schema[p.property]
+            const schema = collection.schema?.[p.property]
             const data = block.properties[p.property]
 
             return (
