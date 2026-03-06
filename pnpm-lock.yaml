@@ -144,7 +144,7 @@ importers:
         version: 1.0.7
       '@matejmazur/react-katex':
         specifier: ^3.1.3
-        version: 3.1.3(katex@0.16.35)(react@19.2.4)
+        version: 3.1.3(katex@0.16.37)(react@19.2.4)
       '@texonom/ntypes':
         specifier: workspace:^
         version: link:../ntypes
@@ -152,8 +152,8 @@ importers:
         specifier: workspace:^
         version: link:../nutils
       katex:
-        specifier: ^0.16.35
-        version: 0.16.35
+        specifier: ^0.16.37
+        version: 0.16.37
       prismjs:
         specifier: ^1.30.0
         version: 1.30.0
@@ -2472,8 +2472,8 @@ packages:
     resolution: {integrity: sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ==}
     engines: {node: '>=4.0'}
 
-  katex@0.16.35:
-    resolution: {integrity: sha512-S0+riEvy1CK4VKse1ivMff8gmabe/prY7sKB3njjhyoLLsNFDQYtKNgXrbWUggGDCJBz7Fctl5i8fLCESHXzSg==}
+  katex@0.16.37:
+    resolution: {integrity: sha512-TIGjO2cCGYono+uUzgkE7RFF329mLLWGuHUlSr6cwIVj9O8f0VQZ783rsanmJpFUo32vvtj7XT04NGRPh+SZFg==}
     hasBin: true
 
   keyv@4.5.4:
@@ -4077,9 +4077,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@matejmazur/react-katex@3.1.3(katex@0.16.35)(react@19.2.4)':
+  '@matejmazur/react-katex@3.1.3(katex@0.16.37)(react@19.2.4)':
     dependencies:
-      katex: 0.16.35
+      katex: 0.16.37
       react: 19.2.4
 
   '@microsoft/api-extractor-model@7.32.2(@types/node@22.19.15)':
@@ -6328,7 +6328,7 @@ snapshots:
       object.assign: 4.1.7
       object.values: 1.2.1
 
-  katex@0.16.35:
+  katex@0.16.37:
     dependencies:
       commander: 8.3.0
 
