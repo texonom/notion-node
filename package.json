@@ -6,7 +6,7 @@
   "license": "MIT",
   "version": "1.5.1",
   "engines": {
-    "node": ">=20.20.0"
+    "node": ">=20.20.1"
   },
   "packageManager": "pnpm@10.30.3",
   "scripts": {
@@ -24,7 +24,7 @@
     "pu": "turbo pu -- --access=public --no-git-checks"
   },
   "devDependencies": {
-    "@types/node": "^22.19.13",
+    "@types/node": "^22.19.15",
     "@typescript-eslint/eslint-plugin": "^8.56.1",
     "@typescript-eslint/parser": "^8.56.1",
     "@vitest/coverage-v8": "^4.0.18",
@@ -41,7 +41,7 @@
     "standard-version": "^9.5.0",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
-    "turbo": "^2.8.12",
+    "turbo": "^2.8.14",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.4",
