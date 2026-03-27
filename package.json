@@ -6,9 +6,9 @@
   "license": "MIT",
   "version": "1.5.1",
   "engines": {
-    "node": ">=20.20.1"
+    "node": ">=20.20.2"
   },
-  "packageManager": "pnpm@10.32.1",
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "prepare": "husky install",
     "link": "turbo link",
@@ -25,12 +25,12 @@
   },
   "devDependencies": {
     "@types/node": "^22.19.15",
-    "@typescript-eslint/eslint-plugin": "^8.57.1",
-    "@typescript-eslint/parser": "^8.57.1",
-    "@vitest/coverage-v8": "^4.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.57.2",
+    "@typescript-eslint/parser": "^8.57.2",
+    "@vitest/coverage-v8": "^4.1.2",
     "dotenv": "^17.3.1",
     "eslint": "10.1.0",
-    "eslint-config-next": "^16.2.0",
+    "eslint-config-next": "^16.2.1",
     "eslint-config-prettier": "^10.1.7",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.5",
@@ -43,9 +43,9 @@
     "tsx": "^4.21.0",
     "turbo": "^2.8.20",
     "typescript": "^5.9.3",
-    "vite": "^8.0.1",
+    "vite": "^8.0.3",
     "vite-plugin-dts": "^4.5.4",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.2"
   },
   "standard-version": {
     "scripts": {

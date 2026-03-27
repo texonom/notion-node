@@ -21,7 +21,7 @@
     "watch": "vite build --watch --mode development"
   },
   "engines": {
-    "node": ">=22.22.1"
+    "node": ">=22.22.2"
   },
   "devDependencies": {
     "vite-plugin-dts": "^4.5.4"
