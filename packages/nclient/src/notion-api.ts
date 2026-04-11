@@ -680,7 +680,10 @@ function normalizeMap<T>(map: NotionMap<T> | undefined) {
   if (!map) return
   for (const id of Object.keys(map)) {
     const entry: any = map[id]
-    // Notion API now wraps entries as {spaceId, value: {value?, role}} — unwrap
+    // Notion API wraps entries in two formats:
+    // 1. {spaceId, value: {value?, role}} — unwrap to {value?, role}
+    // 2. {value: {value: {...}}} — no spaceId, no role — unwrap to {value: {...}}
     if (entry?.spaceId && entry.value) map[id] = entry.value
+    else if (entry?.value?.value && !entry.role && !entry.type) map[id] = entry.value
   }
 }

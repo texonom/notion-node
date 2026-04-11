@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.5.10 (2026-04-11)
+
+### Bug Fixes
+
+- alan jo to seonglae cho ([2a2b0ea](https://github.com/texonom/notion-node/commit/2a2b0ea28c7d8efb58da199a39703da301f256c4))
+- dependencies FSWatcher with vite5 udpates ([4922f14](https://github.com/texonom/notion-node/commit/4922f14e212805edc9efa35825735d69e3f9cd72))
+- **nclient,nreact:** proper typing for normalize, fix bookmark width ([69ab111](https://github.com/texonom/notion-node/commit/69ab111cd40917ac6e656c2bd5097c1092646e6f))
+- **nclient:** add normalizeMap to getPage and fetchCollections ([2065b76](https://github.com/texonom/notion-node/commit/2065b761d17317fc1a3274a79a470b196cc3da49))
+- **nclient:** normalize all API responses for new Notion format ([be34302](https://github.com/texonom/notion-node/commit/be343027bf0ce0dcc28f4d5b222246a4659af960))
+- **nclient:** normalize queryCollection recordMap nested value wrapper ([826ff5a](https://github.com/texonom/notion-node/commit/826ff5a7ea22bd18fe0136ddfcee5f8aff0c14c6))
+- notion compat import name also changed ([3fac35b](https://github.com/texonom/notion-node/commit/3fac35b1aa621da28ba89f0a9ece9c9b4a9f5e87))
+- **nreact:** fix bookmark overflow and width with min-width: 0 ([40956b3](https://github.com/texonom/notion-node/commit/40956b318f6f1efc2825ff8c117983b9cb89f336))
+- **nreact:** restore gallery card titles for schema-less collections, fix bookmark onError ([b99aaa4](https://github.com/texonom/notion-node/commit/b99aaa4b0751efdd0fbcd1a65119d8ebbe042df8))
+- **nutils,nreact:** fix bookmark rendering by skipping proxy for external URLs ([751847d](https://github.com/texonom/notion-node/commit/751847d51a3b9c26516af15ee74263f4e02f40b1))
+- **nutils:** include http:// URLs in external URL bypass ([2d7e068](https://github.com/texonom/notion-node/commit/2d7e0683a50aa0999147dcc9bbcbcfbeb27484ed))
+- resolve merge conflicts and update vite configs ([10dd5c2](https://github.com/texonom/notion-node/commit/10dd5c21c8387ccafccd4c6c6c210d11d4df3840))
+
 ### 1.5.9 (2026-04-11)
 
 ### Bug Fixes
