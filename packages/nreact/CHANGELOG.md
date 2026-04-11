@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.5.9 (2026-04-11)
+
+### Features
+
+- eoi block fetching using auth token ([889f157](https://github.com/texonom/notion-node/commit/889f1570ceda284e0ca27c2b1e4e1b58d4dd70cc))
+- **nreact:** debounce search input ([f8ae6c5](https://github.com/texonom/notion-node/commit/f8ae6c57d38c743a54fcd739be69476e17960dc3))
+- **nreact:** integrate Next.js Link for page navigation ([78c554a](https://github.com/texonom/notion-node/commit/78c554a72e3782c0774a20303eb988f5b0a43244))
+- **nreact:** notion user mention reendering inline ([0553df6](https://github.com/texonom/notion-node/commit/0553df6497b530163fb95ad628ce3dcc26e45787))
+- **nreact:** render person text for inline mention ([2f78d6b](https://github.com/texonom/notion-node/commit/2f78d6bbe1b7a5491c9dce328b137ed51cac2e1b))
+- **nreact:** unite formatDate & default property rendering ([b9fd27e](https://github.com/texonom/notion-node/commit/b9fd27e58045866a8443207be9c7814c2e2f23dd))
+
+### Bug Fixes
+
+- alan jo to seonglae cho ([2a2b0ea](https://github.com/texonom/notion-node/commit/2a2b0ea28c7d8efb58da199a39703da301f256c4))
+- logging and increased timout ([ec57ebf](https://github.com/texonom/notion-node/commit/ec57ebf097b0a88ce42085118fe7521bc786bb03))
+- **nclient,nreact:** proper typing for normalize, fix bookmark width ([69ab111](https://github.com/texonom/notion-node/commit/69ab111cd40917ac6e656c2bd5097c1092646e6f))
+- **nclient:** add normalizeMap to getPage and fetchCollections ([2065b76](https://github.com/texonom/notion-node/commit/2065b761d17317fc1a3274a79a470b196cc3da49))
+- **nclient:** normalize queryCollection recordMap nested value wrapper ([826ff5a](https://github.com/texonom/notion-node/commit/826ff5a7ea22bd18fe0136ddfcee5f8aff0c14c6))
+- **nreact:** add multi-entry build for third-party submodules ([cbc24ab](https://github.com/texonom/notion-node/commit/cbc24ab7873ea02929d81d984f4b77a5bc653c20))
+- **nreact:** add null safety for collection.schema access ([cb250a8](https://github.com/texonom/notion-node/commit/cb250a8f8153196b31b31e06ed2dbaabd3b477e0))
+- **nreact:** context provider children & formula type ([32ebd58](https://github.com/texonom/notion-node/commit/32ebd587e248dda843fca6865f1869db4bf98bed))
+- **nreact:** fix bookmark overflow and width with min-width: 0 ([40956b3](https://github.com/texonom/notion-node/commit/40956b318f6f1efc2825ff8c117983b9cb89f336))
+- **nreact:** render title without `Name` prefix with typing ([590f8b9](https://github.com/texonom/notion-node/commit/590f8b9ef8f01f102f5c6dca4e7b384d37a0c618))
+- **nreact:** rendering person property margin style ([9797408](https://github.com/texonom/notion-node/commit/9797408604ddb446d615a2328fa2bac016959480))
+- **nreact:** restore gallery card titles for schema-less collections, fix bookmark onError ([b99aaa4](https://github.com/texonom/notion-node/commit/b99aaa4b0751efdd0fbcd1a65119d8ebbe042df8))
+- **nutils,nreact:** fix bookmark rendering by skipping proxy for external URLs ([751847d](https://github.com/texonom/notion-node/commit/751847d51a3b9c26516af15ee74263f4e02f40b1))
+- **nutils:** include http:// URLs in external URL bypass ([2d7e068](https://github.com/texonom/notion-node/commit/2d7e0683a50aa0999147dcc9bbcbcfbeb27484ed))
+- remove className for code component ([114218c](https://github.com/texonom/notion-node/commit/114218c816a024d3cc324dadf6cbc1fa5c7f5691))
+- resolve merge conflicts and update vite configs ([10dd5c2](https://github.com/texonom/notion-node/commit/10dd5c21c8387ccafccd4c6c6c210d11d4df3840))
+- resolve type errors to support react v19 ([8e0503e](https://github.com/texonom/notion-node/commit/8e0503ee8cb181acdcc6d96fe980635040542f74))
+- space driven search with a single backlink ([f4cf8b4](https://github.com/texonom/notion-node/commit/f4cf8b40a122c8be32b446ef3e1069a7a96414e5))
+
 ### 1.5.1 (2026-02-19)
 
 ### Features
