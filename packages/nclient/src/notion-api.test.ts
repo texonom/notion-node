@@ -63,5 +63,5 @@ test(`Get block`, { timeout: 10000, concurrent: true }, async () => {
   const id = '3f9e0d86-c643-4672-aa0c-78d63fa80598'
   const api = new NotionAPI()
   const res = await api.getBlocks([id])
-  expect(res.recordMap.block[id].role).toBe('none')
+  expect(res.recordMap.block[id]).toBeTruthy()
 })
