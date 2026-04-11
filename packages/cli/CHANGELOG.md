@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.5.9 (2026-04-11)
+
+### Features
+
+- add textonly markdown export with prettier format ([80e082e](https://github.com/texonom/notion-node/commit/80e082e277d2e8983e81bb750d80ce151db32247))
+- **cli:** `@texonom/cli` added for export from gh-setter ([16ba19d](https://github.com/texonom/notion-node/commit/16ba19dc0b4c3ede421cdb424cda21fa10bee377))
+- **cli:** add export collection commend dynamic ([71e1f03](https://github.com/texonom/notion-node/commit/71e1f03e085ed8d27147ff02f65f9a7cd3303a22))
+- **cli:** add push option for export ([95d04bb](https://github.com/texonom/notion-node/commit/95d04bbb55c9e7ba349eaf55d5b4831b37a4eb71))
+- **cli:** add treemap and stats export ([0d90152](https://github.com/texonom/notion-node/commit/0d90152a9780307579a8d127f1ea13ab2282fb1d))
+- **cli:** corrected pagetree data with wait option ([f7b0f90](https://github.com/texonom/notion-node/commit/f7b0f9005dbd5133412644144a1ae24de37a4b7d))
+- **cli:** export collection as table & inline math ([b10c845](https://github.com/texonom/notion-node/commit/b10c845ccb7de91587d135a62896b65a2d4f7d10))
+- **cli:** fetch and pagecount etc for export ([f6a5bda](https://github.com/texonom/notion-node/commit/f6a5bda47f53c695fa5f75ac2812044e0f33e28a))
+- **cli:** get block collection user space with validate ([7ae4e8a](https://github.com/texonom/notion-node/commit/7ae4e8aab1d93c8c4ebd3b0f38e35f7d5ca5a777))
+- **cli:** treemap generation with navigable breadcrumbs ([87ce3de](https://github.com/texonom/notion-node/commit/87ce3dec79b288d90af1a8bcd1f1dede503769e6))
+- **cli:** treemap successful with korean canonical ([2addcb2](https://github.com/texonom/notion-node/commit/2addcb2290a332307bea8731d9a7e2eb55a2e5b4))
+- eoi block fetching using auth token ([889f157](https://github.com/texonom/notion-node/commit/889f1570ceda284e0ca27c2b1e4e1b58d4dd70cc))
+- export markdown basic test suite without error ([0c0bd94](https://github.com/texonom/notion-node/commit/0c0bd947070d86a6eeb3219ac840d3708ad9b0d0))
+- export raw recursive prefetch load for notion ([0f44a62](https://github.com/texonom/notion-node/commit/0f44a62b6d9bedb0f14d95bb973cf526c4e1dcbb))
+- recursive markdown export with bookmark ([61a5b95](https://github.com/texonom/notion-node/commit/61a5b95fd92f53ea6e753e6e082cf472d9a453b9))
+
+### Bug Fixes
+
+- alan jo to seonglae cho ([2a2b0ea](https://github.com/texonom/notion-node/commit/2a2b0ea28c7d8efb58da199a39703da301f256c4))
+- **cli:** add comment to empty catch block for ESLint compliance ([0142e6e](https://github.com/texonom/notion-node/commit/0142e6ebc2f391d8a4ce6d3b0e82ff78dd77db1f))
+- **cli:** build error by change main build folder ([092faba](https://github.com/texonom/notion-node/commit/092faba8e56fa9e3b1d9a9845cd81e8c950013a2))
+- **cli:** intermediate markdown object for export ([b31c0e5](https://github.com/texonom/notion-node/commit/b31c0e5cc3dc7cbb5457334f840946a8b4bdade1))
+- **cli:** remove hierarchy folder from export ([1618261](https://github.com/texonom/notion-node/commit/161826175ca84890b386e4d83320fb3788cfce45))
+- **cli:** separate markdown and raw folder ([df35915](https://github.com/texonom/notion-node/commit/df359159e0f76da3f8a91fa1c1fc90f95a9beba1))
+- **cli:** update pageMap and recordMap of collections ([75be61e](https://github.com/texonom/notion-node/commit/75be61e547ad09225461054328a64b3203b1d99e))
+- dependencies FSWatcher with vite5 udpates ([4922f14](https://github.com/texonom/notion-node/commit/4922f14e212805edc9efa35825735d69e3f9cd72))
+- **nclient,nreact:** proper typing for normalize, fix bookmark width ([69ab111](https://github.com/texonom/notion-node/commit/69ab111cd40917ac6e656c2bd5097c1092646e6f))
+- **nclient:** add normalizeMap to getPage and fetchCollections ([2065b76](https://github.com/texonom/notion-node/commit/2065b761d17317fc1a3274a79a470b196cc3da49))
+- **nclient:** normalize queryCollection recordMap nested value wrapper ([826ff5a](https://github.com/texonom/notion-node/commit/826ff5a7ea22bd18fe0136ddfcee5f8aff0c14c6))
+- **nreact:** fix bookmark overflow and width with min-width: 0 ([40956b3](https://github.com/texonom/notion-node/commit/40956b318f6f1efc2825ff8c117983b9cb89f336))
+- **nreact:** restore gallery card titles for schema-less collections, fix bookmark onError ([b99aaa4](https://github.com/texonom/notion-node/commit/b99aaa4b0751efdd0fbcd1a65119d8ebbe042df8))
+- **nutils,nreact:** fix bookmark rendering by skipping proxy for external URLs ([751847d](https://github.com/texonom/notion-node/commit/751847d51a3b9c26516af15ee74263f4e02f40b1))
+- **nutils:** include http:// URLs in external URL bypass ([2d7e068](https://github.com/texonom/notion-node/commit/2d7e0683a50aa0999147dcc9bbcbcfbeb27484ed))
+- **nutils:** stdout stderr only when necessary ([618134e](https://github.com/texonom/notion-node/commit/618134ec09f4d102dd34a66525c2d72b5bbc7ab6))
+- remove duplicate exports in cli main.ts ([ad9f34b](https://github.com/texonom/notion-node/commit/ad9f34b9722e4103af98c581ce4abb7d7dd8a78f))
+- resolve merge conflicts and update vite configs ([10dd5c2](https://github.com/texonom/notion-node/commit/10dd5c21c8387ccafccd4c6c6c210d11d4df3840))
+
 ### 1.5.1 (2026-02-19)
 
 ### Features
