@@ -29,7 +29,7 @@
     "p-queue": "^9.1.2"
   },
   "devDependencies": {
-    "@notionhq/client": "^5.19.0",
+    "@notionhq/client": "^5.20.0",
     "@texonom/nclient": "workspace:^"
   },
   "peerDependencies": {
