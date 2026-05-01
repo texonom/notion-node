@@ -31,7 +31,7 @@
     "pu": "pnpm publish"
   },
   "devDependencies": {
-    "vite-plugin-dts": "^4.5.4"
+    "vite-plugin-dts": "^5.0.0"
   },
   "dependencies": {
     "is-url-superb": "^6.1.0",
