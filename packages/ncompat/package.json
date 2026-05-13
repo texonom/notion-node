@@ -30,7 +30,8 @@
   },
   "devDependencies": {
     "@notionhq/client": "^5.20.0",
-    "@texonom/nclient": "workspace:^"
+    "@texonom/nclient": "workspace:^",
+    "@types/node": "^22.19.18"
   },
   "peerDependencies": {
     "@notionhq/client": "^1.0.4"
