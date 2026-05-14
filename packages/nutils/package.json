@@ -31,6 +31,7 @@
     "pu": "pnpm publish"
   },
   "devDependencies": {
+    "@types/node": "^22.19.18",
     "vite-plugin-dts": "^5.0.0"
   },
   "dependencies": {

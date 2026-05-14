@@ -23,6 +23,7 @@
     "listFiles": false,
     "pretty": true,
     "lib": ["ESNext", "ESNext.Array", "DOM"],
-    "baseUrl": "."
+    "baseUrl": ".",
+    "ignoreDeprecations": "6.0"
   }
 }
