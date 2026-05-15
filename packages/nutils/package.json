@@ -20,7 +20,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=22.22.2"
+    "node": ">=22.22.3"
   },
   "scripts": {
     "build": "tsc && vite build",
@@ -31,7 +31,7 @@
     "pu": "pnpm publish"
   },
   "devDependencies": {
-    "@types/node": "^22.19.18",
+    "@types/node": "^22.19.19",
     "vite-plugin-dts": "^5.0.0"
   },
   "dependencies": {
