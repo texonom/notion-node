@@ -24,7 +24,7 @@
     "node": ">=22.22.3"
   },
   "devDependencies": {
-    "vite-plugin-dts": "^5.0.0"
+    "vite-plugin-dts": "^5.0.1"
   },
   "standard-version": {
     "skip": {
