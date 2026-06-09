@@ -14,15 +14,19 @@ export default defineConfig({
     sourcemap: true,
     minify: true,
     rollupOptions: {
+      // Externalize all Node builtins (both bare and `node:`-prefixed) so they aren't
+      // shimmed as browser externals — this is a Node CLI/library.
       external: [
         ...Object.keys(pkg.dependencies || {}),
         ...Object.keys(pkg.peerDependencies || {}),
+        /^node:/,
         'child_process',
         'fs',
         'fs/promises',
         'path',
         'stream',
-        'util'
+        'util',
+        'url'
       ]
     }
   },
