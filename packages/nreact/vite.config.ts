@@ -19,7 +19,16 @@ export default defineConfig({
     sourcemap: true,
     minify: true,
     rollupOptions: {
-      external: [...Object.keys(pkg.dependencies || {}), ...Object.keys(pkg.peerDependencies || {})]
+      // CJS deps that break Vite/Astro consumers via bare named imports get bundled into
+      // nreact's ESM output. react-modal/react-fast-compare are CJS-only; react-use/react-image
+      // ship an ESM build but only via the legacy `module` field, which Node-externalization
+      // (e.g. SSR) can't read for named imports — so inline them too. Pure-ESM deps stay external.
+      external: [
+        ...Object.keys(pkg.dependencies || {}).filter(
+          d => !['react-modal', 'react-fast-compare', 'react-use', 'react-image'].includes(d)
+        ),
+        ...Object.keys(pkg.peerDependencies || {})
+      ]
     }
   },
   plugins: [dts({ tsconfigPath: 'tsconfig.json', outDir: 'build' })]
