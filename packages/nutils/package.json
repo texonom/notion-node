@@ -20,7 +20,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=22.22.2"
+    "node": ">=22.22.3"
   },
   "scripts": {
     "build": "tsc && vite build",
@@ -31,14 +31,15 @@
     "pu": "pnpm publish"
   },
   "devDependencies": {
-    "vite-plugin-dts": "^4.5.4"
+    "@types/node": "^22.19.19",
+    "vite-plugin-dts": "^5.0.2"
   },
   "dependencies": {
     "is-url-superb": "^6.1.0",
     "mem": "^10.0.0",
-    "normalize-url": "^9.0.0",
+    "normalize-url": "^9.0.1",
     "@texonom/ntypes": "workspace:^",
-    "p-queue": "^9.1.2"
+    "p-queue": "^9.3.0"
   },
   "standard-version": {
     "skip": {

@@ -5,7 +5,8 @@
     "outDir": "build",
     "moduleResolution": "bundler",
     "tsBuildInfoFile": "build/.tsbuildinfo",
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "types": ["node"]
   },
   "include": ["src"]
 }
