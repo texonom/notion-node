@@ -559,7 +559,13 @@ export const Block: React.FC<BlockProps> = props => {
           {block.format?.bookmark_cover && (
             <div className='notion-bookmark-image'>
               <LazyImage
-                src={mapImageUrl(block.format.bookmark_cover, block)}
+                // YouTube stores `maxresdefault.jpg` covers that 404 for videos lacking a
+                // max-res still (logging a console error and hiding the thumbnail). The
+                // `hqdefault.jpg` variant always exists, so prefer it for ytimg covers.
+                src={mapImageUrl(block.format.bookmark_cover, block).replace(
+                  /(\/\/i\.ytimg\.com\/.*?)maxresdefault/,
+                  '$1hqdefault'
+                )}
                 alt={getTextContent(block.properties.title)}
                 style={{
                   objectFit: 'cover'
