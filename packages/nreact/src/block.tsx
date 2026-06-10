@@ -518,66 +518,68 @@ export const Block: React.FC<BlockProps> = props => {
           }
 
       return (
-        <a
-          target='_blank'
-          rel='noopener noreferrer'
-          className={`notion-bookmark ${block.format?.block_color ? `notion-${block.format.block_color}` : ''} ${blockId}`}
-          href={link[0][0]}>
-          <div>
-            {title && (
-              <div className='notion-bookmark-title'>
-                <Text value={[[title]]} block={block} />
-              </div>
-            )}
-
-            {block.properties.description && (
-              <div className='notion-bookmark-description'>
-                <Text value={block.properties.description} block={block} />
-              </div>
-            )}
-
-            <div className='notion-bookmark-link'>
-              {block.format?.bookmark_icon && (
-                <div className='notion-bookmark-link-icon'>
-                  <LazyImage
-                    src={mapImageUrl(block.format.bookmark_icon, block)}
-                    alt={title}
-                    onError={e => {
-                      const parent = e.currentTarget.closest('.notion-bookmark-link-icon') as HTMLElement
-                      if (parent) parent.style.display = 'none'
-                    }}
-                  />
+        <div className='notion-row'>
+          <components.Link
+            target='_blank'
+            rel='noopener noreferrer'
+            className={`notion-bookmark ${block.format?.block_color ? `notion-${block.format.block_color}` : ''} ${blockId}`}
+            href={link[0][0]}>
+            <div>
+              {title && (
+                <div className='notion-bookmark-title'>
+                  <Text value={[[title]]} block={block} />
                 </div>
               )}
 
-              <div className='notion-bookmark-link-text'>
-                <Text value={link} block={block} />
+              {block.properties?.description && (
+                <div className='notion-bookmark-description'>
+                  <Text value={block.properties?.description} block={block} />
+                </div>
+              )}
+
+              <div className='notion-bookmark-link'>
+                {block.format?.bookmark_icon && (
+                  <div className='notion-bookmark-link-icon'>
+                    <LazyImage
+                      src={mapImageUrl(block.format?.bookmark_icon, block)}
+                      alt={title}
+                      onError={e => {
+                        const parent = e.currentTarget.closest('.notion-bookmark-link-icon') as HTMLElement
+                        if (parent) parent.style.display = 'none'
+                      }}
+                    />
+                  </div>
+                )}
+
+                <div className='notion-bookmark-link-text'>
+                  <Text value={link} block={block} />
+                </div>
               </div>
             </div>
-          </div>
 
-          {block.format?.bookmark_cover && (
-            <div className='notion-bookmark-image'>
-              <LazyImage
-                // YouTube stores `maxresdefault.jpg` covers that 404 for videos lacking a
-                // max-res still (logging a console error and hiding the thumbnail). The
-                // `hqdefault.jpg` variant always exists, so prefer it for ytimg covers.
-                src={mapImageUrl(block.format.bookmark_cover, block).replace(
-                  /(\/\/i\.ytimg\.com\/.*?)maxresdefault/,
-                  '$1hqdefault'
-                )}
-                alt={getTextContent(block.properties.title)}
-                style={{
-                  objectFit: 'cover'
-                }}
-                onError={e => {
-                  const parent = e.currentTarget.closest('.notion-bookmark-image') as HTMLElement
-                  if (parent) parent.style.display = 'none'
-                }}
-              />
-            </div>
-          )}
-        </a>
+            {block.format?.bookmark_cover && (
+              <div className='notion-bookmark-image'>
+                <LazyImage
+                  // YouTube stores `maxresdefault.jpg` covers that 404 for videos lacking a
+                  // max-res still (logging a console error and hiding the thumbnail). The
+                  // `hqdefault.jpg` variant always exists, so prefer it for ytimg covers.
+                  src={mapImageUrl(block.format?.bookmark_cover, block).replace(
+                    /(\/\/i\.ytimg\.com\/.*?)maxresdefault/,
+                    '$1hqdefault'
+                  )}
+                  alt={getTextContent(block.properties?.title)}
+                  style={{
+                    objectFit: 'cover'
+                  }}
+                  onError={e => {
+                    const parent = e.currentTarget.closest('.notion-bookmark-image') as HTMLElement
+                    if (parent) parent.style.display = 'none'
+                  }}
+                />
+              </div>
+            )}
+          </components.Link>
+        </div>
       )
     }
 
