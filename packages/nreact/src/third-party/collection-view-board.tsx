@@ -66,7 +66,7 @@ function Board({ collectionView, collectionData, collection, padding }) {
                 return null
 
               const group = (collectionData as any).board_columns.results![index]
-              const schema = collection.schema[p.property]
+              const schema = collection.schema?.[p.property]
 
               if (!group || !schema || p.hidden) return null
 
@@ -97,7 +97,7 @@ function Board({ collectionView, collectionData, collection, padding }) {
             if (!boardResults) return null
             if (!p?.value?.type) return null
 
-            const schema = collection.schema[p.property]
+            const schema = collection.schema?.[p.property]
             const group = (collectionData as any)[`results:${p?.value?.type}:${p?.value?.value || 'uncategorized'}`]
 
             if (!group || !schema || p.hidden) return null

@@ -1,6 +1,6 @@
 {
   "name": "@texonom/ncompat",
-  "version": "1.4.7",
+  "version": "1.6.2",
   "type": "module",
   "description": "Compatibility layer between the official Notion API and unofficial private API.",
   "repository": "texonom/notion-node",
@@ -14,11 +14,11 @@
     "build"
   ],
   "engines": {
-    "node": ">=22.21.1"
+    "node": ">=22.23.0"
   },
   "scripts": {
-    "build": "tsc && tsup",
-    "watch": "tsup --watch --silent --onSuccess 'echo build successful'",
+    "build": "tsc && vite build",
+    "watch": "vite build --watch --mode development",
     "prerelease": "standard-version --skip.changelog --prerelease",
     "release": "standard-version --release-as",
     "pu": "pnpm publish"
@@ -26,11 +26,12 @@
   "dependencies": {
     "@texonom/ntypes": "workspace:^",
     "@texonom/nutils": "workspace:^",
-    "p-queue": "^9.0.1"
+    "p-queue": "^9.3.0"
   },
   "devDependencies": {
-    "@notionhq/client": "^5.6.0",
-    "@texonom/nclient": "workspace:^"
+    "@notionhq/client": "^5.22.0",
+    "@texonom/nclient": "workspace:^",
+    "@types/node": "^22.19.21"
   },
   "peerDependencies": {
     "@notionhq/client": "^1.0.4"

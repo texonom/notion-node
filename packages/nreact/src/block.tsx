@@ -522,7 +522,7 @@ export const Block: React.FC<BlockProps> = props => {
           <components.Link
             target='_blank'
             rel='noopener noreferrer'
-            className={`notion-bookmark ${block.format?.block_color && `notion-${block.format.block_color}`} ${blockId}`}
+            className={`notion-bookmark ${block.format?.block_color ? `notion-${block.format.block_color}` : ''} ${blockId}`}
             href={link[0][0]}>
             <div>
               {title && (
@@ -540,7 +540,14 @@ export const Block: React.FC<BlockProps> = props => {
               <div className='notion-bookmark-link'>
                 {block.format?.bookmark_icon && (
                   <div className='notion-bookmark-link-icon'>
-                    <LazyImage src={mapImageUrl(block.format?.bookmark_icon, block)} alt={title} />
+                    <LazyImage
+                      src={mapImageUrl(block.format?.bookmark_icon, block)}
+                      alt={title}
+                      onError={e => {
+                        const parent = e.currentTarget.closest('.notion-bookmark-link-icon') as HTMLElement
+                        if (parent) parent.style.display = 'none'
+                      }}
+                    />
                   </div>
                 )}
 
@@ -553,10 +560,20 @@ export const Block: React.FC<BlockProps> = props => {
             {block.format?.bookmark_cover && (
               <div className='notion-bookmark-image'>
                 <LazyImage
-                  src={mapImageUrl(block.format?.bookmark_cover, block)}
+                  // YouTube stores `maxresdefault.jpg` covers that 404 for videos lacking a
+                  // max-res still (logging a console error and hiding the thumbnail). The
+                  // `hqdefault.jpg` variant always exists, so prefer it for ytimg covers.
+                  src={mapImageUrl(block.format?.bookmark_cover, block).replace(
+                    /(\/\/i\.ytimg\.com\/.*?)maxresdefault/,
+                    '$1hqdefault'
+                  )}
                   alt={getTextContent(block.properties?.title)}
                   style={{
                     objectFit: 'cover'
+                  }}
+                  onError={e => {
+                    const parent = e.currentTarget.closest('.notion-bookmark-image') as HTMLElement
+                    if (parent) parent.style.display = 'none'
                   }}
                 />
               </div>

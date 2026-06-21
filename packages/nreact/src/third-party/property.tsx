@@ -257,7 +257,10 @@ export const PropertyImpl: React.FC<IPropertyProps> = props => {
     [block]
   )
 
-  if (!schema) return null
+  if (!schema) {
+    if (data) return <Text value={data} block={block} />
+    return null
+  }
 
   let content = null
 

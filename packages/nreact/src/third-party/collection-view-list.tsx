@@ -35,7 +35,7 @@ function List({ blockIds, collection, collectionView }) {
             const block = recordMap.block[blockId]?.value as PageBlock
             if (!block) return null
 
-            const titleSchema = collection.schema.title
+            const titleSchema = collection.schema?.title
             const titleData = block?.properties?.title
 
             return (
@@ -48,7 +48,7 @@ function List({ blockIds, collection, collectionView }) {
                   {collectionView.format?.list_properties
                     ?.filter(p => p.visible)
                     .map(p => {
-                      const schema = collection.schema[p.property]
+                      const schema = collection.schema?.[p.property]
                       const data = block && block.properties?.[p.property]
 
                       if (!schema) return null

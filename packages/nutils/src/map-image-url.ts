@@ -8,6 +8,22 @@ export const defaultMapImageUrl = (url: string, block: Block): string | null => 
   // more recent versions of notion don't proxy unsplash images
   if (url.startsWith('https://images.unsplash.com')) return url
 
+  // Don't proxy external URLs that aren't from Notion or AWS S3
+  // The notion.so/image/ proxy frequently fails for arbitrary external URLs
+  try {
+    const u = new URL(url)
+    if (
+      (u.protocol === 'https:' || u.protocol === 'http:') &&
+      !u.hostname.endsWith('.notion.so') &&
+      !u.hostname.endsWith('.amazonaws.com') &&
+      u.hostname !== 'www.notion.so' &&
+      u.hostname !== 'notion.so'
+    )
+      return url
+  } catch {
+    // ignore invalid urls
+  }
+
   try {
     const u = new URL(url)
 
@@ -19,6 +35,9 @@ export const defaultMapImageUrl = (url: string, block: Block): string | null => 
       )
         // if the URL is already signed, then use it as-is
         return url
+
+    // external HTTPS URLs that aren't from notion.so or amazonaws should bypass the proxy
+    if (u.protocol === 'https:' && !u.hostname.endsWith('notion.so') && !u.hostname.endsWith('amazonaws.com')) return url
   } catch {
     // ignore invalid urls
   }

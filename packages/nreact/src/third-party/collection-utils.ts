@@ -16,7 +16,7 @@ export function getCollectionGroups(collection: Collection, collectionView: Coll
 
     const collectionGroup = collectionData[`results:${type}:${queryLabel}`]
     let queryValue = !isUncategorizedValue && (isDateValue || value?.value || value)
-    let schema = collection.schema[property]
+    let schema = collection.schema?.[property]
 
     // Checkbox boolen value must be Yes||No
     if (type === 'checkbox' && value) queryValue = 'Yes'

@@ -65,10 +65,10 @@ function Table({ blockIds = [], collection, collectionView, width, padding }) {
   let properties = []
 
   if (collectionView.format?.table_properties)
-    properties = collectionView.format.table_properties.filter(p => p.visible && collection.schema[p.property])
+    properties = collectionView.format.table_properties.filter(p => p.visible && collection.schema?.[p.property])
   else
     properties = [{ property: 'title' }].concat(
-      Object.keys(collection.schema)
+      Object.keys(collection.schema || {})
         .filter(p => p !== 'title')
         .map(property => ({ property }))
     )
