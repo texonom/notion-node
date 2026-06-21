@@ -10,6 +10,7 @@ import pMap from 'p-map'
 
 import type {
   ExtendedRecordMap,
+  NotionMap,
   PageChunk,
   BaseCollectionView,
   CollectionViewType,
@@ -81,6 +82,12 @@ export class NotionAPI {
     const recordMap = page?.recordMap as ExtendedRecordMap
     if (!recordMap?.block) throw new Error(`Notion page not found "${uuidToId(pageId)}"`)
 
+    // Normalize nested API format from loadPageChunk
+    normalizeMap(recordMap.block)
+    normalizeMap(recordMap.collection)
+    normalizeMap(recordMap.collection_view)
+    normalizeMap(recordMap.notion_user)
+
     // ensure that all top-level maps exist
     recordMap.collection = recordMap.collection ?? {}
     recordMap.collection_view = recordMap.collection_view ?? {}
@@ -112,6 +119,11 @@ export class NotionAPI {
       recordMap.notion_user = { ...recordMap.notion_user, ...newUsers }
       recordMap.block = { ...recordMap.block, ...newBlocks }
       recordMap.space = { ...recordMap.space, ...newSpaces }
+
+      // Normalize after merging syncRecordValues/getRecordValues data
+      normalizeMap(recordMap.block)
+      normalizeMap(recordMap.collection)
+      normalizeMap(recordMap.notion_user)
     }
 
     // Optionally fetch all data for embedded collections and their associated views.
@@ -214,6 +226,9 @@ export class NotionAPI {
           if (!collectionView) {
             const viewBlockData = await this.getPageRaw(collectionViewBlockId, { fetchOption })
             if (viewBlockData.recordMap) {
+              normalizeMap(viewBlockData.recordMap.block)
+              normalizeMap(viewBlockData.recordMap.collection)
+              normalizeMap(viewBlockData.recordMap.collection_view)
               recordMap.collection_view = { ...recordMap.collection_view, ...viewBlockData.recordMap.collection_view }
               resultMap.collection_view = { ...resultMap.collection_view, ...viewBlockData.recordMap.collection_view }
               recordMap.collection = { ...recordMap.collection, ...viewBlockData.recordMap.collection }
@@ -472,7 +487,7 @@ export class NotionAPI {
       }
     }
 
-    return this.fetch<ReducerResponse<CollectionQueryResult>>({
+    const response = await this.fetch<ReducerResponse<CollectionQueryResult>>({
       endpoint: 'queryCollection',
       body: {
         collection: { id: collectionId },
@@ -481,6 +496,18 @@ export class NotionAPI {
       },
       fetchOption
     })
+
+    // Normalize queryCollection recordMap — Notion API now wraps entries with
+    // {spaceId, value: {value, role}} instead of {value, role}. Unwrap so
+    // downstream code can use entry.value.* consistently with loadPageChunk.
+    if (response.recordMap) {
+      normalizeMap(response.recordMap.block)
+      normalizeMap(response.recordMap.collection)
+      normalizeMap(response.recordMap.collection_view)
+      normalizeMap(response.recordMap.notion_user)
+    }
+
+    return response
   }
 
   public async getUsers(userIds: string[], fetchOption?: FetchOption) {
@@ -500,19 +527,33 @@ export class NotionAPI {
   }
 
   public async getBlocks(blockIds: string[], fetchOption?: FetchOption) {
-    return this.fetch<PageChunk>({
+    const response = await this.fetch<PageChunk>({
       endpoint: 'syncRecordValues',
       body: { requests: blockIds.map(blockId => ({ table: 'block', id: blockId, version: -1 })) },
       fetchOption
     })
+    if (response.recordMap) {
+      normalizeMap(response.recordMap.block)
+      normalizeMap(response.recordMap.collection)
+      normalizeMap(response.recordMap.collection_view)
+      normalizeMap(response.recordMap.notion_user)
+    }
+    return response
   }
 
   public async syncRecords(records: { id: string; table: string }[], fetchOption?: FetchOption) {
-    return this.fetch<PageChunk>({
+    const response = await this.fetch<PageChunk>({
       endpoint: 'syncRecordValues',
       body: { requests: records.map(({ id, table }) => ({ table, id, version: -1 })) },
       fetchOption
     })
+    if (response.recordMap) {
+      normalizeMap(response.recordMap.block)
+      normalizeMap(response.recordMap.collection)
+      normalizeMap(response.recordMap.collection_view)
+      normalizeMap(response.recordMap.notion_user)
+    }
+    return response
   }
 
   public async getSignedFileUrls(urls: SignedUrlRequest[], fetchOption?: FetchOption) {
@@ -545,11 +586,23 @@ export class NotionAPI {
         ancestors: params.filters?.ancestors ? params.filters.ancestors.map(id => parsePageId(id)) : []
       }
     }
-    return this.fetch<SearchResults>({
+    const response = await this.fetch<SearchResults>({
       endpoint: 'search',
       body,
       fetchOption
     })
+    if (response.recordMap) {
+      normalizeMap(response.recordMap.block)
+      normalizeMap(response.recordMap.collection)
+      normalizeMap(response.recordMap.collection_view)
+      normalizeMap(response.recordMap.notion_user)
+      // Ensure consistent shape — Notion API may omit these keys
+      response.recordMap.block = response.recordMap.block ?? {}
+      response.recordMap.collection = response.recordMap.collection ?? {}
+      response.recordMap.collection_view = response.recordMap.collection_view ?? {}
+      response.recordMap.notion_user = response.recordMap.notion_user ?? {}
+    }
+    return response
   }
 
   /**
@@ -566,11 +619,22 @@ export class NotionAPI {
       }
     }
 
-    return this.fetch<BacklinkResults>({
+    const response = await this.fetch<BacklinkResults>({
       endpoint: 'getBacklinksForBlockInitial',
       body,
       fetchOption
     })
+    if (response.recordMap) {
+      normalizeMap(response.recordMap.block)
+      normalizeMap(response.recordMap.collection)
+      normalizeMap(response.recordMap.collection_view)
+      normalizeMap(response.recordMap.notion_user)
+      response.recordMap.block = response.recordMap.block ?? {}
+      response.recordMap.collection = response.recordMap.collection ?? {}
+      response.recordMap.collection_view = response.recordMap.collection_view ?? {}
+      response.recordMap.notion_user = response.recordMap.notion_user ?? {}
+    }
+    return response
   }
 
   public async fetch<T>({
@@ -607,5 +671,19 @@ export class NotionAPI {
     }
 
     return fetch(url, requestInit).then(res => res.json())
+  }
+}
+
+// Notion's queryCollection API wraps entries as {spaceId, value: {value, role}}
+// instead of {value, role}. Unwrap in-place to match loadPageChunk format.
+function normalizeMap<T>(map: NotionMap<T> | undefined) {
+  if (!map) return
+  for (const id of Object.keys(map)) {
+    const entry: any = map[id]
+    // Notion API wraps entries in two formats:
+    // 1. {spaceId, value: {value?, role}} — unwrap to {value?, role}
+    // 2. {value: {value: {...}}} — no spaceId, no role — unwrap to {value: {...}}
+    if (entry?.spaceId && entry.value) map[id] = entry.value
+    else if (entry?.value?.value && !entry.role && !entry.type) map[id] = entry.value
   }
 }

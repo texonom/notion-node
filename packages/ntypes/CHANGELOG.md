@@ -2,6 +2,169 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.6.1 (2026-06-09)
+
+
+### Features
+
+* **cli:** `@texonom/cli` added for export from gh-setter ([16ba19d](https://github.com/texonom/notion-node/commit/16ba19dc0b4c3ede421cdb424cda21fa10bee377))
+* export raw recursive prefetch load for notion ([0f44a62](https://github.com/texonom/notion-node/commit/0f44a62b6d9bedb0f14d95bb973cf526c4e1dcbb))
+* **nclient:** now supports getBacklinks api ([c931633](https://github.com/texonom/notion-node/commit/c9316338e82c860f729fe6669247282bd25fa22c))
+* space and collection type guard with ntypes ([cdcc10d](https://github.com/texonom/notion-node/commit/cdcc10d1f37f9d012b8672fbd8c8b5154ad6fd06))
+
+
+### Bug Fixes
+
+* alan jo to seonglae cho ([2a2b0ea](https://github.com/texonom/notion-node/commit/2a2b0ea28c7d8efb58da199a39703da301f256c4))
+* **cli:** build error by change main build folder ([092faba](https://github.com/texonom/notion-node/commit/092faba8e56fa9e3b1d9a9845cd81e8c950013a2))
+* dependencies FSWatcher with vite5 udpates ([4922f14](https://github.com/texonom/notion-node/commit/4922f14e212805edc9efa35825735d69e3f9cd72))
+* **nclient,nreact:** proper typing for normalize, fix bookmark width ([69ab111](https://github.com/texonom/notion-node/commit/69ab111cd40917ac6e656c2bd5097c1092646e6f))
+* **nclient:** add normalizeMap to getPage and fetchCollections ([2065b76](https://github.com/texonom/notion-node/commit/2065b761d17317fc1a3274a79a470b196cc3da49))
+* **nclient:** handle third Notion API wrapping format {value: {value}} ([d93e222](https://github.com/texonom/notion-node/commit/d93e2222fb2ca14580ee011cf6d828ecc0968a36))
+* **nclient:** normalize all API responses for new Notion format ([be34302](https://github.com/texonom/notion-node/commit/be343027bf0ce0dcc28f4d5b222246a4659af960))
+* **nclient:** normalize queryCollection recordMap nested value wrapper ([826ff5a](https://github.com/texonom/notion-node/commit/826ff5a7ea22bd18fe0136ddfcee5f8aff0c14c6))
+* **nreact:** fix bookmark overflow and width with min-width: 0 ([40956b3](https://github.com/texonom/notion-node/commit/40956b318f6f1efc2825ff8c117983b9cb89f336))
+* **nreact:** restore gallery card titles for schema-less collections, fix bookmark onError ([b99aaa4](https://github.com/texonom/notion-node/commit/b99aaa4b0751efdd0fbcd1a65119d8ebbe042df8))
+* **ntypes:** from isNavigableOnly to navigableBlockContentOnly ([b16d02f](https://github.com/texonom/notion-node/commit/b16d02ff0eac1235494266be7b3ea924f803a1ae))
+* **ntypes:** update recent apis with MentionDecoration ([fa613be](https://github.com/texonom/notion-node/commit/fa613be2b1f7243aec6f5a9052ef1cfc291faee1))
+* **nutils,nreact:** fix bookmark rendering by skipping proxy for external URLs ([751847d](https://github.com/texonom/notion-node/commit/751847d51a3b9c26516af15ee74263f4e02f40b1))
+* **nutils:** include http:// URLs in external URL bypass ([2d7e068](https://github.com/texonom/notion-node/commit/2d7e0683a50aa0999147dcc9bbcbcfbeb27484ed))
+* resolve merge conflicts and update vite configs ([10dd5c2](https://github.com/texonom/notion-node/commit/10dd5c21c8387ccafccd4c6c6c210d11d4df3840))
+* resolve type errors to support react v19 ([8e0503e](https://github.com/texonom/notion-node/commit/8e0503ee8cb181acdcc6d96fe980635040542f74))
+* **search:** includePublicPagesWithoutExplicitAccess with search test ([6c215b4](https://github.com/texonom/notion-node/commit/6c215b4e0d4086d65d5f6c3b3990b178ce51391c))
+* space driven search with a single backlink ([f4cf8b4](https://github.com/texonom/notion-node/commit/f4cf8b40a122c8be32b446ef3e1069a7a96414e5))
+
+## 1.6.0 (2026-06-09)
+
+
+### Features
+
+* **cli:** `@texonom/cli` added for export from gh-setter ([16ba19d](https://github.com/texonom/notion-node/commit/16ba19dc0b4c3ede421cdb424cda21fa10bee377))
+* export raw recursive prefetch load for notion ([0f44a62](https://github.com/texonom/notion-node/commit/0f44a62b6d9bedb0f14d95bb973cf526c4e1dcbb))
+* **nclient:** now supports getBacklinks api ([c931633](https://github.com/texonom/notion-node/commit/c9316338e82c860f729fe6669247282bd25fa22c))
+* space and collection type guard with ntypes ([cdcc10d](https://github.com/texonom/notion-node/commit/cdcc10d1f37f9d012b8672fbd8c8b5154ad6fd06))
+
+
+### Bug Fixes
+
+* alan jo to seonglae cho ([2a2b0ea](https://github.com/texonom/notion-node/commit/2a2b0ea28c7d8efb58da199a39703da301f256c4))
+* **cli:** build error by change main build folder ([092faba](https://github.com/texonom/notion-node/commit/092faba8e56fa9e3b1d9a9845cd81e8c950013a2))
+* dependencies FSWatcher with vite5 udpates ([4922f14](https://github.com/texonom/notion-node/commit/4922f14e212805edc9efa35825735d69e3f9cd72))
+* **nclient,nreact:** proper typing for normalize, fix bookmark width ([69ab111](https://github.com/texonom/notion-node/commit/69ab111cd40917ac6e656c2bd5097c1092646e6f))
+* **nclient:** add normalizeMap to getPage and fetchCollections ([2065b76](https://github.com/texonom/notion-node/commit/2065b761d17317fc1a3274a79a470b196cc3da49))
+* **nclient:** handle third Notion API wrapping format {value: {value}} ([d93e222](https://github.com/texonom/notion-node/commit/d93e2222fb2ca14580ee011cf6d828ecc0968a36))
+* **nclient:** normalize all API responses for new Notion format ([be34302](https://github.com/texonom/notion-node/commit/be343027bf0ce0dcc28f4d5b222246a4659af960))
+* **nclient:** normalize queryCollection recordMap nested value wrapper ([826ff5a](https://github.com/texonom/notion-node/commit/826ff5a7ea22bd18fe0136ddfcee5f8aff0c14c6))
+* **nreact:** fix bookmark overflow and width with min-width: 0 ([40956b3](https://github.com/texonom/notion-node/commit/40956b318f6f1efc2825ff8c117983b9cb89f336))
+* **nreact:** restore gallery card titles for schema-less collections, fix bookmark onError ([b99aaa4](https://github.com/texonom/notion-node/commit/b99aaa4b0751efdd0fbcd1a65119d8ebbe042df8))
+* **ntypes:** from isNavigableOnly to navigableBlockContentOnly ([b16d02f](https://github.com/texonom/notion-node/commit/b16d02ff0eac1235494266be7b3ea924f803a1ae))
+* **ntypes:** update recent apis with MentionDecoration ([fa613be](https://github.com/texonom/notion-node/commit/fa613be2b1f7243aec6f5a9052ef1cfc291faee1))
+* **nutils,nreact:** fix bookmark rendering by skipping proxy for external URLs ([751847d](https://github.com/texonom/notion-node/commit/751847d51a3b9c26516af15ee74263f4e02f40b1))
+* **nutils:** include http:// URLs in external URL bypass ([2d7e068](https://github.com/texonom/notion-node/commit/2d7e0683a50aa0999147dcc9bbcbcfbeb27484ed))
+* resolve merge conflicts and update vite configs ([10dd5c2](https://github.com/texonom/notion-node/commit/10dd5c21c8387ccafccd4c6c6c210d11d4df3840))
+* resolve type errors to support react v19 ([8e0503e](https://github.com/texonom/notion-node/commit/8e0503ee8cb181acdcc6d96fe980635040542f74))
+* **search:** includePublicPagesWithoutExplicitAccess with search test ([6c215b4](https://github.com/texonom/notion-node/commit/6c215b4e0d4086d65d5f6c3b3990b178ce51391c))
+* space driven search with a single backlink ([f4cf8b4](https://github.com/texonom/notion-node/commit/f4cf8b40a122c8be32b446ef3e1069a7a96414e5))
+
+### 1.5.10 (2026-04-11)
+
+### Features
+
+- **cli:** `@texonom/cli` added for export from gh-setter ([16ba19d](https://github.com/texonom/notion-node/commit/16ba19dc0b4c3ede421cdb424cda21fa10bee377))
+- export raw recursive prefetch load for notion ([0f44a62](https://github.com/texonom/notion-node/commit/0f44a62b6d9bedb0f14d95bb973cf526c4e1dcbb))
+- **nclient:** now supports getBacklinks api ([c931633](https://github.com/texonom/notion-node/commit/c9316338e82c860f729fe6669247282bd25fa22c))
+- space and collection type guard with ntypes ([cdcc10d](https://github.com/texonom/notion-node/commit/cdcc10d1f37f9d012b8672fbd8c8b5154ad6fd06))
+
+### Bug Fixes
+
+- alan jo to seonglae cho ([2a2b0ea](https://github.com/texonom/notion-node/commit/2a2b0ea28c7d8efb58da199a39703da301f256c4))
+- **cli:** build error by change main build folder ([092faba](https://github.com/texonom/notion-node/commit/092faba8e56fa9e3b1d9a9845cd81e8c950013a2))
+- dependencies FSWatcher with vite5 udpates ([4922f14](https://github.com/texonom/notion-node/commit/4922f14e212805edc9efa35825735d69e3f9cd72))
+- **nclient,nreact:** proper typing for normalize, fix bookmark width ([69ab111](https://github.com/texonom/notion-node/commit/69ab111cd40917ac6e656c2bd5097c1092646e6f))
+- **nclient:** add normalizeMap to getPage and fetchCollections ([2065b76](https://github.com/texonom/notion-node/commit/2065b761d17317fc1a3274a79a470b196cc3da49))
+- **nclient:** normalize all API responses for new Notion format ([be34302](https://github.com/texonom/notion-node/commit/be343027bf0ce0dcc28f4d5b222246a4659af960))
+- **nclient:** normalize queryCollection recordMap nested value wrapper ([826ff5a](https://github.com/texonom/notion-node/commit/826ff5a7ea22bd18fe0136ddfcee5f8aff0c14c6))
+- **nreact:** fix bookmark overflow and width with min-width: 0 ([40956b3](https://github.com/texonom/notion-node/commit/40956b318f6f1efc2825ff8c117983b9cb89f336))
+- **nreact:** restore gallery card titles for schema-less collections, fix bookmark onError ([b99aaa4](https://github.com/texonom/notion-node/commit/b99aaa4b0751efdd0fbcd1a65119d8ebbe042df8))
+- **ntypes:** from isNavigableOnly to navigableBlockContentOnly ([b16d02f](https://github.com/texonom/notion-node/commit/b16d02ff0eac1235494266be7b3ea924f803a1ae))
+- **ntypes:** update recent apis with MentionDecoration ([fa613be](https://github.com/texonom/notion-node/commit/fa613be2b1f7243aec6f5a9052ef1cfc291faee1))
+- **nutils,nreact:** fix bookmark rendering by skipping proxy for external URLs ([751847d](https://github.com/texonom/notion-node/commit/751847d51a3b9c26516af15ee74263f4e02f40b1))
+- **nutils:** include http:// URLs in external URL bypass ([2d7e068](https://github.com/texonom/notion-node/commit/2d7e0683a50aa0999147dcc9bbcbcfbeb27484ed))
+- resolve merge conflicts and update vite configs ([10dd5c2](https://github.com/texonom/notion-node/commit/10dd5c21c8387ccafccd4c6c6c210d11d4df3840))
+- resolve type errors to support react v19 ([8e0503e](https://github.com/texonom/notion-node/commit/8e0503ee8cb181acdcc6d96fe980635040542f74))
+- **search:** includePublicPagesWithoutExplicitAccess with search test ([6c215b4](https://github.com/texonom/notion-node/commit/6c215b4e0d4086d65d5f6c3b3990b178ce51391c))
+- space driven search with a single backlink ([f4cf8b4](https://github.com/texonom/notion-node/commit/f4cf8b40a122c8be32b446ef3e1069a7a96414e5))
+
+### 1.5.9 (2026-04-11)
+
+### Features
+
+- **cli:** `@texonom/cli` added for export from gh-setter ([16ba19d](https://github.com/texonom/notion-node/commit/16ba19dc0b4c3ede421cdb424cda21fa10bee377))
+- export raw recursive prefetch load for notion ([0f44a62](https://github.com/texonom/notion-node/commit/0f44a62b6d9bedb0f14d95bb973cf526c4e1dcbb))
+- **nclient:** now supports getBacklinks api ([c931633](https://github.com/texonom/notion-node/commit/c9316338e82c860f729fe6669247282bd25fa22c))
+- space and collection type guard with ntypes ([cdcc10d](https://github.com/texonom/notion-node/commit/cdcc10d1f37f9d012b8672fbd8c8b5154ad6fd06))
+
+### Bug Fixes
+
+- alan jo to seonglae cho ([2a2b0ea](https://github.com/texonom/notion-node/commit/2a2b0ea28c7d8efb58da199a39703da301f256c4))
+- **cli:** build error by change main build folder ([092faba](https://github.com/texonom/notion-node/commit/092faba8e56fa9e3b1d9a9845cd81e8c950013a2))
+- dependencies FSWatcher with vite5 udpates ([4922f14](https://github.com/texonom/notion-node/commit/4922f14e212805edc9efa35825735d69e3f9cd72))
+- **nclient,nreact:** proper typing for normalize, fix bookmark width ([69ab111](https://github.com/texonom/notion-node/commit/69ab111cd40917ac6e656c2bd5097c1092646e6f))
+- **nclient:** add normalizeMap to getPage and fetchCollections ([2065b76](https://github.com/texonom/notion-node/commit/2065b761d17317fc1a3274a79a470b196cc3da49))
+- **nclient:** normalize queryCollection recordMap nested value wrapper ([826ff5a](https://github.com/texonom/notion-node/commit/826ff5a7ea22bd18fe0136ddfcee5f8aff0c14c6))
+- **nreact:** fix bookmark overflow and width with min-width: 0 ([40956b3](https://github.com/texonom/notion-node/commit/40956b318f6f1efc2825ff8c117983b9cb89f336))
+- **nreact:** restore gallery card titles for schema-less collections, fix bookmark onError ([b99aaa4](https://github.com/texonom/notion-node/commit/b99aaa4b0751efdd0fbcd1a65119d8ebbe042df8))
+- **ntypes:** from isNavigableOnly to navigableBlockContentOnly ([b16d02f](https://github.com/texonom/notion-node/commit/b16d02ff0eac1235494266be7b3ea924f803a1ae))
+- **ntypes:** update recent apis with MentionDecoration ([fa613be](https://github.com/texonom/notion-node/commit/fa613be2b1f7243aec6f5a9052ef1cfc291faee1))
+- **nutils,nreact:** fix bookmark rendering by skipping proxy for external URLs ([751847d](https://github.com/texonom/notion-node/commit/751847d51a3b9c26516af15ee74263f4e02f40b1))
+- **nutils:** include http:// URLs in external URL bypass ([2d7e068](https://github.com/texonom/notion-node/commit/2d7e0683a50aa0999147dcc9bbcbcfbeb27484ed))
+- resolve merge conflicts and update vite configs ([10dd5c2](https://github.com/texonom/notion-node/commit/10dd5c21c8387ccafccd4c6c6c210d11d4df3840))
+- resolve type errors to support react v19 ([8e0503e](https://github.com/texonom/notion-node/commit/8e0503ee8cb181acdcc6d96fe980635040542f74))
+- **search:** includePublicPagesWithoutExplicitAccess with search test ([6c215b4](https://github.com/texonom/notion-node/commit/6c215b4e0d4086d65d5f6c3b3990b178ce51391c))
+- space driven search with a single backlink ([f4cf8b4](https://github.com/texonom/notion-node/commit/f4cf8b40a122c8be32b446ef3e1069a7a96414e5))
+
+### 1.5.1 (2026-02-19)
+
+### Features
+
+- **cli:** `@texonom/cli` added for export from gh-setter ([78decc4](https://github.com/texonom/notion-node/commit/78decc45c1cec9e159f6d93b81d2635e3666ac4b))
+- export raw recursive prefetch load for notion ([39a1210](https://github.com/texonom/notion-node/commit/39a1210407ff222c70c846cc088990b3bf7d9307))
+- **nclient:** now supports getBacklinks api ([7466ab2](https://github.com/texonom/notion-node/commit/7466ab25de2943c253c69e60e5a1e0bec191fbf4))
+- space and collection type guard with ntypes ([c1a2df3](https://github.com/texonom/notion-node/commit/c1a2df3f89f8995e257f0489d7316f72e988f82a))
+
+### Bug Fixes
+
+- alan jo to seonglae cho ([16bf81d](https://github.com/texonom/notion-node/commit/16bf81d3b2fe0efee18cae54534c5907e073c490))
+- **cli:** build error by change main build folder ([393b1c2](https://github.com/texonom/notion-node/commit/393b1c24712f98a3b3befd3a3e3d2ac2f16f4d63))
+- dependencies FSWatcher with vite5 udpates ([1e50995](https://github.com/texonom/notion-node/commit/1e509952417bc00166d39ab5ed8310a1bddcc7be))
+- **ntypes:** from isNavigableOnly to navigableBlockContentOnly ([e8dec0e](https://github.com/texonom/notion-node/commit/e8dec0efd26b8dd59a445ef40dd087a4723e7832))
+- **ntypes:** update recent apis with MentionDecoration ([5102394](https://github.com/texonom/notion-node/commit/51023946780c679052ecdcd67597be6027ba75c4))
+- resolve merge conflicts and update vite configs ([f884800](https://github.com/texonom/notion-node/commit/f884800efe51fa4f743df5b8e1929c3cd05acc3b))
+- resolve type errors to support react v19 ([6cf7030](https://github.com/texonom/notion-node/commit/6cf70301f3eb2ca45a400c978312919b0d53f205))
+- **search:** includePublicPagesWithoutExplicitAccess with search test ([5865164](https://github.com/texonom/notion-node/commit/5865164428d7751a8ebf2cffeda4e783302d4d58))
+- space driven search with a single backlink ([ab97004](https://github.com/texonom/notion-node/commit/ab97004f7f81463b9cdbe6fdd40116e3c0c8962a))
+
+## 1.5.0 (2026-02-19)
+
+### Features
+
+- **cli:** `@texonom/cli` added for export from gh-setter ([78decc4](https://github.com/texonom/notion-node/commit/78decc45c1cec9e159f6d93b81d2635e3666ac4b))
+- export raw recursive prefetch load for notion ([39a1210](https://github.com/texonom/notion-node/commit/39a1210407ff222c70c846cc088990b3bf7d9307))
+- **nclient:** now supports getBacklinks api ([7466ab2](https://github.com/texonom/notion-node/commit/7466ab25de2943c253c69e60e5a1e0bec191fbf4))
+- space and collection type guard with ntypes ([c1a2df3](https://github.com/texonom/notion-node/commit/c1a2df3f89f8995e257f0489d7316f72e988f82a))
+
+### Bug Fixes
+
+- alan jo to seonglae cho ([16bf81d](https://github.com/texonom/notion-node/commit/16bf81d3b2fe0efee18cae54534c5907e073c490))
+- **cli:** build error by change main build folder ([393b1c2](https://github.com/texonom/notion-node/commit/393b1c24712f98a3b3befd3a3e3d2ac2f16f4d63))
+- dependencies FSWatcher with vite5 udpates ([1e50995](https://github.com/texonom/notion-node/commit/1e509952417bc00166d39ab5ed8310a1bddcc7be))
+- **ntypes:** from isNavigableOnly to navigableBlockContentOnly ([e8dec0e](https://github.com/texonom/notion-node/commit/e8dec0efd26b8dd59a445ef40dd087a4723e7832))
+- **ntypes:** update recent apis with MentionDecoration ([5102394](https://github.com/texonom/notion-node/commit/51023946780c679052ecdcd67597be6027ba75c4))
+- resolve merge conflicts and update vite configs ([f884800](https://github.com/texonom/notion-node/commit/f884800efe51fa4f743df5b8e1929c3cd05acc3b))
+- resolve type errors to support react v19 ([6cf7030](https://github.com/texonom/notion-node/commit/6cf70301f3eb2ca45a400c978312919b0d53f205))
+- **search:** includePublicPagesWithoutExplicitAccess with search test ([5865164](https://github.com/texonom/notion-node/commit/5865164428d7751a8ebf2cffeda4e783302d4d58))
+- space driven search with a single backlink ([ab97004](https://github.com/texonom/notion-node/commit/ab97004f7f81463b9cdbe6fdd40116e3c0c8962a))
+
 ### 1.4.7 (2025-06-08)
 
 ### Features
