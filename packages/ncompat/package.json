@@ -14,7 +14,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=22.23.0"
+    "node": ">=22.23.1"
   },
   "scripts": {
     "build": "tsc && vite build",
@@ -31,7 +31,7 @@
   "devDependencies": {
     "@notionhq/client": "^5.22.0",
     "@texonom/nclient": "workspace:^",
-    "@types/node": "^22.19.21"
+    "@types/node": "^22.20.0"
   },
   "peerDependencies": {
     "@notionhq/client": "^1.0.4"

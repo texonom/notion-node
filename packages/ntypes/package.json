@@ -21,10 +21,10 @@
     "watch": "vite build --watch --mode development"
   },
   "engines": {
-    "node": ">=22.23.0"
+    "node": ">=22.23.1"
   },
   "devDependencies": {
-    "vite-plugin-dts": "^5.0.2"
+    "vite-plugin-dts": "^5.0.3"
   },
   "standard-version": {
     "skip": {
