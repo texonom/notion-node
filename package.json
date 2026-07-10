@@ -8,7 +8,7 @@
   "engines": {
     "node": ">=20.20.2"
   },
-  "packageManager": "pnpm@11.9.0",
+  "packageManager": "pnpm@11.11.0",
   "scripts": {
     "prepare": "husky install",
     "link": "turbo link",
@@ -24,10 +24,10 @@
     "pu": "turbo pu -- --access=public --no-git-checks"
   },
   "devDependencies": {
-    "@types/node": "^22.20.0",
-    "@typescript-eslint/eslint-plugin": "^8.62.1",
-    "@typescript-eslint/parser": "^8.62.1",
-    "@vitest/coverage-v8": "^4.1.9",
+    "@types/node": "^22.20.1",
+    "@typescript-eslint/eslint-plugin": "^8.63.0",
+    "@typescript-eslint/parser": "^8.63.0",
+    "@vitest/coverage-v8": "^4.1.10",
     "dotenv": "^17.4.2",
     "eslint": "10.6.0",
     "eslint-config-next": "^16.2.10",
@@ -37,15 +37,15 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "husky": "^9.1.7",
-    "prettier": "^3.9.4",
+    "prettier": "^3.9.5",
     "standard-version": "^9.5.0",
     "tsup": "^8.5.1",
     "tsx": "^4.23.0",
-    "turbo": "^2.10.2",
+    "turbo": "^2.10.4",
     "typescript": "^6.0.3",
-    "vite": "^8.1.3",
+    "vite": "^8.1.4",
     "vite-plugin-dts": "^5.0.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   },
   "standard-version": {
     "scripts": {
