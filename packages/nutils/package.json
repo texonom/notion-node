@@ -31,7 +31,7 @@
     "pu": "pnpm publish"
   },
   "devDependencies": {
-    "@types/node": "^22.20.0",
+    "@types/node": "^22.20.1",
     "vite-plugin-dts": "^5.0.3"
   },
   "dependencies": {
@@ -39,7 +39,7 @@
     "mem": "^10.0.0",
     "normalize-url": "^9.0.1",
     "@texonom/ntypes": "workspace:^",
-    "p-queue": "^9.3.0"
+    "p-queue": "^9.3.1"
   },
   "standard-version": {
     "skip": {
