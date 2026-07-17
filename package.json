@@ -38,7 +38,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "husky": "^9.1.7",
     "prettier": "^3.9.5",
-    "commit-and-tag-version": "^9.6.0",
+    "commit-and-tag-version": "^12.7.3",
     "tsup": "^8.5.1",
     "tsx": "^4.23.1",
     "turbo": "^2.10.5",
