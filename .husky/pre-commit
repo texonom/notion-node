@@ -1,1 +1,4 @@
+# Guard first: a wrong author is only cheap to fix before the commit exists.
+SL_GUARD_ONLY=1 sh "$HOME/.githooks/pre-commit" || exit 1
+
 pnpm format && pnpm lint
