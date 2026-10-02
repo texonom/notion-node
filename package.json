@@ -8,7 +8,7 @@
   "engines": {
     "node": ">=20.20.2"
   },
-  "packageManager": "pnpm@12.6.0",
+  "packageManager": "pnpm@12.8.1",
   "scripts": {
     "prepare": "husky install",
     "link": "turbo link",
@@ -24,13 +24,13 @@
     "pu": "turbo pu -- --access=public --no-git-checks"
   },
   "devDependencies": {
-    "@types/node": "^22.20.4",
-    "@typescript-eslint/eslint-plugin": "^8.70.1",
-    "@typescript-eslint/parser": "^8.70.1",
-    "@vitest/coverage-v8": "^5.0.2",
-    "dotenv": "^18.0.4",
+    "@types/node": "^22.20.5",
+    "@typescript-eslint/eslint-plugin": "^8.71.0",
+    "@typescript-eslint/parser": "^8.71.0",
+    "@vitest/coverage-v8": "^5.0.3",
+    "dotenv": "^18.0.5",
     "eslint": "10.11.0",
-    "eslint-config-next": "^16.3.6",
+    "eslint-config-next": "^16.3.8",
     "eslint-config-prettier": "^10.1.7",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.6",
@@ -41,11 +41,11 @@
     "commit-and-tag-version": "^13.2.1",
     "tsup": "^8.5.1",
     "tsx": "^4.23.15",
-    "turbo": "^2.11.4",
+    "turbo": "^2.11.6",
     "typescript": "^7.0.2",
-    "vite": "^8.3.1",
+    "vite": "^8.3.2",
     "vite-plugin-dts": "^5.1.1",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.3"
   },
   "standard-version": {
     "scripts": {
