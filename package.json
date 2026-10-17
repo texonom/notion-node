@@ -1,5 +1,6 @@
 {
   "name": "notion-node",
+  "private": true,
   "description": "Fast and accurate React renderer for Notion. TS batteries included.",
   "repository": "texonom/notion-node",
   "author": "Seonglae Cho <sungle3737@gmail.com>",
