@@ -3,7 +3,7 @@
     "incremental": true,
     "target": "ES2015",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "sourceMap": true,
     "declaration": true,
@@ -24,7 +24,6 @@
     "pretty": true,
     "lib": ["ESNext", "ESNext.Array", "DOM"],
     "types": ["node"],
-    "baseUrl": ".",
     "ignoreDeprecations": "6.0"
   }
 }
