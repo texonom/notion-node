@@ -6,6 +6,7 @@ import {
   getBlockParentPage,
   getPageTableOfContents,
   getTextContent,
+  isEditableBlock,
   uuidToId
 } from '@texonom/nutils'
 
@@ -20,7 +21,7 @@ import { PageIcon } from './components/page-icon'
 import { PageTitle } from './components/page-title'
 import { SyncPointerBlock } from './components/sync-pointer-block'
 import { Text } from './components/text'
-import { EditableText, isPlainTitle } from './components/editable-text'
+import { EditableText } from './components/editable-text'
 import { useNotionContext } from './context'
 import { LinkIcon } from './icons/link-icon'
 import { getListNumber, isUrl } from './utils'
@@ -114,7 +115,7 @@ export const Block: React.FC<BlockProps> = props => {
   // read-only render: the editor works in plain text, and saving it would drop
   // the bold, links and mentions it does not show.
   const renderTitle = () =>
-    editable && isPlainTitle(block.properties?.title) ? (
+    editable && isEditableBlock(block) ? (
       <EditableText block={block} />
     ) : (
       <Text value={block.properties.title} block={block} />

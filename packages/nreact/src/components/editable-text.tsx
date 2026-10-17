@@ -4,27 +4,14 @@ import { getTextContent } from '@texonom/nutils'
 
 import { useNotionContext } from '../context'
 
-import type { Block, Decoration } from '@texonom/ntypes'
-
-/**
- * A title the plain-text editor can round-trip.
- *
- * Any formatting — bold, a link, a mention, an inline equation — lives in a
- * segment's second element. The editor edits plain text, so saving a formatted
- * title would silently drop everything it does not show; those titles stay
- * read-only in edit mode instead.
- */
-export const isPlainTitle = (title: Decoration[] | undefined): boolean =>
-  Array.isArray(title) &&
-  title.every(segment => {
-    const formats = segment.length > 1 ? (segment as unknown as [string, unknown[]])[1] : undefined
-    return !formats || formats.length === 0
-  })
+import type { Block } from '@texonom/ntypes'
 
 /**
  * A text block the owner can edit in place.
  *
- * Rendered only in edit mode (`ctx.editable`) and only for plain titles; the
+ * Rendered only in edit mode (`ctx.editable`) and only where nutils'
+ * `isEditableBlock` allows, which is plain titles: the editor edits plain text,
+ * so a formatted title stays read-only rather than lose what it does not show. The
  * public render path keeps using `<Text>`, so a page nobody edits is
  * byte-identical to before. The node is uncontrolled: React never reconciles
  * it, so the caret is never reset while someone is typing. On blur the plain

@@ -5,26 +5,8 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 
 import { NotionRenderer } from '../renderer'
-import { isPlainTitle } from './editable-text'
 
 import type { ExtendedRecordMap } from '@texonom/ntypes'
-
-describe('isPlainTitle', () => {
-  it('accepts unformatted text', () => {
-    expect(isPlainTitle([['plain words']])).toBe(true)
-    expect(isPlainTitle([['one'], ['two']])).toBe(true)
-  })
-
-  it('refuses anything carrying formatting', () => {
-    expect(isPlainTitle([['bold', [['b']]]])).toBe(false)
-    expect(isPlainTitle([['a link', [['a', 'https://texonom.com']]]])).toBe(false)
-    expect(isPlainTitle([['‣', [['p', 'page-id']]]])).toBe(false)
-  })
-
-  it('refuses a missing title', () => {
-    expect(isPlainTitle(undefined)).toBe(false)
-  })
-})
 
 const PAGE = '11111111-1111-4111-8111-111111111111'
 const PLAIN = '22222222-2222-4222-8222-222222222222'
