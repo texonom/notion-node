@@ -2809,3 +2809,19 @@ svg.notion-page-icon {
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* Edit mode: a title that can be edited says so on hover and while focused,
+   in the same greys the theme already uses for block backgrounds. */
+.notion-text-editable {
+  outline: none;
+  border-radius: 3px;
+  cursor: text;
+}
+
+.notion-text-editable:hover {
+  background: var(--notion-gray_background_co);
+}
+
+.notion-text-editable:focus {
+  background: var(--notion-gray_background);
+}
