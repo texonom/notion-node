@@ -20,7 +20,7 @@ import { PageIcon } from './components/page-icon'
 import { PageTitle } from './components/page-title'
 import { SyncPointerBlock } from './components/sync-pointer-block'
 import { Text } from './components/text'
-import { EditableText } from './components/editable-text'
+import { EditableText, isPlainTitle } from './components/editable-text'
 import { useNotionContext } from './context'
 import { LinkIcon } from './icons/link-icon'
 import { getListNumber, isUrl } from './utils'
@@ -109,6 +109,16 @@ export const Block: React.FC<BlockProps> = props => {
   }
 
   const blockId = hideBlockId ? 'notion-block' : `notion-block-${uuidToId(block.id)}`
+
+  // Edit mode swaps a plain title for an editable one. A formatted title keeps its
+  // read-only render: the editor works in plain text, and saving it would drop
+  // the bold, links and mentions it does not show.
+  const renderTitle = () =>
+    editable && isPlainTitle(block.properties?.title) ? (
+      <EditableText block={block} />
+    ) : (
+      <Text value={block.properties.title} block={block} />
+    )
 
   switch (block.type) {
     case 'collection_view_page':
@@ -307,9 +317,7 @@ export const Block: React.FC<BlockProps> = props => {
             </a>
           )}
 
-          <span className='notion-h-title'>
-            <Text value={block.properties.title} block={block} />
-          </span>
+          <span className='notion-h-title'>{renderTitle()}</span>
         </span>
       )
       let headerBlock = null
@@ -354,12 +362,7 @@ export const Block: React.FC<BlockProps> = props => {
 
       return (
         <div className={`notion-text ${blockColor && `notion-${blockColor}`} ${blockId}`}>
-          {block.properties?.title &&
-            (editable ? (
-              <EditableText block={block} />
-            ) : (
-              <Text value={block.properties.title} block={block} />
-            ))}
+          {block.properties?.title && renderTitle()}
 
           {children && <div className='notion-text-children'>{children}</div>}
         </div>
@@ -383,20 +386,11 @@ export const Block: React.FC<BlockProps> = props => {
       if (block.content)
         output = (
           <>
-            {block.properties && (
-              <li>
-                <Text value={block.properties.title} block={block} />
-              </li>
-            )}
+            {block.properties && <li>{renderTitle()}</li>}
             {wrapList(children)}
           </>
         )
-      else
-        output = block.properties ? (
-          <li>
-            <Text value={block.properties.title} block={block} />
-          </li>
-        ) : null
+      else output = block.properties ? <li>{renderTitle()}</li> : null
 
       const isTopLevel = block.type !== recordMap.block[block.parent_id]?.value?.type
       const start = getListNumber(block.id, recordMap.block)

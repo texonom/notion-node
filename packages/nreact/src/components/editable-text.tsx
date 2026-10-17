@@ -4,28 +4,45 @@ import { getTextContent } from '@texonom/nutils'
 
 import { useNotionContext } from '../context'
 
-import type { Block } from '@texonom/ntypes'
+import type { Block, Decoration } from '@texonom/ntypes'
+
+/**
+ * A title the plain-text editor can round-trip.
+ *
+ * Any formatting — bold, a link, a mention, an inline equation — lives in a
+ * segment's second element. The editor edits plain text, so saving a formatted
+ * title would silently drop everything it does not show; those titles stay
+ * read-only in edit mode instead.
+ */
+export const isPlainTitle = (title: Decoration[] | undefined): boolean =>
+  Array.isArray(title) &&
+  title.every(segment => {
+    const formats = segment.length > 1 ? (segment as unknown as [string, unknown[]])[1] : undefined
+    return !formats || formats.length === 0
+  })
 
 /**
  * A text block the owner can edit in place.
  *
- * Rendered only in edit mode (`ctx.editable`); the public render path keeps using
- * `<Text>`, so a page nobody is editing is byte-identical to before. The content
- * is written once on mount and then left uncontrolled: React never reconciles the
- * contentEditable node, so the caret is never reset while someone is typing. On
- * blur the plain text is handed to `onChangeBlock`, which the host persists — this
- * package stays a renderer and never writes anything itself.
+ * Rendered only in edit mode (`ctx.editable`) and only for plain titles; the
+ * public render path keeps using `<Text>`, so a page nobody edits is
+ * byte-identical to before. The content is written once on mount and then left
+ * uncontrolled: React never reconciles the contentEditable node, so the caret is
+ * never reset while someone is typing. On blur the plain text is handed to
+ * `onChangeBlock`, which the host persists — this package stays a renderer and
+ * never writes anything itself.
  */
 export const EditableText: React.FC<{ block: Block }> = ({ block }) => {
   const { onChangeBlock } = useNotionContext()
   const ref = React.useRef<HTMLSpanElement>(null)
-  const initial = React.useMemo(() => getTextContent(block.properties?.title ?? []), [block.id])
+  // The last value the host was told about, not the value at mount: an edit and
+  // a later undo back to the original are both changes worth reporting.
+  const reported = React.useRef(getTextContent(block.properties?.title ?? []))
 
   React.useEffect(() => {
-    // Mount only. The host re-renders from the overlay it just saved, and echoing
-    // the value back into a contentEditable node would fight the user's caret.
-    if (ref.current && ref.current.textContent !== initial) ref.current.textContent = initial
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Mount only. innerText, not textContent, so a soft line break survives the
+    // round trip as `\n` instead of collapsing the lines together.
+    if (ref.current) ref.current.innerText = reported.current
   }, [])
 
   return (
@@ -38,8 +55,12 @@ export const EditableText: React.FC<{ block: Block }> = ({ block }) => {
       suppressContentEditableWarning
       spellCheck
       onBlur={event => {
-        const next = event.currentTarget.textContent ?? ''
-        if (next !== initial) onChangeBlock?.(block.id, next)
+        // contentEditable leaves a trailing break behind after editing; it is
+        // not content, and keeping it would report an edit nobody made.
+        const next = event.currentTarget.innerText.replace(/\n+$/, '')
+        if (next === reported.current) return
+        reported.current = next
+        onChangeBlock?.(block.id, next)
       }}
     />
   )
