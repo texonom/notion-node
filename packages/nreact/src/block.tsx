@@ -51,6 +51,7 @@ interface BlockProps {
   pageTitle?: React.ReactNode
   pageAside?: React.ReactNode
   pageCover?: React.ReactNode
+  pageBody?: React.ReactNode
 
   hideBlockId?: boolean
   disableHeader?: boolean
@@ -96,6 +97,7 @@ export const Block: React.FC<BlockProps> = props => {
     pageTitle,
     pageAside,
     pageCover,
+    pageBody,
     hideBlockId,
     disableHeader
   } = props
@@ -208,7 +210,7 @@ export const Block: React.FC<BlockProps> = props => {
                         className={`notion-page-content
                           ${hasAside && 'notion-page-content-has-aside'}
                           ${hasToc && 'notion-page-content-has-toc'}`}>
-                        <article className='notion-page-content-inner'>{children}</article>
+                        <article className='notion-page-content-inner'>{pageBody ?? children}</article>
 
                         {hasAside && (
                           <PageAside
@@ -249,7 +251,7 @@ export const Block: React.FC<BlockProps> = props => {
                 <components.Collection block={block} ctx={ctx} />
               )}
 
-              {block.type !== 'collection_view_page' && children}
+              {block.type !== 'collection_view_page' && (pageBody ?? children)}
 
               {pageFooter}
             </main>

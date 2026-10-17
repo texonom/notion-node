@@ -35,6 +35,14 @@ describe('edit mode', () => {
     expect(render(false)).toContain('plain words')
   })
 
+  it('draws a host-supplied body in place of the content blocks', () => {
+    const html = renderToStaticMarkup(
+      <NotionRenderer recordMap={recordMap} fullPage={false} pageBody={<p className='host-editor'>editor here</p>} />
+    )
+    expect(html).toContain('host-editor')
+    expect(html).not.toContain('plain words')
+  })
+
   it('makes only plain titles editable', () => {
     const html = render(true)
     expect(html.match(/notion-text-editable/g)).toHaveLength(1)

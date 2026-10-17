@@ -54,6 +54,9 @@ export const NotionRenderer: React.FC<{
   pageTitle?: React.ReactNode
   pageAside?: React.ReactNode
   pageCover?: React.ReactNode
+  // Drawn in place of the page's content blocks, under the same cover, title and
+  // table of contents: how a host swaps the body for an editor.
+  pageBody?: React.ReactNode
 
   blockId?: string
   hideBlockId?: boolean
