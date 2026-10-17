@@ -26,24 +26,29 @@ export const isPlainTitle = (title: Decoration[] | undefined): boolean =>
  *
  * Rendered only in edit mode (`ctx.editable`) and only for plain titles; the
  * public render path keeps using `<Text>`, so a page nobody edits is
- * byte-identical to before. The content is written once on mount and then left
- * uncontrolled: React never reconciles the contentEditable node, so the caret is
- * never reset while someone is typing. On blur the plain text is handed to
- * `onChangeBlock`, which the host persists — this package stays a renderer and
- * never writes anything itself.
+ * byte-identical to before. The node is uncontrolled: React never reconciles
+ * it, so the caret is never reset while someone is typing. On blur the plain
+ * text is handed to `onChangeBlock`, which the host persists — this package
+ * stays a renderer and never writes anything itself.
  */
 export const EditableText: React.FC<{ block: Block }> = ({ block }) => {
   const { onChangeBlock } = useNotionContext()
   const ref = React.useRef<HTMLSpanElement>(null)
-  // The last value the host was told about, not the value at mount: an edit and
-  // a later undo back to the original are both changes worth reporting.
-  const reported = React.useRef(getTextContent(block.properties?.title ?? []))
+  const text = getTextContent(block.properties?.title ?? [])
+  // The last value written into the node or reported to the host, not the value
+  // at mount: an edit and a later undo back to the original are both changes.
+  const reported = React.useRef<string | null>(null)
 
   React.useEffect(() => {
-    // Mount only. innerText, not textContent, so a soft line break survives the
-    // round trip as `\n` instead of collapsing the lines together.
-    if (ref.current) ref.current.innerText = reported.current
-  }, [])
+    // On mount, and again when the title moves under the editor — the host
+    // dropped an edit — but never into a focused node, where it would reset the
+    // caret mid-word. innerText, not textContent, so a soft line break survives
+    // the round trip as `\n` instead of collapsing the lines together.
+    const node = ref.current
+    if (!node || text === reported.current || node === document.activeElement) return
+    node.innerText = text
+    reported.current = text
+  }, [text])
 
   return (
     <span
