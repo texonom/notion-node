@@ -38,6 +38,11 @@ export interface NotionContext {
   defaultPageCoverPosition?: number
 
   zoom: any
+
+  // Owner edit mode: render text blocks editable and report each change. Off by
+  // default, so every existing consumer renders exactly as before.
+  editable?: boolean
+  onChangeBlock?: (blockId: string, title: string) => void
 }
 
 export interface PartialNotionContext {
@@ -71,6 +76,9 @@ export interface PartialNotionContext {
   defaultPageCoverPosition?: number
 
   zoom?: any
+
+  editable?: boolean
+  onChangeBlock?: (blockId: string, title: string) => void
 }
 
 const DefaultLink: React.FC = props => <a target='_blank' rel='noopener noreferrer' {...props} />
@@ -179,7 +187,9 @@ const defaultNotionContext: NotionContext = {
   defaultPageCover: null,
   defaultPageCoverPosition: 0.5,
 
-  zoom: null
+  zoom: null,
+
+  editable: false
 }
 
 const ctx = React.createContext<NotionContext>(defaultNotionContext)

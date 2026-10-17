@@ -33,6 +33,10 @@ export const NotionRenderer: React.FC<{
   isLinkCollectionToUrlProperty?: boolean
   isImageZoomable?: boolean
 
+  // Owner edit mode. Off by default; the host turns it on and persists onChangeBlock.
+  editable?: boolean
+  onChangeBlock?: (blockId: string, title: string) => void
+
   showTableOfContents?: boolean
   minTableOfContentsItems?: number
 
@@ -78,6 +82,8 @@ export const NotionRenderer: React.FC<{
   defaultPageIcon,
   defaultPageCover,
   defaultPageCoverPosition,
+  editable,
+  onChangeBlock,
   ...rest
 }) => {
   const zoom = React.useMemo(
@@ -115,6 +121,8 @@ export const NotionRenderer: React.FC<{
       defaultPageIcon={defaultPageIcon}
       defaultPageCover={defaultPageCover}
       defaultPageCoverPosition={defaultPageCoverPosition}
+      editable={editable}
+      onChangeBlock={onChangeBlock}
       zoom={isImageZoomable ? zoom : null}>
       <NotionBlockRenderer {...rest} />
     </NotionContextProvider>

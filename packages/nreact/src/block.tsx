@@ -20,6 +20,7 @@ import { PageIcon } from './components/page-icon'
 import { PageTitle } from './components/page-title'
 import { SyncPointerBlock } from './components/sync-pointer-block'
 import { Text } from './components/text'
+import { EditableText } from './components/editable-text'
 import { useNotionContext } from './context'
 import { LinkIcon } from './icons/link-icon'
 import { getListNumber, isUrl } from './utils'
@@ -75,7 +76,8 @@ export const Block: React.FC<BlockProps> = props => {
     minTableOfContentsItems,
     defaultPageIcon,
     defaultPageCover,
-    defaultPageCoverPosition
+    defaultPageCoverPosition,
+    editable
   } = ctx
 
   const [activeSection, setActiveSection] = React.useState(null)
@@ -352,7 +354,12 @@ export const Block: React.FC<BlockProps> = props => {
 
       return (
         <div className={`notion-text ${blockColor && `notion-${blockColor}`} ${blockId}`}>
-          {block.properties?.title && <Text value={block.properties.title} block={block} />}
+          {block.properties?.title &&
+            (editable ? (
+              <EditableText block={block} />
+            ) : (
+              <Text value={block.properties.title} block={block} />
+            ))}
 
           {children && <div className='notion-text-children'>{children}</div>}
         </div>
