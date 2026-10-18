@@ -2810,18 +2810,8 @@ svg.notion-page-icon {
   cursor: pointer;
 }
 
-/* Edit mode: a title that can be edited says so on hover and while focused,
-   in the same greys the theme already uses for block backgrounds. */
+/* Edit mode: a title being typed into looks exactly as it does read-only, so
+   the browser's focus ring is the one thing to take away. */
 .notion-text-editable {
   outline: none;
-  border-radius: 3px;
-  cursor: text;
-}
-
-.notion-text-editable:hover {
-  background: var(--notion-gray_background_co);
-}
-
-.notion-text-editable:focus {
-  background: var(--notion-gray_background);
 }

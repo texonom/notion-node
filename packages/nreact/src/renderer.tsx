@@ -33,9 +33,8 @@ export const NotionRenderer: React.FC<{
   isLinkCollectionToUrlProperty?: boolean
   isImageZoomable?: boolean
 
-  // Owner edit mode. Off by default; the host turns it on and persists onChangeBlock.
+  // Owner edit mode: titles drawn for typing into where they stand. Off by default.
   editable?: boolean
-  onChangeBlock?: (blockId: string, title: string) => void
 
   showTableOfContents?: boolean
   minTableOfContentsItems?: number
@@ -54,9 +53,6 @@ export const NotionRenderer: React.FC<{
   pageTitle?: React.ReactNode
   pageAside?: React.ReactNode
   pageCover?: React.ReactNode
-  // Drawn in place of the page's content blocks, under the same cover, title and
-  // table of contents: how a host swaps the body for an editor.
-  pageBody?: React.ReactNode
 
   blockId?: string
   hideBlockId?: boolean
@@ -86,7 +82,6 @@ export const NotionRenderer: React.FC<{
   defaultPageCover,
   defaultPageCoverPosition,
   editable,
-  onChangeBlock,
   ...rest
 }) => {
   const zoom = React.useMemo(
@@ -125,7 +120,6 @@ export const NotionRenderer: React.FC<{
       defaultPageCover={defaultPageCover}
       defaultPageCoverPosition={defaultPageCoverPosition}
       editable={editable}
-      onChangeBlock={onChangeBlock}
       zoom={isImageZoomable ? zoom : null}>
       <NotionBlockRenderer {...rest} />
     </NotionContextProvider>

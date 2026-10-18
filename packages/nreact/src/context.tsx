@@ -39,10 +39,9 @@ export interface NotionContext {
 
   zoom: any
 
-  // Owner edit mode: render text blocks editable and report each change. Off by
-  // default, so every existing consumer renders exactly as before.
+  // Owner edit mode: titles drawn for typing into where they stand, read back by
+  // the host. Off by default, so every existing consumer renders exactly as before.
   editable?: boolean
-  onChangeBlock?: (blockId: string, title: string) => void
 }
 
 export interface PartialNotionContext {
@@ -78,7 +77,6 @@ export interface PartialNotionContext {
   zoom?: any
 
   editable?: boolean
-  onChangeBlock?: (blockId: string, title: string) => void
 }
 
 const DefaultLink: React.FC = props => <a target='_blank' rel='noopener noreferrer' {...props} />

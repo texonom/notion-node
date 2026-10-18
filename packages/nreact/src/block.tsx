@@ -6,7 +6,7 @@ import {
   getBlockParentPage,
   getPageTableOfContents,
   getTextContent,
-  isEditableBlock,
+  isEditableInPlace,
   uuidToId
 } from '@texonom/nutils'
 
@@ -51,7 +51,6 @@ interface BlockProps {
   pageTitle?: React.ReactNode
   pageAside?: React.ReactNode
   pageCover?: React.ReactNode
-  pageBody?: React.ReactNode
 
   hideBlockId?: boolean
   disableHeader?: boolean
@@ -97,7 +96,6 @@ export const Block: React.FC<BlockProps> = props => {
     pageTitle,
     pageAside,
     pageCover,
-    pageBody,
     hideBlockId,
     disableHeader
   } = props
@@ -113,15 +111,11 @@ export const Block: React.FC<BlockProps> = props => {
 
   const blockId = hideBlockId ? 'notion-block' : `notion-block-${uuidToId(block.id)}`
 
-  // Edit mode swaps a plain title for an editable one. A formatted title keeps its
-  // read-only render: the editor works in plain text, and saving it would drop
-  // the bold, links and mentions it does not show.
+  // Edit mode draws the title for typing into, looking exactly as it does read-only.
+  // A title holding something the save cannot write back stays read-only.
+  const inPlace = editable && isEditableInPlace(block)
   const renderTitle = () =>
-    editable && isEditableBlock(block) ? (
-      <EditableText block={block} />
-    ) : (
-      <Text value={block.properties.title} block={block} />
-    )
+    inPlace ? <EditableText block={block} /> : <Text value={block.properties?.title} block={block} />
 
   switch (block.type) {
     case 'collection_view_page':
@@ -210,7 +204,7 @@ export const Block: React.FC<BlockProps> = props => {
                         className={`notion-page-content
                           ${hasAside && 'notion-page-content-has-aside'}
                           ${hasToc && 'notion-page-content-has-toc'}`}>
-                        <article className='notion-page-content-inner'>{pageBody ?? children}</article>
+                        <article className='notion-page-content-inner'>{children}</article>
 
                         {hasAside && (
                           <PageAside
@@ -251,7 +245,7 @@ export const Block: React.FC<BlockProps> = props => {
                 <components.Collection block={block} ctx={ctx} />
               )}
 
-              {block.type !== 'collection_view_page' && (pageBody ?? children)}
+              {block.type !== 'collection_view_page' && children}
 
               {pageFooter}
             </main>
@@ -359,12 +353,24 @@ export const Block: React.FC<BlockProps> = props => {
       return <hr className={`notion-hr ${blockId}`} />
 
     case 'text': {
-      if (!block.properties && !block.content?.length) return <div className={`notion-blank ${blockId}`}>&nbsp;</div>
-
+      const blank = !block.properties && !block.content?.length
       const blockColor = block.format?.block_color
+      const className = blank ? `notion-blank ${blockId}` : `notion-text ${blockColor && `notion-${blockColor}`} ${blockId}`
+
+      // An empty line is typed into like any other; the element stays the same
+      // as it gains its first letter, so the caret does not move.
+      if (inPlace)
+        return (
+          <div className={className}>
+            {renderTitle()}
+            {children && <div className='notion-text-children'>{children}</div>}
+          </div>
+        )
+
+      if (blank) return <div className={className}>&nbsp;</div>
 
       return (
-        <div className={`notion-text ${blockColor && `notion-${blockColor}`} ${blockId}`}>
+        <div className={className}>
           {block.properties?.title && renderTitle()}
 
           {children && <div className='notion-text-children'>{children}</div>}
@@ -477,9 +483,7 @@ export const Block: React.FC<BlockProps> = props => {
 
       return (
         <blockquote className={`notion-quote ${blockColor && `notion-${blockColor}`} ${blockId}`}>
-          <div>
-            <Text value={block.properties.title} block={block} />
-          </div>
+          <div>{renderTitle()}</div>
           {children}
         </blockquote>
       )
@@ -590,9 +594,7 @@ export const Block: React.FC<BlockProps> = props => {
     case 'toggle':
       return (
         <details className={`notion-toggle ${blockId}`}>
-          <summary>
-            <Text value={block.properties?.title} block={block} />
-          </summary>
+          <summary>{renderTitle()}</summary>
 
           <div>{children}</div>
         </details>
@@ -631,9 +633,7 @@ export const Block: React.FC<BlockProps> = props => {
           <div className='notion-to-do-item'>
             <components.Checkbox blockId={blockId} isChecked={isChecked} />
 
-            <div className={`notion-to-do-body ${isChecked && `notion-to-do-checked`}`}>
-              <Text value={block.properties?.title} block={block} />
-            </div>
+            <div className={`notion-to-do-body ${isChecked && `notion-to-do-checked`}`}>{renderTitle()}</div>
           </div>
 
           <div className='notion-to-do-children'>{children}</div>
