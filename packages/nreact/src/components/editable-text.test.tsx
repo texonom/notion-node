@@ -95,6 +95,7 @@ function withoutEditing(html: string): string {
   const host = document.createElement('div')
   host.innerHTML = html
   for (const island of Array.from(host.querySelectorAll('[data-segment]'))) island.replaceWith(...island.childNodes)
+  for (const item of Array.from(host.querySelectorAll('li[data-block-id]'))) item.removeAttribute('data-block-id')
   for (const editable of Array.from(host.querySelectorAll('.notion-text-editable'))) {
     // An empty text block holds its line with a break where the reader writes &nbsp;.
     if (editable.parentElement?.classList.contains('notion-blank')) editable.replaceWith(' ')

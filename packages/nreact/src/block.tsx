@@ -395,11 +395,12 @@ export const Block: React.FC<BlockProps> = props => {
       if (block.content)
         output = (
           <>
-            {block.properties && <li>{renderTitle()}</li>}
+            {block.properties && <li data-block-id={editable ? block.id : undefined}>{renderTitle()}</li>}
             {wrapList(children)}
           </>
         )
-      else output = block.properties ? <li>{renderTitle()}</li> : null
+      // In edit mode the item says which block it is: a list item has no element of its own otherwise.
+      else output = block.properties ? <li data-block-id={editable ? block.id : undefined}>{renderTitle()}</li> : null
 
       const isTopLevel = block.type !== recordMap.block[block.parent_id]?.value?.type
       const start = getListNumber(block.id, recordMap.block)
