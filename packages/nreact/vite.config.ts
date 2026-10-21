@@ -1,13 +1,6 @@
-import { defineConfig, esmExternalRequirePlugin } from 'vite'
+import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import pkg from './package.json' with { type: 'json' }
-
-const external = [
-  ...Object.keys(pkg.dependencies || {}).filter(
-    d => !['react-modal', 'react-fast-compare', 'react-use', 'react-image'].includes(d)
-  ),
-  ...Object.keys(pkg.peerDependencies || {})
-]
 
 export default defineConfig({
   build: {
@@ -27,13 +20,15 @@ export default defineConfig({
     minify: true,
     rollupOptions: {
       // CJS deps that break Vite/Astro consumers via bare named imports get bundled into
-      // nreact's ESM output. react-modal/react-fast-compare are CJS-only; react-use/react-image
-      // ship an ESM build but only via the legacy `module` field, which Node-externalization
-      // (e.g. SSR) can't read for named imports — so inline them too. Pure-ESM deps stay external.
-      // The plugin marks these external itself; listing them here as well would keep
-      // an inlined CJS dep's require('react') a runtime require shim, which throws in a
-      // browser bundle, where the plugin turns each one into an ESM import.
-      plugins: [esmExternalRequirePlugin({ external })]
+      // nreact's ESM output. react-fast-compare is CJS-only; react-use/react-image ship an
+      // ESM build but only via the legacy `module` field, which Node-externalization (e.g.
+      // SSR) can't read for named imports — so inline them too. Pure-ESM deps stay external.
+      // react-modal stays external: it is only ever default-imported, which every bundler
+      // reads from CJS, and inlined its require('react') cannot load in a browser bundle.
+      external: [
+        ...Object.keys(pkg.dependencies || {}).filter(d => !['react-fast-compare', 'react-use', 'react-image'].includes(d)),
+        ...Object.keys(pkg.peerDependencies || {})
+      ]
     }
   },
   plugins: [dts({ tsconfigPath: 'tsconfig.json', outDir: 'build' })]
