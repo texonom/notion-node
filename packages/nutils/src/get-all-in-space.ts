@@ -1,6 +1,8 @@
 import { findAncestors } from './find-ancestors'
 import { getPageContentBlockIds } from './get-page-content-block-ids'
 import { getBlockTitle } from './get-block-title'
+import { getRecordMapScope, scopeRecordMap } from './scope-record-map'
+import { getBlockCollectionId } from './get-block-collection-id'
 
 import type { ExtendedRecordMap, PageMap, PageChunk, BlockMap } from '@texonom/ntypes'
 
@@ -19,15 +21,15 @@ type FetchOption = RequestInit & { timeout?: number }
 /**
  * Performs a traversal over a given Notion workspace starting from a seed page.
  *
- * Returns a map containing all of the pages that are reachable from the seed
- * page in the space.
+ * Returns the seed page's contained descendants and owned collection rows.
+ * References and ancestors never expand the export scope. The getPage callback
+ * should disable eager reference fetching; responses are also filtered here.
  *
  * If `rootSpaceId` is not defined, the space ID of the root page will be used
  * to scope traversal.
  *
  *
- * @param rootPageId - Page ID to start from.
- * @param rootSpaceId - Space ID to scope traversal.
+ * @param startPageId - Page ID to start from.
  * @param getPage - Function used to fetch a single page.
  * @param opts - Optional config
  */
@@ -47,6 +49,7 @@ export async function getAllInSpace(
   ) => Promise<ExtendedRecordMap>,
   {
     startRecordMap,
+    rootSpaceId,
     fetchOption = { timeout: 100000 },
     maxPage,
     debug,
@@ -54,6 +57,7 @@ export async function getAllInSpace(
     collectionConcurrency = 100
   }: {
     startRecordMap?: ExtendedRecordMap
+    rootSpaceId?: string
     fetchOption?: FetchOption
     concurrency?: number
     maxPage?: number
@@ -62,73 +66,43 @@ export async function getAllInSpace(
   } = {}
 ): Promise<{ recordMap: ExtendedRecordMap; pageMap: PageMap; pageTree: PageTree }> {
   const pageMap: PageMap = {}
-  const recordMap = startRecordMap ? startRecordMap : await getPage(startPageId, { fetchOption })
+  let recordMap = structuredClone(startRecordMap ?? (await getPage(startPageId, { fetchOption })))
+  const attemptedBlocks = new Set<string>()
+  const attemptedCollections = new Set<string>()
 
-  let tempRecordMap: ExtendedRecordMap = JSON.parse(JSON.stringify(recordMap))
-
-  if (debug) console.time('Total fetch time')
-  let iteration = 1
   while (true) {
-    if (debug) console.debug(`Iteration ${iteration}`)
-    if (debug) console.debug('block length ', Object.keys(recordMap.block).length)
-
-    if (debug) console.time('getPageContentBlockIds')
-    const targetBlocks = Object.keys(tempRecordMap.block)
-    const missing = Object.keys(
-      targetBlocks.reduce((blockMap, root) => {
-        const contentBlockIds = getPageContentBlockIds(recordMap, root, true)
-        for (const contentBlockID of contentBlockIds) if (!recordMap.block[contentBlockID]) blockMap[contentBlockID] = true
-        return blockMap
-      }, {})
+    const scope = getRecordMapScope(recordMap, startPageId, rootSpaceId)
+    const missing = [...scope.missing].filter(id => !attemptedBlocks.has(id))
+    const collectionBlocks = [...scope.blocks].filter(id => {
+      const block = recordMap.block[id].value
+      const collectionId = getBlockCollectionId(block, recordMap)
+      return scope.collections.has(collectionId) && !attemptedCollections.has(id)
+    })
+    if (!missing.length && !collectionBlocks.length) break
+    if (
+      Number.isInteger(maxPage) &&
+      [...scope.blocks].filter(id => recordMap.block[id].value.type === 'page').length >= maxPage
     )
-    for (const { value: block } of Object.values(tempRecordMap.block))
-      if (block && !recordMap.block[block.parent_id] && block.parent_table === 'block') missing.push(block.parent_id)
-    if (debug) console.timeEnd('getPageContentBlockIds')
+      break
 
-    if (debug) console.time('getBlocks')
-    tempRecordMap = (await getBlocks(missing, fetchOption)).recordMap as ExtendedRecordMap
-    if (debug) console.timeEnd('getBlocks')
-    if (!tempRecordMap?.block) break
-
-    if (debug) console.time('mapBlocks')
-    const contentBlockIds = Object.values(recordMap.block)
-      .map(obj => obj.value?.id)
-      .filter(Boolean)
-    recordMap.block = { ...recordMap.block, ...tempRecordMap.block }
-    if (debug) console.timeEnd('mapBlocks')
-
-    if (debug) console.time('fetchCollections')
-    await fetchCollections(contentBlockIds, recordMap, undefined, { fetchOption, concurrency, collectionConcurrency })
-    if (debug) console.timeEnd('fetchCollections')
-    if (debug) console.debug('collection query length ' + Object.keys(recordMap.collection_query).length)
-
-    if (debug) console.debug('new block length ', Object.keys(tempRecordMap.block).length)
-    const pageLength = Object.values(recordMap.block)
-      .map(obj => obj.value?.type)
-      .filter(type => type === 'page').length
-    if (debug) console.debug('page length ', pageLength)
-    if (Number.isInteger(maxPage) && pageLength >= maxPage) break
-
-    if (debug) console.debug(`memory usage ${process.memoryUsage().rss / 1024 / 1024}MB`)
-    iteration += 1
-    if (debug) console.debug()
-  }
-  if (debug) console.timeEnd('Total fetch time')
-
-  if (debug) console.time('get page map')
-  if (debug) console.debug('Total block length ', Object.keys(recordMap.block).length)
-  const blockIds = Object.keys(recordMap.block)
-
-  const promises = []
-  for (const blockId of blockIds)
-    if (recordMap.block[blockId].value?.type === 'page') {
-      promises.push(getPageSync(blockId, recordMap, getBlocks).then(pageRecordMap => (pageMap[blockId] = pageRecordMap)))
-      await sleep(1)
+    for (const id of missing) attemptedBlocks.add(id)
+    if (missing.length) {
+      const response = await getBlocks(missing, fetchOption)
+      recordMap.block = { ...recordMap.block, ...response.recordMap?.block }
+      recordMap.collection = { ...recordMap.collection, ...response.recordMap?.collection }
+      recordMap.collection_view = { ...recordMap.collection_view, ...response.recordMap?.collection_view }
     }
-  await Promise.all(promises)
+    for (const id of collectionBlocks) attemptedCollections.add(id)
+    if (collectionBlocks.length)
+      await fetchCollections(collectionBlocks, recordMap, undefined, { fetchOption, concurrency, collectionConcurrency })
+  }
 
-  if (debug) console.timeEnd('get page map')
-  if (debug) console.debug('Total page length ', Object.keys(pageMap).length)
+  // Filter responses as well as requests: API responses and local caches can
+  // contain ancestors, linked pages and records from other workspaces.
+  recordMap = scopeRecordMap(recordMap, startPageId, rootSpaceId)
+  for (const [id, entry] of Object.entries(recordMap.block))
+    if (entry.value.type === 'page' || entry.value.type === 'collection_view_page')
+      pageMap[id] = await getPageSync(id, recordMap, getBlocks, { followReferences: false, fetchMissing: false })
 
   if (debug) console.time('get page tree')
   const pageTree = {
@@ -145,7 +119,8 @@ export async function getAllInSpace(
   return { pageMap, pageTree, recordMap }
 }
 
-export function recursivePageTree(recordMap: ExtendedRecordMap, pageTree: PageTree): PageTree {
+export function recursivePageTree(recordMap: ExtendedRecordMap, pageTree: PageTree, visited = new Set<string>()): PageTree {
+  visited.add(pageTree.id)
   // Save ancestors to update the count
   const ancestors = [pageTree]
   let ancestor = pageTree
@@ -167,22 +142,27 @@ export function recursivePageTree(recordMap: ExtendedRecordMap, pageTree: PageTr
   if (current.content?.length) {
     for (const ancestor of ancestors) ancestor.blocks += current.content.length
     for (const contentBlockId of current.content) {
+      if (visited.has(contentBlockId)) continue
       const block = recordMap.block[contentBlockId]?.value
       if (!block) continue
       pageTree.children.push(
-        recursivePageTree(recordMap, {
-          id: contentBlockId,
-          title: getBlockTitle(block, recordMap),
-          blocks: 1,
-          pages: 0,
-          children: [],
-          type: block.type,
-          parent: pageTree
-        })
+        recursivePageTree(
+          recordMap,
+          {
+            id: contentBlockId,
+            title: getBlockTitle(block, recordMap),
+            blocks: 1,
+            pages: 0,
+            children: [],
+            type: block.type,
+            parent: pageTree
+          },
+          visited
+        )
       )
       if (block.type === 'page') for (const ancestor of ancestors) ancestor.pages++
     }
-  } else if (current?.type === 'collection_view') {
+  } else if (current?.type === 'collection_view' || current?.type === 'collection_view_page') {
     const collectionQuery = recordMap.collection_query[current.collection_id]?.[current.view_ids[0]]
     if (!collectionQuery) {
       console.warn(`No collection query for ${pageTree.id}`)
@@ -191,23 +171,29 @@ export function recursivePageTree(recordMap: ExtendedRecordMap, pageTree: PageTr
     }
     const childrenMap = {}
     for (const collectionQuery of Object.values(recordMap.collection_query[current.collection_id]))
-      if (collectionQuery.collection_group_results.blockIds)
+      if (collectionQuery?.collection_group_results?.blockIds)
         for (const blockId of collectionQuery.collection_group_results.blockIds) childrenMap[blockId] = true
     const childrenPages = Object.keys(childrenMap)
     for (const ancestor of ancestors) ancestor.pages += childrenPages.length
     for (const ancestor of ancestors) ancestor.blocks += childrenPages.length
-    for (const blockId of childrenPages)
+    for (const blockId of childrenPages) {
+      if (visited.has(blockId) || !recordMap.block[blockId]?.value) continue
       pageTree.children.push(
-        recursivePageTree(recordMap, {
-          id: blockId,
-          title: getBlockTitle(recordMap.block[blockId].value, recordMap),
-          blocks: childrenPages.length,
-          pages: childrenPages.length,
-          children: [],
-          type: current.type,
-          parent: pageTree
-        })
+        recursivePageTree(
+          recordMap,
+          {
+            id: blockId,
+            title: getBlockTitle(recordMap.block[blockId].value, recordMap),
+            blocks: childrenPages.length,
+            pages: childrenPages.length,
+            children: [],
+            type: current.type,
+            parent: pageTree
+          },
+          visited
+        )
       )
+    }
   }
   delete pageTree.parent
   return pageTree
@@ -216,9 +202,10 @@ export function recursivePageTree(recordMap: ExtendedRecordMap, pageTree: PageTr
 export async function getPageSync(
   pageId: string,
   recordMap: ExtendedRecordMap,
-  getBlocks: (blockIds: string[], fetchOption?: FetchOption) => Promise<PageChunk>
+  getBlocks: (blockIds: string[], fetchOption?: FetchOption) => Promise<PageChunk>,
+  { followReferences = true, fetchMissing = true }: { followReferences?: boolean; fetchMissing?: boolean } = {}
 ): Promise<ExtendedRecordMap> {
-  let contentBlockIds = getPageContentBlockIds(recordMap, pageId)
+  let contentBlockIds = getPageContentBlockIds(recordMap, pageId, false, { followReferences })
   let blockMap: BlockMap = { [pageId]: { value: recordMap.block[pageId].value, role: 'reader' } }
   const collectionMap = {}
   const collectionViewMap = {}
@@ -264,10 +251,12 @@ export async function getPageSync(
   for (const blockId of Object.keys(blockMap)) {
     const block = blockMap[blockId].value
     let targetBlock = block
-    if (block?.type === 'alias')
+    const aliases = new Set<string>()
+    if (followReferences && block?.type === 'alias')
       while (true) {
         const alias = targetBlock?.format?.alias_pointer?.id
-        if (!alias) break
+        if (!alias || aliases.has(alias)) break
+        aliases.add(alias)
         targetBlock = recordMap.block[alias]?.value
         if (!targetBlock) missing.push(alias)
         else blockMap[alias] = { value: targetBlock, role: 'reader' }
@@ -275,7 +264,7 @@ export async function getPageSync(
   }
 
   // Missing
-  if (missing.length) {
+  if (fetchMissing && missing.length) {
     const responseMap = (await getBlocks(missing).catch(() => ({ recordMap: { block: null } }))).recordMap
     if (responseMap?.block) {
       blockMap = { ...blockMap, ...responseMap.block }
@@ -285,7 +274,7 @@ export async function getPageSync(
     }
   }
 
-  contentBlockIds = getPageContentBlockIds(recordMap, pageId)
+  contentBlockIds = getPageContentBlockIds(recordMap, pageId, false, { followReferences })
   for (const contentBlockId of contentBlockIds) {
     const block = recordMap.block[contentBlockId]?.value
     if (!block) continue
@@ -317,5 +306,3 @@ export async function getPageSync(
     notion_user: {}
   }
 }
-
-const sleep = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

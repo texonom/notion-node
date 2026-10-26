@@ -29,6 +29,12 @@ const results = await notion.search({ query: 'Texonom' })
 
 The resulting `recordMap` is compatible with notion's unofficial API and nreact.
 
+Resolution stays within the selected page's contained blocks. Subpage metadata is
+included without recursing into subpages. Ancestors, page/database mentions,
+`link_to_page` targets and copied synced-block sources are not fetched, even when
+the integration can access them. These references may therefore render without
+their target's title or content.
+
 ## API
 
 Exports:

@@ -72,6 +72,22 @@ pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321
 
 ## API
 
+Exports are scoped to the selected root's contained descendants and owned database
+rows in the root's workspace. Mentions, aliases, synced-block references, linked
+databases, and ancestors do not expand that scope. Cached exports are filtered by
+the same rules before reuse. Recursive exports build this scope before writing;
+missing or out-of-scope references are not hydrated using the export token.
+
+For in-memory conversion, `new NotionExporter({ page: '' })` supports repeated or
+concurrent `pageToMarkdown(id, recordMap)` calls. This mode renders only the records
+explicitly supplied by the caller, including supplied mention metadata, and never
+fetches missing references or uses an authentication token. It cannot execute a
+file export without a selected root.
+
+Page IDs used for output must be UUIDs. Safe page slugs retain their friendly
+filenames; unsafe or oversized slugs fall back to the page UUID. Output filenames
+and raw-table paths are checked against their export directory.
+
 Exports:
 
 - `NotionExportCommand` CLI entry

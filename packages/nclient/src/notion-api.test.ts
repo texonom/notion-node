@@ -31,7 +31,7 @@ for (const pageId of pageIdFixturesFailure)
     await expect(() => api.getPage(pageId, { fetchOption: { timeout: 3000 } })).rejects.toThrow()
   })
 
-test(`Search`, { timeout: 10000, retry: 3, concurrent: true }, async () => {
+test.skipIf(!process.env.NOTION_TOKEN)(`Search`, { timeout: 10000, retry: 3, concurrent: true }, async () => {
   const api = new NotionAPI({ authToken: process.env.NOTION_TOKEN })
   const results = await api.search({
     query: 'Texonom',
@@ -48,7 +48,7 @@ test(`Search`, { timeout: 10000, retry: 3, concurrent: true }, async () => {
   expect(results.recordMap.block).toBeTypeOf('object')
 })
 
-test(`Backlink`, { timeout: 10000, concurrent: true }, async () => {
+test.skipIf(!process.env.NOTION_TOKEN)(`Backlink`, { timeout: 10000, concurrent: true }, async () => {
   const api = new NotionAPI({ authToken: process.env.NOTION_TOKEN })
   const backlinks = await api.getBacklinks({
     block: {

@@ -5,6 +5,7 @@ import { defaultMapImageUrl, defaultMapPageUrl, parsePageId } from '@texonom/nut
 import { AssetWrapper } from './components/asset-wrapper'
 import { Checkbox as DefaultCheckbox } from './components/checkbox'
 import { Header } from './components/header'
+import { withSafeLink } from './components/safe-link'
 import { wrapNextImage, wrapNextLink } from './next'
 import { MapImageUrlFn, MapPageUrlFn, NotionComponents, SearchNotionFn } from './types'
 
@@ -80,7 +81,7 @@ export interface PartialNotionContext {
 }
 
 const DefaultLink: React.FC = props => <a target='_blank' rel='noopener noreferrer' {...props} />
-const DefaultLinkMemo = React.memo(DefaultLink)
+const DefaultLinkMemo = React.memo(withSafeLink(DefaultLink))
 const DefaultPageLink: React.FC<React.AnchorHTMLAttributes<HTMLAnchorElement>> = ({ href, ...props }) => {
   const { recordMap, rootSpaceId } = useNotionContext()
   let finalHref = href as string | undefined
@@ -97,7 +98,7 @@ const DefaultPageLink: React.FC<React.AnchorHTMLAttributes<HTMLAnchorElement>> =
 
   return <a href={finalHref} {...props} />
 }
-const DefaultPageLinkMemo = React.memo(DefaultPageLink)
+const DefaultPageLinkMemo = React.memo(withSafeLink(DefaultPageLink))
 
 const DefaultEmbed = props => <AssetWrapper {...props} />
 const DefaultHeader = Header
@@ -217,6 +218,9 @@ export const NotionContextProvider: React.FC<PartialNotionContext> = ({
     // ensure the user can't override default components with falsy values
     // since it would result in very difficult-to-debug react errors
     for (const key of Object.keys(components)) if (!components[key]) delete components[key]
+
+    if (components.Link) components.Link = withSafeLink(components.Link)
+    if (components.PageLink) components.PageLink = withSafeLink(components.PageLink)
 
     return components
   }, [themeComponents])

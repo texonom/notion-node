@@ -117,7 +117,10 @@ async function generateTreemapHTML(data: TreemapNode, title: string, outputPath:
 <div class="chart" id="chart"></div>
 <script src="https://d3js.org/d3.v6.min.js"></script>
 <script>
-  var data = ${JSON.stringify(data)};
+  var data = ${JSON.stringify(data)
+    .replace(/</g, '\\u003c')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029')};
 
   var margin = {top: 20, right: 0, bottom: 0, left: 0},
       width = document.getElementById('chart').clientWidth,
@@ -158,21 +161,15 @@ async function generateTreemapHTML(data: TreemapNode, title: string, outputPath:
     var currentDepth = d.depth;
 
     // Update breadcrumb
-    var breadcrumb = d.ancestors().reverse().map(function(d) {
-      return '<span class="breadcrumb-item" data-id="' + d.data.id + '">' + d.data.name + '</span>';
-    }).join(' / ');
-    document.getElementById('breadcrumb').innerHTML = breadcrumb;
-
-    // Add click events to breadcrumb
-    var breadcrumbItems = document.querySelectorAll('.breadcrumb-item');
-    breadcrumbItems.forEach(function(item) {
-      item.addEventListener('click', function(event) {
-        var id = event.target.getAttribute('data-id');
-        var node = findNodeById(root, id);
-        if (node) {
-          zoom(node);
-        }
-      });
+    var breadcrumb = document.getElementById('breadcrumb');
+    breadcrumb.replaceChildren();
+    d.ancestors().reverse().forEach(function(node, index) {
+      if (index) breadcrumb.appendChild(document.createTextNode(' / '));
+      var item = document.createElement('span');
+      item.className = 'breadcrumb-item';
+      item.textContent = node.data.name;
+      item.addEventListener('click', function() { zoom(node); });
+      breadcrumb.appendChild(item);
     });
 
     // Update current title
@@ -237,21 +234,15 @@ async function generateTreemapHTML(data: TreemapNode, title: string, outputPath:
     var currentDepth = d.depth;
 
     // Update breadcrumb
-    var breadcrumb = d.ancestors().reverse().map(function(d) {
-      return '<span class="breadcrumb-item" data-id="' + d.data.id + '">' + d.data.name + '</span>';
-    }).join(' / ');
-    document.getElementById('breadcrumb').innerHTML = breadcrumb;
-
-    // Add click events to breadcrumb
-    var breadcrumbItems = document.querySelectorAll('.breadcrumb-item');
-    breadcrumbItems.forEach(function(item) {
-      item.addEventListener('click', function(event) {
-        var id = event.target.getAttribute('data-id');
-        var node = findNodeById(root, id);
-        if (node) {
-          zoom(node);
-        }
-      });
+    var breadcrumb = document.getElementById('breadcrumb');
+    breadcrumb.replaceChildren();
+    d.ancestors().reverse().forEach(function(node, index) {
+      if (index) breadcrumb.appendChild(document.createTextNode(' / '));
+      var item = document.createElement('span');
+      item.className = 'breadcrumb-item';
+      item.textContent = node.data.name;
+      item.addEventListener('click', function() { zoom(node); });
+      breadcrumb.appendChild(item);
     });
 
     // Update current title
@@ -327,18 +318,6 @@ async function generateTreemapHTML(data: TreemapNode, title: string, outputPath:
         .text(function(d) { return d.data.value; });
   }
 
-  function findNodeById(node, id) {
-    if (node.data.id === id) {
-      return node;
-    }
-    if (node.children) {
-      for (var child of node.children) {
-        var result = findNodeById(child, id);
-        if (result) return result;
-      }
-    }
-    return null;
-  }
 </script>
 </body>
 </html>

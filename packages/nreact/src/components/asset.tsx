@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { BaseContentBlock, Block } from '@texonom/ntypes'
-import { getTextContent } from '@texonom/nutils'
+import { getTextContent, getSafeUrl } from '@texonom/nutils'
 
 import { useNotionContext } from '../context'
 import { getYoutubeId } from '../utils'
@@ -104,7 +104,7 @@ export const Asset: React.FC<{
   let source = recordMap.signed_urls?.[block.id] || block.properties?.source?.[0]?.[0]
   let content = null
 
-  if (!source) return null
+  if (!source || (block.type !== 'image' && !getSafeUrl(source, 'embed'))) return null
 
   if (block.type === 'tweet') {
     const src = source
@@ -159,7 +159,7 @@ export const Asset: React.FC<{
 
       content = <video playsInline controls preload='metadata' style={assetStyle} src={source} title={block.type} />
     } else {
-      let src = block.format?.display_source || source
+      let src = getSafeUrl(block.format?.display_source || source, 'embed')
 
       if (src) {
         const youtubeVideoId: string | null = block.type === 'video' ? getYoutubeId(src) : null

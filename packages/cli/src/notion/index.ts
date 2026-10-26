@@ -9,7 +9,11 @@ import {
   defaultMapImageUrl,
   getAllInSpace,
   getPageTitle,
-  recursivePageTree
+  recursivePageTree,
+  getPageSync,
+  getBlockCollectionId,
+  getRecordMapScope,
+  scopeRecordMap
 } from '@texonom/nutils'
 import { join } from 'path'
 import { mkdir, readFile } from 'fs/promises'
@@ -20,11 +24,12 @@ import { execSync } from 'child_process'
 import stream from 'stream'
 import { format } from 'prettier'
 import { isCollection, isSpace } from '@texonom/ntypes'
+import { assertExportPageId, exportPageName, exportPath } from './export-path'
 
 import type { PageTree } from '@texonom/nutils'
 import type { ExtendedRecordMap, PageMap, PageBlock, Block, Decoration, CollectionViewBlock } from '@texonom/ntypes'
 
-let writeFile = promisify(fs.writeFile)
+const writeFile = promisify(fs.writeFile)
 
 export const getBlockLink = (blockId: string, recordMap: ExtendedRecordMap, domain = 'https://texonom.com') =>
   `${domain}/${getCanonicalPageId(blockId, recordMap)}`
@@ -39,6 +44,8 @@ export class NotionExporter {
   pageTree: PageTree
   pageMap: PageMap
   promises: Promise<unknown>[] = []
+  private scopedBlockIds?: Set<string>
+  private exportedPageIds = new Set<string>()
 
   // Options
   folder: string = 'texonom-raw'
@@ -73,6 +80,7 @@ export class NotionExporter {
     push?: boolean
   }) {
     this.page = parsePageId(options.page)
+    if (options.page) assertExportPageId(this.page)
     this.folder = options.folder ?? this.folder
     this.domain = options.domain ?? this.domain
     this.md = options.md ?? this.md
@@ -87,11 +95,11 @@ export class NotionExporter {
     this.push = options.push ?? this.push
 
     this.notion = new NotionAPI({ authToken: this.token })
-    if (this.validation) writeFile = async () => {}
   }
 
   async execute() {
     const id = parsePageId(this.page)
+    assertExportPageId(id)
 
     // Load
     if (this.load) {
@@ -99,7 +107,7 @@ export class NotionExporter {
       await this.loadRaw()
       console.timeEnd('Load raw data')
     }
-    if (this.prefetch) {
+    if (this.prefetch || (!this.load && this.recursive)) {
       console.time('Fetch raw data')
       await this.fetchRawSpace(id)
       console.timeEnd('Fetch raw data')
@@ -128,7 +136,12 @@ export class NotionExporter {
       recursivePageTree(this.recordMap, pageTree)
       this.pageTree = pageTree
     }
-    await Promise.all(this.promises)
+    // Recursive exports may enqueue more work while an earlier batch runs.
+    for (let completed = 0; completed < this.promises.length;) {
+      const pending = this.promises.slice(completed)
+      completed = this.promises.length
+      await Promise.all(pending)
+    }
     // Update
     if (this.update)
       if (this.recursive) await this.saveRawSpace()
@@ -136,16 +149,31 @@ export class NotionExporter {
   }
 
   async loadRaw() {
-    const { recordMap, pageTree, pageMap } = await loadRaw(this.folder)
-    this.recordMap = recordMap
-    this.pageTree = pageTree
-    this.pageMap = pageMap
+    const { recordMap } = await loadRaw(this.folder)
+    this.recordMap = scopeRecordMap(recordMap, this.page)
+    this.scopedBlockIds = new Set(Object.keys(this.recordMap.block))
+    this.pageMap = {}
+    for (const [id, entry] of Object.entries(this.recordMap.block))
+      if (entry.value.type === 'page' || entry.value.type === 'collection_view_page')
+        this.pageMap[id] = await getPageSync(id, this.recordMap, this.notion.getBlocks.bind(this.notion), {
+          followReferences: false,
+          fetchMissing: false
+        })
+    this.pageTree = recursivePageTree(this.recordMap, {
+      id: this.page,
+      title: getBlockTitle(this.recordMap.block[this.page].value, this.recordMap),
+      type: 'page',
+      blocks: 1,
+      pages: 1,
+      children: []
+    })
   }
 
   async fetchRawSpace(startPage: string) {
     const { recordMap, pageTree, pageMap } = await getAllInSpace(
       startPage,
-      this.notion.getPage.bind(this.notion),
+      (id, options) =>
+        this.notion.getPage(id, { ...options, fetchFullInfo: false, fetchCollections: false, signFileUrls: false }),
       this.notion.getBlocks.bind(this.notion),
       this.notion.fetchCollections.bind(this.notion),
       {
@@ -158,7 +186,26 @@ export class NotionExporter {
     )
     this.pageMap = pageMap
     this.recordMap = recordMap
+    this.scopedBlockIds = new Set(Object.keys(recordMap.block))
     this.pageTree = pageTree
+  }
+
+  private async fetchScopedPage(id: string) {
+    assertExportPageId(id)
+    const recordMap = await this.notion.getPage(id, { fetchFullInfo: false, fetchCollections: false, signFileUrls: false })
+    const rootSpaceId = this.recordMap?.block[this.page]?.value.space_id
+    const scope = getRecordMapScope(recordMap, id, rootSpaceId)
+    const collectionBlocks = [...scope.blocks].filter(blockId => {
+      const block = recordMap.block[blockId].value
+      return (
+        (block.type === 'collection_view' || block.type === 'collection_view_page') &&
+        scope.collections.has(getBlockCollectionId(block, recordMap))
+      )
+    })
+    if (collectionBlocks.length) await this.notion.fetchCollections(collectionBlocks, recordMap)
+    const scoped = scopeRecordMap(recordMap, id, rootSpaceId)
+    this.scopedBlockIds ??= new Set(Object.keys(scoped.block))
+    return scoped
   }
 
   async saveRawSpace() {
@@ -166,57 +213,64 @@ export class NotionExporter {
     await mkdir(this.folder, { recursive: true })
     const promises = []
     await mkdir(join(this.folder, 'recordMap'), { recursive: true })
-    for (const table in this.recordMap) this.saveJson(join('recordMap', table), this.recordMap[table])
-    this.saveJson('pageMap', this.pageMap)
-    this.saveJson('pageTree', this.pageTree)
+    for (const table in this.recordMap) promises.push(this.saveJson(['recordMap', table], this.recordMap[table]))
+    promises.push(this.saveJson(['pageMap'], this.pageMap))
+    promises.push(this.saveJson(['pageTree'], this.pageTree))
     await Promise.all(promises)
   }
 
-  saveJson(filename: string, object: Record<string, unknown>) {
+  async saveJson(segments: string[], object: Record<string, unknown>) {
     if (this.validation) return
-    const outputStream = fs.createWriteStream(`${join(this.folder, filename)}.json`)
+    const filename = segments[segments.length - 1]
+    const outputStream = fs.createWriteStream(exportPath(this.folder, ...segments.slice(0, -1), `${filename}.json`))
     const transformStream = JSONStream.stringifyObject()
-    transformStream.pipe(outputStream)
+    const completion = promisify(stream.pipeline)(transformStream, outputStream)
     // @ts-ignore
     for (const key in object) transformStream.write([key, object[key]])
     transformStream.end()
+    await completion
   }
 
   async saveRawPage(id: string) {
+    assertExportPageId(id)
     if (this.validation) return
     await mkdir(this.folder, { recursive: true })
-    const recordMap = await this.notion.getPage(id)
-    const filename = `${getCanonicalPageId(id, recordMap)}`
+    const recordMap = this.pageMap?.[id] ?? (await this.fetchScopedPage(id))
+    const filename = exportPageName(id, recordMap)
     let target = JSON.stringify(recordMap)
     const ext = 'json'
     target = await format(target, { parser: 'json' })
-    await this.writeFile(`${join(this.folder, filename)}.${ext}`, target)
+    await this.writeFile(exportPath(this.folder, `${filename}.${ext}`), target)
   }
 
   async writeFile(path: string, target: string) {
-    if (!this.folder) return
+    if (this.validation || !this.folder) return
     else await writeFile(path, target)
   }
 
   async exportMd(id: string) {
+    assertExportPageId(id)
+    if ((this.scopedBlockIds && !this.scopedBlockIds.has(id)) || this.exportedPageIds.has(id)) return
+    this.exportedPageIds.add(id)
     await mkdir(this.md, { recursive: true })
     try {
       let recordMap = this.pageMap && this.pageMap[id]
       if (!recordMap) {
         console.warn(`Missing from pageMap ${id}`)
-        recordMap = await this.notion.getPage(id)
+        recordMap = await this.fetchScopedPage(id)
       }
       if (!this.recursive) this.recordMap = recordMap
       try {
-        if (!recordMap) recordMap = await this.notion.getPage(id)
+        if (!recordMap) recordMap = await this.fetchScopedPage(id)
       } catch {
         return
       }
       if (!['page', 'collection_view_page'].includes(recordMap.block[id].value.type)) throw new Error('Not a page')
       const target = await this.pageToMarkdown(id, recordMap)
+      this.pageMap ??= {}
       if (!this.pageMap[id]) this.pageMap[id] = recordMap
-      const path = join(this.md, `${getCanonicalPageId(id, recordMap)}`)
-      this.promises.push(this.writeFile(`${path}.md`, target))
+      const path = exportPath(this.md, `${exportPageName(id, recordMap)}.md`)
+      this.promises.push(this.writeFile(path, target))
     } catch (e) {
       console.error(id, e)
     }
@@ -234,6 +288,21 @@ export class NotionExporter {
   }
 
   async pageToMarkdownObj(id: string, recordMap: ExtendedRecordMap) {
+    // An empty root is the existing record-map-only conversion API used by
+    // Texonom's embedding pipeline. Each call has its own context, so one
+    // converter can render different pages concurrently without sharing scope.
+    // Only explicitly supplied records are available; credentials are not used.
+    if (!this.page) {
+      const converter = new NotionExporter({ page: id })
+      converter.recordMap = recordMap
+      converter.scopedBlockIds = new Set(Object.keys(recordMap.block))
+      return converter.pageToMarkdownObj(id, recordMap)
+    }
+    if (!this.scopedBlockIds) {
+      recordMap = scopeRecordMap(recordMap, this.page)
+      this.scopedBlockIds = new Set(Object.keys(recordMap.block))
+    }
+    if (!this.scopedBlockIds.has(id)) throw new Error('Page is outside the export scope')
     const page = recordMap.block[id].value as PageBlock
     const markdown: Markdown = {}
 
@@ -559,17 +628,10 @@ export class NotionExporter {
   }
 
   async getBlock(id: string, recordMap: ExtendedRecordMap, message = '') {
+    if (!this.scopedBlockIds?.has(id)) return undefined
     let block = recordMap.block[id]?.value
     if (!block && this.recordMap) block = this.recordMap.block[id]?.value
-    try {
-      if (!block && this.token) {
-        const notion = new NotionAPI({ authToken: this.token })
-        const response = await notion.getBlocks([id])
-        block = response.recordMap?.block?.[id]?.value
-      }
-    } catch {
-      if (!block) if (this.debug) console.warn(`${message} Missing block ${id}`)
-    }
+    if (!block && this.debug) console.warn(`${message} Missing block ${id}`)
     if (block) {
       recordMap.block[id] = { value: block, role: 'reader' }
       if (this.recordMap) this.recordMap.block[id] = { value: block, role: 'reader' }
@@ -607,26 +669,8 @@ export class NotionExporter {
           recordMap.collection_view[viewId] = this.recordMap.collection_view?.[viewId]
       }
     }
-    try {
-      if (!collection && this.token) {
-        const notion = new NotionAPI({ authToken: this.token })
-        const response = await notion.getPageRaw(collectionViewBlock.id)
-        // @wait for rate limit
-        sleepSync(1000 * this.wait)
-        if (!response.recordMap) console.error(response)
-        collection = response.recordMap.collection[collectionId]?.value
-        if (collection) {
-          recordMap.collection_view = { ...recordMap.collection_view, ...response.recordMap.collection_view }
-          recordMap.collection = { ...recordMap.collection, ...response.recordMap.collection }
-          recordMap.block = { ...recordMap.block, ...response.recordMap.block }
-          this.recordMap.collection_view = { ...this.recordMap.collection_view, ...response.recordMap.collection_view }
-          this.recordMap.collection = { ...this.recordMap.collection, ...response.recordMap.collection }
-          this.recordMap.block = { ...this.recordMap.block, ...response.recordMap.block }
-        }
-      }
-    } catch {
-      if (!collection) if (this.debug) console.warn(`${message} Missing collection block ${collectionViewBlock.id}`)
-    }
+    // All collection data must come from the scoped fetch/cache. A linked view
+    // must not trigger a credentialed fallback request to its source database.
     await this.getCollectionView(collectionId, collectionViewBlock.view_ids[0], recordMap, message)
     return collection
   }
@@ -654,48 +698,7 @@ export class NotionExporter {
         }
       }
     }
-    try {
-      if (!results && this.token) {
-        const notion = new NotionAPI({ authToken: this.token })
-        const response = await notion.getCollectionData(collectionId, viewId, recordMap.collection_view[viewId]?.value)
-        results = response.result?.reducerResults?.collection_group_results
-        if (results) {
-          recordMap.collection_query![collectionId] = {
-            ...recordMap.collection_query![collectionId],
-            [viewId]: response.result?.reducerResults
-          }
-          if (this.recordMap)
-            this.recordMap.collection_query![collectionId] = {
-              ...this.recordMap.collection_query![collectionId],
-              [viewId]: response.result?.reducerResults
-            }
-          for (const blockId in response.recordMap.block) {
-            const block = response.recordMap.block[blockId].value
-            if (block) {
-              recordMap.block[blockId] = { value: block, role: 'reader' }
-              if (this.recordMap) this.recordMap.block[blockId] = { value: block, role: 'reader' }
-            }
-          }
-          for (const collection in response.recordMap.collection) {
-            const collectionValue = response.recordMap.collection[collection].value
-            if (collectionValue) {
-              recordMap.collection[collection] = { value: collectionValue, role: 'reader' }
-              if (this.recordMap) this.recordMap.collection[collection] = { value: collectionValue, role: 'reader' }
-            }
-          }
-          for (const collectionView in response.recordMap.collection_view) {
-            const collectionViewValue = response.recordMap.collection_view[collectionView].value
-            if (collectionViewValue) {
-              recordMap.collection_view[collectionView] = { value: collectionViewValue, role: 'reader' }
-              if (this.recordMap)
-                this.recordMap.collection_view[collectionView] = { value: collectionViewValue, role: 'reader' }
-            }
-          }
-        }
-      }
-    } catch {
-      if (!results) if (this.debug) console.warn(`${message} Missing collection view ${viewId}`)
-    }
+    if (!results && this.debug) console.warn(`${message} Missing collection view ${viewId}`)
     return results
   }
 
@@ -797,9 +800,4 @@ export async function loadJson<C>(folder: string, filename: string): Promise<C> 
       res(object)
     })
   )
-}
-
-const sleepSync = (ms: number) => {
-  const sharedBuffer = new Int32Array(new SharedArrayBuffer(4))
-  Atomics.wait(sharedBuffer, 0, 0, ms)
 }

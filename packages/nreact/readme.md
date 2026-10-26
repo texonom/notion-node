@@ -43,6 +43,17 @@ function Title({ value }) {
 
 ## API
 
+Record-map links allow HTTP(S), relative URLs, `mailto:` and `tel:`. Embeds allow
+HTTP(S) and relative URLs. Unsafe links render as text, and unsafe embeds are omitted.
+This policy also applies before passing URLs to custom `Link`, `PageLink`, and Next link components.
+Search snippets treat all content as text except Notion's highlight markers.
+
+Formula `test`, `replace`, and `replaceAll` use [RE2JS](https://github.com/le0pard/re2js).
+Backreferences and lookarounds are unsupported. Evaluation rejects inputs over 16,384
+characters, patterns or replacements over 1,024 characters, compiled patterns over
+4,096 instructions, and replacement output over 1,048,576 characters. Rejected formulas
+use the existing formula error rendering; there is no native-RegExp fallback.
+
 Exports:
 
 - `NotionRenderer`

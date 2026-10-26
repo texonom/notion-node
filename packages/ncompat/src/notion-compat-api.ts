@@ -58,13 +58,13 @@ export class NotionCompatAPI {
     const pageMap: PageMap = {}
     const parentMap: ParentMap = {}
     const blockChildrenMap: BlockChildrenMap = {}
-    const pendingBlockIds = new Set<string>()
+    const visitedBlockIds = new Set<string>()
     const queue = new PQueue({ concurrency })
 
-    const processBlock = async (blockId: string, { shallow = false }: { shallow?: boolean } = {}) => {
-      if (!blockId || pendingBlockIds.has(blockId)) return
+    const processBlock = async (blockId: string) => {
+      if (!blockId || visitedBlockIds.has(blockId)) return
 
-      pendingBlockIds.add(blockId)
+      visitedBlockIds.add(blockId)
       queue.add(async () => {
         try {
           let partialBlock = blockMap[blockId]
@@ -87,17 +87,11 @@ export class NotionCompatAPI {
               const page = partialPage as Page
               switch (page.parent?.type) {
                 case 'page_id':
-                  processBlock(page.parent.page_id, {
-                    shallow: true
-                  })
                   if (!parentMap[blockId]) parentMap[blockId] = page.parent.page_id
 
                   break
 
                 case 'database_id':
-                  processBlock(page.parent.database_id, {
-                    shallow: true
-                  })
                   if (!parentMap[blockId]) parentMap[blockId] = page.parent.database_id
 
                   break
@@ -109,7 +103,9 @@ export class NotionCompatAPI {
               return
           }
 
-          if (shallow) return
+          // Copied synced blocks expose another page's children through this API.
+          // Keep the pointer for rendering, without expanding the source's data.
+          if (block.type === 'synced_block' && block.synced_block.synced_from) return
 
           const children = await this.getAllBlockChildren(blockId)
           blockChildrenMap[blockId] = children.map(child => child.id)
@@ -121,48 +117,13 @@ export class NotionCompatAPI {
               blockMap[child.id] = childBlock
               parentMap[child.id] = blockId
 
-              const details = childBlock[childBlock.type]
-              if (details?.rich_text) {
-                const richTextMentions = details.rich_text.filter(richTextItem => richTextItem.type === 'mention')
-
-                for (const richTextMention of richTextMentions)
-                  switch (richTextMention.mention?.type) {
-                    case 'page': {
-                      const pageId = richTextMention.mention.page.id
-                      processBlock(pageId, { shallow: true })
-                      break
-                    }
-
-                    case 'database': {
-                      const databaseId = richTextMention.mention.database.id
-                      processBlock(databaseId, { shallow: true })
-                      break
-                    }
-                  }
-              }
-
-              if (childBlock.type === 'link_to_page')
-                switch (childBlock.link_to_page?.type) {
-                  case 'page_id':
-                    processBlock(childBlock.link_to_page.page_id, {
-                      shallow: true
-                    })
-                    break
-
-                  case 'database_id':
-                    processBlock(childBlock.link_to_page.database_id, {
-                      shallow: true
-                    })
-                    break
-                }
-
+              // Mentions and link_to_page remain references. Integration access
+              // to their targets is broader than this root's export scope.
               if (childBlock.has_children && childBlock.type !== 'child_database') processBlock(childBlock.id)
             }
           }
         } catch (err) {
           console.warn('failed resolving block', blockId, err.message)
-        } finally {
-          pendingBlockIds.delete(blockId)
         }
       })
     }

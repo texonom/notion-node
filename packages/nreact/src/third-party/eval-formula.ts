@@ -9,6 +9,7 @@ import getYear from 'date-fns/getYear/index.js'
 import intervalToDuration from 'date-fns/intervalToDuration/index.js'
 import sub from 'date-fns/sub/index.js'
 import { getDateValue, getTextContent } from '@texonom/nutils'
+import { formulaMatcher, replaceFormulaRegex } from './formula-regex'
 
 import type {
   PropertyMap,
@@ -278,14 +279,14 @@ function evalFunctionFormula(formula: FunctionFormula | OperatorFormula, ctx: Ev
       const value = evalFormula(args[0], ctx) as string
       const regex = evalFormula(args[1], ctx) as string
       const replacement = evalFormula(args[2], ctx) as string
-      return value.replace(new RegExp(regex), replacement)
+      return replaceFormulaRegex(value, regex, replacement)
     }
 
     case 'replaceAll': {
       const value = evalFormula(args[0], ctx) as string
       const regex = evalFormula(args[1], ctx) as string
       const replacement = evalFormula(args[2], ctx) as string
-      return value.replace(new RegExp(regex, 'g'), replacement)
+      return replaceFormulaRegex(value, regex, replacement, true)
     }
 
     case 'slice': {
@@ -298,7 +299,7 @@ function evalFunctionFormula(formula: FunctionFormula | OperatorFormula, ctx: Ev
     case 'test': {
       const value = evalFormula(args[0], ctx) as string
       const regex = evalFormula(args[1], ctx) as string
-      return new RegExp(regex).test(value)
+      return formulaMatcher(value, regex).find()
     }
 
     // date & time

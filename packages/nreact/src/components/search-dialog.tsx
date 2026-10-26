@@ -4,6 +4,7 @@ import { ClearIcon } from '../icons/clear-icon'
 import { LoadingIcon } from '../icons/loading-icon'
 import { SearchIcon } from '../icons/search-icon'
 import { PageTitle } from './page-title'
+import { SearchHighlight } from './search-highlight'
 
 import type { SearchParams, SearchResults, APIError } from '@texonom/ntypes'
 import { getBlockTitle, getBlockParentPage } from '@texonom/nutils'
@@ -96,13 +97,10 @@ export class SearchDialog extends React.Component<{
                               href={mapPageUrl(result.page.id, searchResult.recordMap)}>
                               <PageTitle block={result.page} defaultIcon={defaultPageIcon} />
 
-                              {result.highlight?.html && (
-                                <div
-                                  className='notion-search-result-highlight'
-                                  dangerouslySetInnerHTML={{
-                                    __html: result.highlight.html
-                                  }}
-                                />
+                              {typeof result.highlight?.text === 'string' && (
+                                <div className='notion-search-result-highlight'>
+                                  <SearchHighlight text={result.highlight.text} />
+                                </div>
                               )}
                             </components.PageLink>
                           ))}
@@ -226,9 +224,6 @@ export class SearchDialog extends React.Component<{
             }) || block
 
           if (!result.page.id) return
-
-          if (result.highlight?.text)
-            result.highlight.html = result.highlight.text.replace(/<gzkNfoUU>/gi, '<b>').replace(/<\/gzkNfoUU>/gi, '</b>')
 
           return result
         })
