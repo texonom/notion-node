@@ -60,6 +60,11 @@ pnpm build  # tsup
 pnpm test   # vitest
 ```
 
+The default test and coverage runs use local fixtures and mocked APIs. Live
+Notion integration tests are opt-in: run `NOTION_LIVE_TESTS=true pnpm test` from
+a machine that can reach Notion. Search and backlink tests additionally require
+`NOTION_TOKEN`. Branch CI does not receive Notion or remote-cache credentials.
+
 ## Deployment
 
 Version updates are automated via `standard-version`.

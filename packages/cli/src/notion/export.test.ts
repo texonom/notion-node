@@ -1,7 +1,9 @@
-import { test, expect } from 'vitest'
+import { test as liveTest, expect } from 'vitest'
 
 import { NotionExporter } from '.'
 import { parsePageId } from '@texonom/nutils'
+
+const test = liveTest.skipIf(process.env.NOTION_LIVE_TESTS !== 'true')
 
 const pageIdFixturesSuccess = [
   'e0ae7b40-dd23-463e-a7bc-92195d6ec7fd',

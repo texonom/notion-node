@@ -1,8 +1,13 @@
-import { test, expect } from 'vitest'
+import { test as liveTest, expect } from 'vitest'
 import { config } from 'dotenv'
 import { NotionAPI } from './notion-api'
 
 config()
+
+// These exercise the live service, which may return an anti-bot HTML challenge
+// from hosted CI. Keep them opt-in without supplying credentials to branch jobs.
+const test = liveTest.skipIf(process.env.NOTION_LIVE_TESTS !== 'true')
+const authenticatedTest = liveTest.skipIf(process.env.NOTION_LIVE_TESTS !== 'true' || !process.env.NOTION_TOKEN)
 
 const pageIdFixturesSuccess = [
   'e0ae7b40-dd23-463e-a7bc-92195d6ec7fd',
@@ -31,7 +36,7 @@ for (const pageId of pageIdFixturesFailure)
     await expect(() => api.getPage(pageId, { fetchOption: { timeout: 3000 } })).rejects.toThrow()
   })
 
-test.skipIf(!process.env.NOTION_TOKEN)(`Search`, { timeout: 10000, retry: 3, concurrent: true }, async () => {
+authenticatedTest(`Search`, { timeout: 10000, retry: 3, concurrent: true }, async () => {
   const api = new NotionAPI({ authToken: process.env.NOTION_TOKEN })
   const results = await api.search({
     query: 'Texonom',
@@ -48,7 +53,7 @@ test.skipIf(!process.env.NOTION_TOKEN)(`Search`, { timeout: 10000, retry: 3, con
   expect(results.recordMap.block).toBeTypeOf('object')
 })
 
-test.skipIf(!process.env.NOTION_TOKEN)(`Backlink`, { timeout: 10000, concurrent: true }, async () => {
+authenticatedTest(`Backlink`, { timeout: 10000, concurrent: true }, async () => {
   const api = new NotionAPI({ authToken: process.env.NOTION_TOKEN })
   const backlinks = await api.getBacklinks({
     block: {
