@@ -268,11 +268,13 @@ export const Block: React.FC<BlockProps> = props => {
     case 'sub_header':
     // fallthrough
     case 'sub_sub_header': {
-      if (!block.properties) return null
+      // Notion stores an emptied heading with no properties. A reader sees
+      // nothing there; the owner gets the heading to type into.
+      if (!block.properties && !inPlace) return null
 
       const blockColor = block.format?.block_color
       const id = uuidToId(block.id)
-      const title = getTextContent(block.properties.title) || `Notion Header ${id}`
+      const title = getTextContent(block.properties?.title) || `Notion Header ${id}`
 
       // we use a cache here because constructing the ToC is non-trivial
       let indentLevel = tocIndentLevelCache[block.id]
@@ -392,15 +394,18 @@ export const Block: React.FC<BlockProps> = props => {
 
       let output: React.JSX.Element | null = null
 
+      // An emptied item has no properties; the owner still gets its line to type into.
+      const line = block.properties || inPlace
+
       if (block.content)
         output = (
           <>
-            {block.properties && <li data-block-id={editable ? block.id : undefined}>{renderTitle()}</li>}
+            {line && <li data-block-id={editable ? block.id : undefined}>{renderTitle()}</li>}
             {wrapList(children)}
           </>
         )
       // In edit mode the item says which block it is: a list item has no element of its own otherwise.
-      else output = block.properties ? <li data-block-id={editable ? block.id : undefined}>{renderTitle()}</li> : null
+      else output = line ? <li data-block-id={editable ? block.id : undefined}>{renderTitle()}</li> : null
 
       const isTopLevel = block.type !== recordMap.block[block.parent_id]?.value?.type
       const start = getListNumber(block.id, recordMap.block)
@@ -478,7 +483,7 @@ export const Block: React.FC<BlockProps> = props => {
     }
 
     case 'quote': {
-      if (!block.properties) return null
+      if (!block.properties && !inPlace) return null
 
       const blockColor = block.format?.block_color
 
