@@ -411,9 +411,11 @@ export class NotionExporter {
           break
         }
         case 'bookmark': {
+          // A bookmark never given a URL has no properties at all, and threw here.
+          if (!childBlock.properties?.link) break
           const nesting = `\n${prefix.trim()}> `
           md += `${nesting}[${getTextContent(
-            childBlock.properties?.title ? childBlock.properties.title : [['Untitled']]
+            childBlock.properties.title ? childBlock.properties.title : [['Untitled']]
           )}](${getTextContent(childBlock.properties.link)})\n`
           break
         }
@@ -596,7 +598,7 @@ export class NotionExporter {
               try {
                 const objectid = subdeco[1]
                 const object = await this.getBlock(objectid, recordMap, `"eoi" ${getPageTitle(recordMap)}`)
-                if (!object) break
+                if (!object?.format) break
                 const url = object.format.uri
                 const title = object.format.attributes
                   ? object.format.attributes?.filter(attr => attr.id === 'title')[0]?.values?.[0]
