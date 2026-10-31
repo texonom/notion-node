@@ -214,7 +214,22 @@ export const Asset: React.FC<{
     const caption = getTextContent(block.properties?.caption)
     const alt = caption || 'notion image'
 
-    content = <LazyImage src={src} alt={alt} zoomable={zoomable} height={style.height as number} style={assetStyle} />
+    // The box the image will fill, from the size Notion records for it, so the
+    // page does not move when it arrives. `auto` hands over to the image's own
+    // proportions once it has loaded, so the loaded page is what it always was.
+    const ratio = imageRatio(block.format)
+    if (ratio) assetStyle.aspectRatio = `auto ${ratio}`
+
+    content = (
+      <LazyImage
+        src={src}
+        alt={alt}
+        zoomable={zoomable}
+        height={style.height as number}
+        style={assetStyle}
+        placeholder={Boolean(ratio)}
+      />
+    )
   }
 
   return (
@@ -227,4 +242,13 @@ export const Asset: React.FC<{
       {block.type !== 'image' && children}
     </>
   )
+}
+
+/** Width over height as a CSS ratio, from the image's recorded proportions or its recorded box. */
+function imageRatio(format: BaseContentBlock['format']): string | undefined {
+  if (!format) return undefined
+  const { block_aspect_ratio, block_width, block_height } = format
+  if (block_aspect_ratio > 0) return `1 / ${block_aspect_ratio}`
+  if (block_width > 0 && block_height > 0) return `${block_width} / ${block_height}`
+  return undefined
 }

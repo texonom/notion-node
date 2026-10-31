@@ -2200,6 +2200,42 @@ svg.notion-page-icon {
   will-change: opacity, transform;
 }
 
+/* The reserved box of an image still on its way; dropped on load, so nothing shows through a transparent image. */
+img[data-loading] {
+  background-image: linear-gradient(
+    100deg,
+    rgba(55, 53, 47, 0.04) 30%,
+    rgba(55, 53, 47, 0.09) 50%,
+    rgba(55, 53, 47, 0.04) 70%
+  );
+  background-size: 300% 100%;
+  animation: notion-image-shimmer 1.6s ease-in-out infinite;
+}
+
+.dark img[data-loading] {
+  background-image: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.03) 30%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 70%
+  );
+}
+
+@keyframes notion-image-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  img[data-loading] {
+    animation: none;
+  }
+}
+
 .medium-zoom-image--opened {
   object-fit: cover;
   opacity: 1;

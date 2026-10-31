@@ -15,9 +15,18 @@ export const LazyImage: React.FC<{
   height?: number
   zoomable?: boolean
   priority?: boolean
+  /** Shimmer in the image's box until it has loaded; only worth it where the box is reserved. */
+  placeholder?: boolean
   onError?: React.ReactEventHandler<HTMLImageElement>
-}> = ({ src, alt, className, style, zoomable = false, priority = false, height, onError, ...rest }) => {
+}> = ({ src, alt, className, style, zoomable = false, priority = false, placeholder = false, height, onError, ...rest }) => {
   const { recordMap, zoom, previewImages, forceCustomImages, components } = useNotionContext()
+
+  // Loaded before hydration means no load event will reach React, so ask the element.
+  const [loaded, setLoaded] = React.useState(false)
+  const imageRef = React.useRef<HTMLImageElement | null>(null)
+  React.useEffect(() => {
+    if (imageRef.current?.complete) setLoaded(true)
+  }, [])
 
   const zoomRef = React.useRef(zoom ? zoom.clone() : null)
   const previewImage = previewImages
@@ -39,6 +48,13 @@ export const LazyImage: React.FC<{
   )
 
   const attachZoomRef = React.useMemo(() => (zoomable ? attachZoom : undefined), [zoomable, attachZoom])
+  const imageRefs = React.useCallback(
+    (image: HTMLImageElement | null) => {
+      imageRef.current = image
+      attachZoomRef?.(image)
+    },
+    [attachZoomRef]
+  )
 
   if (previewImage && components.Image) {
     // TODO: could try using next/image onLoadComplete to replace LazyImageFull
@@ -89,14 +105,21 @@ export const LazyImage: React.FC<{
     // Default image element
     return (
       <img
+        // An attribute, not a class: medium-zoom adds its class to the element
+        // directly, and React rewriting `className` here would take it away.
+        data-loading={placeholder && !loaded ? '' : undefined}
         className={className}
         style={style}
         src={src}
         alt={alt}
-        ref={attachZoomRef}
+        ref={imageRefs}
         loading='lazy'
         decoding='async'
-        onError={onError}
+        onLoad={() => setLoaded(true)}
+        onError={event => {
+          setLoaded(true)
+          onError?.(event)
+        }}
         {...rest}
       />
     )
