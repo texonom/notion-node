@@ -49,12 +49,14 @@ export const AssetWrapper: React.FC<{
     const id = parsePageId(caption, { uuid: true })
     const isPage = caption.charAt(0) === '/' && id
     const captionHostname = extractHostname(caption)
+    const external = captionHostname && captionHostname !== rootDomain && !caption.startsWith('/')
 
     return (
       <components.PageLink
         style={urlStyle}
         href={isPage ? mapPageUrl(id) : caption}
-        target={captionHostname && captionHostname !== rootDomain && !caption.startsWith('/') ? 'blank_' : null}>
+        target={external ? '_blank' : null}
+        rel={external ? 'noopener noreferrer' : undefined}>
         {figure}
       </components.PageLink>
     )
@@ -63,18 +65,22 @@ export const AssetWrapper: React.FC<{
   return figure
 }
 
+const CAPTION_URL_MAX_LENGTH = 2048
+const HOST_LABEL = /^[a-z\d](?:[a-z\d-]*[a-z\d])?$/i
+const IPV4 = /^(?:\d{1,3}\.){3}\d{1,3}$/
+const AFTER_HOST = /^(?::\d+)?(?:\/[-a-z\d%_.~+]*)*(?:\?[;&a-z\d%_.~+=-]*)?(?:#[-a-z\d_]*)?$/i
+
+// Same captions as the old single pattern, whose nested quantifiers backtracked exponentially on long ones.
 function isValidURL(str: string) {
-  // TODO: replace this with a more well-tested package
-  const pattern = new RegExp(
-    '^(https?:\\/\\/)?' + // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-      '(\\#[-a-z\\d_]*)?$',
-    'i'
-  )
-  return !!pattern.test(str)
+  if (str.length > CAPTION_URL_MAX_LENGTH) return false
+  const rest = str.replace(/^https?:\/\//i, '')
+  const hostEnd = rest.search(/[:/?#]/)
+  const host = hostEnd === -1 ? rest : rest.slice(0, hostEnd)
+  if (!AFTER_HOST.test(hostEnd === -1 ? '' : rest.slice(hostEnd))) return false
+  if (IPV4.test(host)) return true
+  const labels = host.split('.')
+  const tld = labels.pop()
+  return labels.length > 0 && /^[a-z]{2,}$/i.test(tld) && labels.every(label => HOST_LABEL.test(label))
 }
 
 function extractHostname(url: string) {

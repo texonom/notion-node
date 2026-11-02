@@ -79,12 +79,13 @@ const CollectionViewBlock: React.FC<{
   }, [])
 
   const defaultCollectionViewId = viewIds[0]
-  const [collectionState, setCollectionState] = useLocalStorage(block.id, {
+  // Block ids come from the record map, so a bare id could name any key the host page keeps.
+  const [collectionState, setCollectionState] = useLocalStorage(`nreact:collection:${block.id}`, {
     collectionViewId: defaultCollectionViewId
   })
 
   const collectionViewId =
-    (isMounted && viewIds.find(id => id === collectionState.collectionViewId)) || defaultCollectionViewId
+    (isMounted && viewIds.find(id => id === collectionState?.collectionViewId)) || defaultCollectionViewId
 
   const onChangeView = React.useCallback(
     (collectionViewId: string) => {

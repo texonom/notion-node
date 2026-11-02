@@ -7,6 +7,8 @@ import { SearchHighlight } from './search-highlight'
 import { SearchDialog } from './search-dialog'
 import { Asset } from './asset'
 import { Text } from './text'
+import { AssetWrapper } from './asset-wrapper'
+import { NotionRenderer } from '../renderer'
 import type { BaseContentBlock, Block, ExtendedRecordMap } from '@texonom/ntypes'
 
 const pageId = '11111111-1111-4111-8111-111111111111'
@@ -135,5 +137,66 @@ describe('navigation and embed sinks', () => {
       </NotionContextProvider>
     )
     expect(host.querySelector('iframe').getAttribute('src')).toBe('https://example.com/embed')
+  })
+})
+
+const id = (n: number) => `22222222-2222-4222-8222-${String(n).padStart(12, '0')}`
+const mapOf = (blocks: Record<string, unknown>[]) =>
+  ({
+    ...recordMap,
+    block: Object.fromEntries(blocks.map(value => [value.id, { value, role: 'reader' }]))
+  }) as unknown as ExtendedRecordMap
+
+describe('record maps that point back at themselves', () => {
+  it('renders a block once on its own path, directly or through a synced block', () => {
+    const map = mapOf([
+      { id: id(1), type: 'page', content: [id(2)], properties: { title: [['Root']] } },
+      { id: id(2), type: 'text', content: [id(2), id(3)], properties: { title: [['looping text']] } },
+      { id: id(3), type: 'transclusion_reference', format: { transclusion_reference_pointer: { id: id(2) } } }
+    ])
+    const html = renderToStaticMarkup(<NotionRenderer recordMap={map} rootPageId={id(1)} fullPage={false} />)
+    expect(html.match(/looping text/g)).toHaveLength(1)
+  })
+
+  it('still renders a synced block that appears twice side by side', () => {
+    const map = mapOf([
+      { id: id(1), type: 'page', content: [id(2), id(3), id(4)], properties: { title: [['Root']] } },
+      { id: id(2), type: 'transclusion_container', content: [id(5)] },
+      { id: id(3), type: 'transclusion_reference', format: { transclusion_reference_pointer: { id: id(2) } } },
+      { id: id(4), type: 'transclusion_reference', format: { transclusion_reference_pointer: { id: id(2) } } },
+      { id: id(5), type: 'text', properties: { title: [['synced words']] } }
+    ])
+    const html = renderToStaticMarkup(<NotionRenderer recordMap={map} rootPageId={id(1)} fullPage={false} />)
+    expect(html.match(/synced words/g)).toHaveLength(3)
+  })
+})
+
+describe('image captions as links', () => {
+  const imageWith = (caption: string) => {
+    const block = {
+      id: id(9),
+      type: 'image',
+      properties: { source: [['https://example.com/a.png']], caption: [[caption]] }
+    } as unknown as Block
+    return dom(
+      <NotionContextProvider recordMap={mapOf([block as unknown as Record<string, unknown>])} rootDomain='texonom.com'>
+        <AssetWrapper blockId={block.id} block={block} />
+      </NotionContextProvider>
+    )
+  }
+
+  it('opens an outside link in a new tab with no opener', () => {
+    const link = imageWith('https://example.com/x').querySelector('a')
+    expect(link.getAttribute('target')).toBe('_blank')
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer')
+  })
+
+  it('reads a caption as before, a link or words, and in linear time on a long run', () => {
+    expect(imageWith('example.com/a-b_c?x=1#top').querySelector('a')).not.toBeNull()
+    expect(imageWith('Figure 1. A diagram').querySelector('a')).toBeNull()
+    const started = performance.now()
+    expect(imageWith(`${'a'.repeat(5000)}!`).querySelector('a')).toBeNull()
+    expect(imageWith(`${'a1-'.repeat(600)}.${'b'.repeat(600)}!`).querySelector('a')).toBeNull()
+    expect(performance.now() - started).toBeLessThan(500)
   })
 })

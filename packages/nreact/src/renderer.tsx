@@ -121,9 +121,23 @@ export const NotionRenderer: React.FC<{
       defaultPageCoverPosition={defaultPageCoverPosition}
       editable={editable}
       zoom={isImageZoomable ? zoom : null}>
-      <NotionBlockRenderer {...rest} />
+      <RenderPathContext.Provider value={null}>
+        <NotionBlockRenderer {...rest} />
+      </RenderPathContext.Provider>
     </NotionContextProvider>
   )
+}
+
+/** The blocks being rendered from the root down to here. */
+type RenderPath = { id: string; parent: RenderPath | null; depth: number }
+
+const RenderPathContext = React.createContext<RenderPath | null>(null)
+
+const MAX_RENDER_DEPTH = 128
+
+const isOnPath = (path: RenderPath | null, id: string) => {
+  for (let node = path; node; node = node.parent) if (node.id === id) return true
+  return false
 }
 
 export const NotionBlockRenderer: React.FC<{
@@ -138,7 +152,9 @@ export const NotionBlockRenderer: React.FC<{
   level?: number
 }> = ({ level = 0, blockId, ...props }) => {
   const { recordMap } = useNotionContext()
+  const parentPath = React.useContext(RenderPathContext)
   const id = blockId || Object.keys(recordMap.block)[0]
+  const path = React.useMemo(() => ({ id, parent: parentPath, depth: (parentPath?.depth ?? -1) + 1 }), [id, parentPath])
   const block = recordMap.block[id]?.value
 
   if (!block) {
@@ -147,12 +163,17 @@ export const NotionBlockRenderer: React.FC<{
     return null
   }
 
+  // A record map can list a block inside its own descendants, directly or through a synced block.
+  if (isOnPath(parentPath, id) || path.depth > MAX_RENDER_DEPTH) return null
+
   return (
-    <Block key={id} level={level} block={block} {...props}>
-      {block?.content?.map(contentBlockId => (
-        <NotionBlockRenderer key={contentBlockId} blockId={contentBlockId} level={level + 1} {...props} />
-      ))}
-    </Block>
+    <RenderPathContext.Provider value={path}>
+      <Block key={id} level={level} block={block} {...props}>
+        {block?.content?.map(contentBlockId => (
+          <NotionBlockRenderer key={contentBlockId} blockId={contentBlockId} level={level + 1} {...props} />
+        ))}
+      </Block>
+    </RenderPathContext.Provider>
   )
 }
 
