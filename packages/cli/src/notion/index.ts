@@ -356,7 +356,8 @@ export class NotionExporter {
         markdown[propName] = value
       }
     }
-    const body = await this.childrenToMd(page, recordMap, '', page)
+    // Every block is written as prefix + text, so the top level needs a newline prefix or the page reads as one line.
+    const body = await this.childrenToMd(page, recordMap, '\n', page)
     markdown.body = body
     return markdown
   }
