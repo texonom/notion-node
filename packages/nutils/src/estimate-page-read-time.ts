@@ -68,13 +68,24 @@ export function estimatePageReadTimeAsHumanizedString(
   return humanizeReadTime(estimate.totalReadTimeInMinutes)
 }
 
-function getBlockContentStats(block: Block, recordMap: ExtendedRecordMap): ContentStats {
+type StatsMemo = { done: Map<string, ContentStats>; active: Set<string> }
+
+function getBlockContentStats(
+  block: Block,
+  recordMap: ExtendedRecordMap,
+  memo: StatsMemo = { done: new Map(), active: new Set() }
+): ContentStats {
   const stats: ContentStats = {
     numWords: 0,
     numImages: 0
   }
 
   if (!block) return stats
+  const counted = memo.done.get(block.id)
+  if (counted) return counted
+  // Synced blocks can reference the same subtree many times, or one of their own ancestors.
+  if (memo.active.has(block.id)) return stats
+  memo.active.add(block.id)
 
   for (const childId of block.content || []) {
     const child = recordMap.block[childId]?.value
@@ -185,7 +196,7 @@ function getBlockContentStats(block: Block, recordMap: ExtendedRecordMap): Conte
         if (!referencePointerId) continue
 
         const referenceBlock = recordMap.block[referencePointerId]?.value
-        if (referenceBlock) mergeContentStats(stats, getBlockContentStats(referenceBlock, recordMap))
+        if (referenceBlock) mergeContentStats(stats, getBlockContentStats(referenceBlock, recordMap, memo))
 
         break
       }
@@ -195,9 +206,11 @@ function getBlockContentStats(block: Block, recordMap: ExtendedRecordMap): Conte
         break
     }
 
-    if (recurse) mergeContentStats(stats, getBlockContentStats(child, recordMap))
+    if (recurse) mergeContentStats(stats, getBlockContentStats(child, recordMap, memo))
   }
 
+  memo.active.delete(block.id)
+  memo.done.set(block.id, stats)
   return stats
 }
 
