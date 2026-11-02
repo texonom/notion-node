@@ -149,14 +149,14 @@ export class NotionAPI {
     recordMap: ExtendedRecordMap,
     pageId?: string,
     {
-      concurrency,
-      fetchOption,
-      collectionConcurrency
+      concurrency = 36,
+      fetchOption = { timeout: 20000 },
+      collectionConcurrency = 300
     }: {
-      concurrency: number
+      concurrency?: number
       collectionConcurrency?: number
       fetchOption?: FetchOption
-    } = { concurrency: 36, fetchOption: { timeout: 20000 }, collectionConcurrency: 300 }
+    } = {}
   ): Promise<ExtendedRecordMap> {
     const allCollectionInstances: Array<{
       collectionId: string
