@@ -30,5 +30,6 @@ export default defineConfig({
       ]
     }
   },
-  plugins: [dts({ tsconfigPath: 'tsconfig.json', outDir: 'build/src' })]
+  // entryRoot keeps declarations beside main.js, where package.json's `types` points, not under build/src/src.
+  plugins: [dts({ tsconfigPath: 'tsconfig.json', outDir: 'build/src', entryRoot: 'src' })]
 })
