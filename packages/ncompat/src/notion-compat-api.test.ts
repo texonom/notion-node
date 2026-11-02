@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest'
-import { NotionCompatAPI } from './notion-compat-api'
+import { NotionCompatAPI, ResolveBudgetError } from './notion-compat-api'
 import type { Client } from '@notionhq/client'
 
 it('resolves the selected page without retrieving ancestors, mentions, linked pages or synced sources', async () => {
@@ -46,4 +46,29 @@ it('resolves the selected page without retrieving ancestors, mentions, linked pa
   expect(Object.keys(result.blockMap).sort()).toEqual(['child', 'link', 'nested', 'paragraph', 'root', 'sync'])
   expect(result.blockChildrenMap.sync).toBeUndefined()
   expect(result.parentMap.root).toBe('outside-parent')
+})
+
+const toggle = (id: string) => ({ id, type: 'toggle', has_children: true, toggle: { rich_text: [] } })
+
+function clientWith(list: (blockId: string) => { results: unknown[]; next_cursor: string | null }) {
+  return {
+    blocks: {
+      retrieve: vi.fn(async ({ block_id }) => toggle(block_id)),
+      children: { list: vi.fn(async ({ block_id }) => list(block_id)) }
+    },
+    pages: { retrieve: vi.fn() }
+  } as unknown as Client
+}
+
+it('stops resolving a page nested deeper than its budget', async () => {
+  const client = clientWith(blockId => ({ results: [toggle(`${blockId}-child`)], next_cursor: null }))
+  await expect(new NotionCompatAPI(client).resolvePage('root', { maxDepth: 5 })).rejects.toThrow(ResolveBudgetError)
+})
+
+it('stops resolving a page with more blocks than its budget, however they are paginated', async () => {
+  const wide = clientWith(blockId => ({
+    results: Array.from({ length: 100 }, (_, i) => ({ id: `${blockId}-${i}`, type: 'paragraph', has_children: false })),
+    next_cursor: 'more'
+  }))
+  await expect(new NotionCompatAPI(wide).resolvePage('root', { maxBlocks: 250 })).rejects.toThrow(ResolveBudgetError)
 })

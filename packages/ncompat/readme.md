@@ -40,6 +40,7 @@ their target's title or content.
 Exports:
 
 - `NotionCompatAPI` – wrapper around '@notionhq/client'
+  - `getPage(pageId, budget?)` and `resolvePage(pageId, options?)` stop with a `ResolveBudgetError` past `maxBlocks` (10,000 blocks, child pages included), `maxDepth` (64 levels) or `timeoutMs` (120 s) rather than return part of a page
 - `convertPage({ pageId, blockMap })`
 - `convertBlock({ block, blockMap })`
 - `convertTime(time)`
