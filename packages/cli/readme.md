@@ -50,12 +50,12 @@ const md = await exporter.pageToMarkdown(parsePageId(page), recordMap)
 # 1. Fetch raw data from Notion
 pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 --raw -r -f
 
-# 2. Transform raw data to markdown (requires token if data is private)
+# 2. Transform raw data to markdown (reads NOTION_TOKEN when data is private)
 export NOTION_TOKEN=
-pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 -r -l -t $NOTION_TOKEN -u
+pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 -r -l -u
 
 # 3. Retry without token if you hit rate limits
-pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 -r -l -u
+NOTION_TOKEN= pnpm tsx src/main.ts export -p 04089c8ae3534bf79512fc495944b321 -r -l -u
 ```
 
 If you encounter memory errors:

@@ -1,5 +1,6 @@
 import { Option, Command } from 'clipanion'
 import { NotionExporter } from './index'
+import { exportToken } from './token'
 import { generateTreemaps, PageNode } from '../treemap'
 import { computeStats, writeStats } from '../stats'
 
@@ -47,7 +48,7 @@ export class NotionExportCommand extends Command {
     description: 'Generate statistics JSON after export'
   })
   token = Option.String('-t,--token', {
-    description: 'Notion Access Token'
+    description: 'Notion Access Token; prefer the NOTION_TOKEN environment variable, since a flag shows in the process list'
   })
   wait = Option.Counter('-w,--wait', {
     description: 'Wait couter for missed collection view'
@@ -57,6 +58,8 @@ export class NotionExportCommand extends Command {
   })
 
   async execute() {
+    const { token, warning } = exportToken(this.token)
+    if (warning) console.warn(warning)
     const exporter = new NotionExporter({
       folder: this.folder,
       validation: this.validation,
@@ -67,7 +70,7 @@ export class NotionExportCommand extends Command {
       load: this.load,
       raw: this.raw,
       dataset: this.dataset,
-      token: this.token,
+      token,
       push: this.push
     })
     await exporter.execute()
